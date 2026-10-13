@@ -113,3 +113,316 @@
     }
   }
 }
+
+// Home page only: content spans the full width with a side gutter
+.home-fullwidth {
+  .container {
+    max-width: 100%;
+    @media (min-width: 768px) {
+      padding-left: 30px;
+      padding-right: 30px;
+    }
+    @media (min-width: 1200px) {
+      padding-left: 50px;
+      padding-right: 50px;
+    }
+  }
+  // keep the account pop-up inside the screen now the header reaches the edge
+  @media (min-width: 1200px) {
+    .nav-account .dropdown-login {
+      left: -260px;
+    }
+  }
+}
+
+// Home page category strip (rectangular cards with a header row)
+.category-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding-bottom: 14px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--line);
+  .category-title {
+    font-size: 20px;
+    line-height: 28px;
+    font-weight: 600;
+    margin: 0;
+  }
+  .category-actions {
+    display: flex;
+    align-items: center;
+  }
+  .category-nav {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding-right: 16px;
+  }
+  .category-arrow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--main);
+    font-size: 12px;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+    &.swiper-button-disabled {
+      opacity: 0.3;
+      cursor: default;
+    }
+  }
+  .category-viewall {
+    padding-left: 16px;
+    border-left: 1px solid var(--line);
+    font-size: 18px;
+    line-height: 28px;
+    font-weight: 600;
+    color: var(--main);
+    white-space: nowrap;
+  }
+}
+.category-slider {
+  .category-card {
+    display: block;
+    color: var(--main);
+  }
+  .category-img {
+    aspect-ratio: 3 / 4;
+    width: 100%;
+    overflow: hidden;
+    img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+  .category-name {
+    display: block;
+    margin-top: 16px;
+    text-align: center;
+    font-size: 18px;
+    line-height: 24px;
+  }
+}
+@media (max-width: 575px) {
+  .category-head {
+    .category-title {
+      font-size: 16px;
+      line-height: 24px;
+    }
+    .category-viewall {
+      font-size: 14px;
+    }
+  }
+  .category-slider .category-name {
+    margin-top: 12px;
+    font-size: 14px;
+  }
+}
+
+// Product cards: colour swatches are shown only on the product detail page
+.card-product .list-color-product {
+  display: none;
+}
+
+// Two-up banner (shared component): image cards with centred text and button
+.banner-pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+.banner-pair-item {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 893 / 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: var(--white);
+  img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: rgba(0, 0, 0, 0.3);
+  }
+  .banner-pair-content {
+    position: relative;
+    z-index: 2;
+    padding: 24px;
+  }
+  .banner-pair-sub {
+    margin: 0 0 8px;
+    font-size: 18px;
+    line-height: 28px;
+    color: var(--white);
+  }
+  .banner-pair-title {
+    margin: 0 0 28px;
+    font-size: 48px;
+    line-height: 60px;
+    font-weight: 500;
+    color: var(--white);
+  }
+  .banner-pair-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 160px;
+    height: 60px;
+    padding: 0 40px;
+    border: 1px solid var(--white);
+    border-radius: 80px;
+    font-size: 18px;
+    color: var(--white);
+    transition: background-color 0.3s ease, color 0.3s ease;
+    &:hover {
+      background-color: var(--white);
+      color: var(--main);
+    }
+  }
+}
+@media (max-width: 1199px) {
+  .banner-pair-item {
+    .banner-pair-title {
+      font-size: 36px;
+      line-height: 44px;
+      margin-bottom: 20px;
+    }
+    .banner-pair-btn {
+      height: 52px;
+      padding: 0 32px;
+      font-size: 16px;
+    }
+  }
+}
+@media (max-width: 767px) {
+  .banner-pair {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 15px;
+  }
+  .banner-pair-item {
+    aspect-ratio: 4 / 3;
+    .banner-pair-sub {
+      font-size: 16px;
+      line-height: 24px;
+    }
+    .banner-pair-title {
+      font-size: 28px;
+      line-height: 36px;
+      margin-bottom: 16px;
+    }
+    .banner-pair-btn {
+      height: 46px;
+      min-width: 130px;
+      padding: 0 28px;
+      font-size: 15px;
+    }
+  }
+}
+
+// Follow-us gallery (shared component): tall tiles, alternate tiles offset down
+.follow-head {
+  margin-bottom: 60px;
+  .follow-sub {
+    margin: 0 0 4px;
+    font-size: 18px;
+    line-height: 28px;
+    color: var(--main);
+  }
+  .follow-handle {
+    display: inline-block;
+    max-width: 100%;
+    font-size: 56px;
+    line-height: 1.15;
+    font-weight: 300;
+    color: var(--main);
+    overflow-wrap: anywhere;
+  }
+}
+.follow-grid {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  gap: 20px;
+  align-items: start;
+}
+.follow-item {
+  display: block;
+  aspect-ratio: 38 / 100;
+  overflow: hidden;
+  img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+  }
+  &:hover img {
+    transform: scale(1.05);
+  }
+  &:nth-child(odd) {
+    margin-top: 70px;
+  }
+}
+@media (max-width: 1199px) {
+  .follow-head {
+    margin-bottom: 40px;
+    .follow-handle {
+      font-size: 44px;
+    }
+  }
+  .follow-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+  }
+  .follow-item:nth-child(odd) {
+    margin-top: 40px;
+  }
+}
+@media (max-width: 767px) {
+  .follow-head {
+    margin-bottom: 28px;
+    .follow-sub {
+      font-size: 16px;
+      line-height: 24px;
+    }
+    .follow-handle {
+      font-size: 32px;
+    }
+  }
+  .follow-grid {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+  .follow-item {
+    flex: 0 0 44%;
+    scroll-snap-align: start;
+    &:nth-child(odd) {
+      margin-top: 36px;
+    }
+  }
+}
