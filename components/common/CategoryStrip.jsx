@@ -7,8 +7,8 @@ import Link from "next/link";
 import { Navigation, A11y } from "swiper/modules";
 
 const defaultBreakpoints = {
-  1200: { slidesPerView: 5, spaceBetween: 20 },
-  1000: { slidesPerView: 4, spaceBetween: 20 },
+  1200: { slidesPerView: 6, spaceBetween: 20 },
+  1000: { slidesPerView: 5, spaceBetween: 20 },
   768: { slidesPerView: 4, spaceBetween: 20 },
   576: { slidesPerView: 3, spaceBetween: 15 },
   0: { slidesPerView: 2, spaceBetween: 15 },

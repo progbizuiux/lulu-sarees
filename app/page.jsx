@@ -1,15 +1,14 @@
 import Footer1 from "@/components/footers/Footer1";
 import Header1 from "@/components/headers/Header1";
 import Topbar from "@/components/headers/Topbar";
-import BannerCollection from "@/components/homes/home-1/BannerCollection";
-import BannerCountdown from "@/components/homes/home-1/BannerCountdown";
-import Blogs from "@/components/common/Blogs";
+import PatternShowcase from "@/components/common/PatternShowcase";
 import Collections from "@/components/homes/home-1/Collections";
 import BannerPair from "@/components/common/BannerPair";
 import Features from "@/components/common/Features";
 import Hero from "@/components/homes/home-1/Hero";
 import Products from "@/components/common/Products3";
 import FollowGallery from "@/components/common/FollowGallery";
+import VideoBanner from "@/components/common/VideoBanner";
 import Testimonials from "@/components/common/Testimonials";
 
 export const metadata = {
@@ -45,10 +44,24 @@ export default function HomePage() {
         ]}
       />
       <Products />
-      <BannerCollection />
-      <BannerCountdown />
+      <PatternShowcase
+        subheading="Shop by Pattern"
+        heading="Pattern that defines every occasion"
+        sideImgSrc="/images/patterns/pattern-models.jpg"
+        sideImgAlt="women-in-silk-sarees"
+        items={[
+          { imgSrc: "/images/patterns/pattern-1.jpg", title: "Zari Woven" },
+          { imgSrc: "/images/patterns/pattern-2.jpg", title: "Plain Silk" },
+          { imgSrc: "/images/patterns/pattern-3.jpg", title: "Ikat" },
+          { imgSrc: "/images/patterns/pattern-4.jpg", title: "Block Print" },
+          { imgSrc: "/images/patterns/pattern-5.jpg", title: "Zari Stripes" },
+        ]}
+      />
+      <VideoBanner
+        posterSrc="/images/banner/video-poster.jpg"
+        videoSrc="/images/video/bg-video1.mp4"
+      />
       <Testimonials />
-      <Blogs />
       <FollowGallery
         handle="@lulusarees.kannur"
         items={[

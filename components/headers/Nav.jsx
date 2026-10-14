@@ -37,7 +37,6 @@ export default function Nav() {
       >
         <a href="#" className="item-link">
           Shop
-          <i className="icon icon-arrow-down" />
         </a>
         <div className="sub-menu mega-menu">
           <div className="container">
@@ -164,7 +163,6 @@ export default function Nav() {
       >
         <a href="#" className="item-link">
           Products
-          <i className="icon icon-arrow-down" />
         </a>
         <div className="sub-menu mega-menu">
           <div className="container">
@@ -298,7 +296,6 @@ export default function Nav() {
       >
         <a href="#" className="item-link">
           Blog
-          <i className="icon icon-arrow-down" />
         </a>
         <div className="sub-menu submenu-default">
           <ul className="menu-list">
@@ -330,7 +327,6 @@ export default function Nav() {
       >
         <a href="#" className="item-link">
           Pages
-          <i className="icon icon-arrow-down" />
         </a>
         <div className="sub-menu submenu-default">
           <ul className="menu-list">

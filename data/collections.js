@@ -35,6 +35,12 @@ export const collections = [
     title: "New in",
     count: "12 items",
   },
+  {
+    imgSrc: "/images/collections/collection-circle/cls-circle-kurtis.jpg",
+    alt: "collection-img",
+    title: "Kurtis",
+    count: "12 items",
+  },
 ];
 
 export const collections2 = [
