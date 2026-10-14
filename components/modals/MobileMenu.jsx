@@ -82,7 +82,7 @@ export default function MobileMenu() {
                   aria-expanded="true"
                   aria-controls="dropdown-menu-two"
                 >
-                  <span>Shop</span>
+                  <span>Sarees</span>
                   <span className="btn-open-sub" />
                 </a>
                 <div id="dropdown-menu-two" className="collapse">
@@ -256,7 +256,7 @@ export default function MobileMenu() {
                   aria-expanded="true"
                   aria-controls="dropdown-menu-three"
                 >
-                  <span>Products</span>
+                  <span>Collections</span>
                   <span className="btn-open-sub" />
                 </a>
                 <div id="dropdown-menu-three" className="collapse">
@@ -392,7 +392,7 @@ export default function MobileMenu() {
                   aria-expanded="true"
                   aria-controls="dropdown-menu-four"
                 >
-                  <span>Blog</span>
+                  <span>Style Journal</span>
                   <span className="btn-open-sub" />
                 </a>
                 <div id="dropdown-menu-four" className="collapse">
@@ -428,7 +428,7 @@ export default function MobileMenu() {
                   aria-expanded="true"
                   aria-controls="dropdown-menu-five"
                 >
-                  <span>Pages</span>
+                  <span>Our Store</span>
                   <span className="btn-open-sub" />
                 </a>
                 <div id="dropdown-menu-five" className="collapse">

@@ -27,6 +27,7 @@ export default function HomePage() {
         items={[
           {
             imgSrc: "/images/banner/banner-pair-1.jpg",
+            objectPosition: "30% center",
             alt: "festive-silk-sarees",
             subheading: "Exclusive",
             title: "Festive Silk\nSaree Collection",
@@ -35,6 +36,7 @@ export default function HomePage() {
           },
           {
             imgSrc: "/images/banner/banner-pair-2.jpg",
+            objectPosition: "85% center",
             alt: "occasion-sarees",
             subheading: "Exclusive",
             title: "Occasion Wear\nCollection",
@@ -59,7 +61,7 @@ export default function HomePage() {
       />
       <VideoBanner
         posterSrc="/images/banner/video-poster.jpg"
-        videoSrc="/images/video/bg-video1.mp4"
+        videoSrc="/images/video/saree-film.mp4"
       />
       <Testimonials />
       <FollowGallery

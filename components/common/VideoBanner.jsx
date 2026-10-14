@@ -1,44 +1,47 @@
 "use client";
-import { useState } from "react";
-import Image from "next/image";
+import { useEffect, useRef } from "react";
 
-// Reusable wide video banner: a poster image with a centred play button.
-// Clicking it swaps the poster for the video, which plays in the same space.
+// Reusable wide video banner. The video starts by itself (muted, looping) when
+// the section scrolls into view and pauses when it leaves. The poster image
+// shows until the video begins to play.
 export default function VideoBanner({
   posterSrc,
-  posterAlt = "video-poster",
   videoSrc,
-  label = "Play video",
   parentClass = "flat-spacing-2 pb_0",
 }) {
-  const [playing, setPlaying] = useState(false);
+  const videoRef = useRef(null);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    video.muted = true;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          video.play().catch(() => {});
+        } else {
+          video.pause();
+        }
+      },
+      { threshold: 0.4 }
+    );
+    observer.observe(video);
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <section className={parentClass}>
       <div className="video-banner wow fadeInUp">
-        {playing ? (
-          <video
-            className="video-banner-player"
-            src={videoSrc}
-            poster={posterSrc}
-            controls
-            autoPlay
-            playsInline
-          />
-        ) : (
-          <>
-            <Image src={posterSrc} alt={posterAlt} width={2400} height={706} />
-            <button
-              type="button"
-              className="video-banner-play"
-              aria-label={label}
-              onClick={() => setPlaying(true)}
-            >
-              <svg width="28" height="28" viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M8 5v14l11-7z" fill="currentColor" />
-              </svg>
-            </button>
-          </>
-        )}
+        <video
+          ref={videoRef}
+          className="video-banner-player"
+          src={videoSrc}
+          poster={posterSrc}
+          muted
+          loop
+          playsInline
+          preload="metadata"
+        />
       </div>
     </section>
   );

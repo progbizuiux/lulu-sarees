@@ -36,7 +36,7 @@ export default function Nav() {
         } `}
       >
         <a href="#" className="item-link">
-          Shop
+          Sarees
         </a>
         <div className="sub-menu mega-menu">
           <div className="container">
@@ -162,7 +162,7 @@ export default function Nav() {
         } `}
       >
         <a href="#" className="item-link">
-          Products
+          Collections
         </a>
         <div className="sub-menu mega-menu">
           <div className="container">
@@ -295,7 +295,7 @@ export default function Nav() {
         } `}
       >
         <a href="#" className="item-link">
-          Blog
+          Style Journal
         </a>
         <div className="sub-menu submenu-default">
           <ul className="menu-list">
@@ -326,7 +326,7 @@ export default function Nav() {
         } `}
       >
         <a href="#" className="item-link">
-          Pages
+          Our Store
         </a>
         <div className="sub-menu submenu-default">
           <ul className="menu-list">

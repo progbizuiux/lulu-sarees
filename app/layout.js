@@ -121,8 +121,8 @@ export default function RootLayout({ children }) {
     wow.init();
   }, [pathname]);
   return (
-    <html lang="en">
-      <body className="preload-wrapper popup-loader">
+    <html lang="en" suppressHydrationWarning>
+      <body className="preload-wrapper popup-loader" suppressHydrationWarning>
         <Context>
           <div id="wrapper">{children}</div>
           <CartModal />
