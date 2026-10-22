@@ -1,5 +1,5 @@
 import Footer1 from "@/components/footers/Footer1";
-import Header1 from "@/components/headers/Header1";
+import LuluHeader from "@/components/headers/LuluHeader";
 import Topbar4 from "@/components/headers/Topbar4";
 
 import Banner from "@/components/homes/home-sock-2/Banner";
@@ -21,7 +21,7 @@ export default function page() {
   return (
     <>
       <Topbar4 />
-      <Header1 />
+      <LuluHeader />
       <Hero />
       <Products />
       <Collections />

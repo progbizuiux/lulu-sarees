@@ -7,7 +7,7 @@ import Products5 from "@/components/common/Products5";
 import ShopGram4 from "@/components/common/ShopGram4";
 import Testimonials2 from "@/components/common/Testimonials2";
 import Footer1 from "@/components/footers/Footer1";
-import Header1 from "@/components/headers/Header1";
+import LuluHeader from "@/components/headers/LuluHeader";
 import Banner from "@/components/homes/cosmetic/Banner";
 import Collections from "@/components/homes/cosmetic/Collections";
 import Hero from "@/components/homes/cosmetic/Hero";
@@ -22,7 +22,7 @@ export const metadata = {
 export default function HomeCosmeticPage() {
   return (
     <>
-      <Header1 />
+      <LuluHeader />
       <Hero />
       <MarqueeSection2 />
       <Collections />

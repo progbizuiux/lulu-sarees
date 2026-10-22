@@ -4,6 +4,7 @@ import "../public/scss/main.scss";
 import "photoswipe/style.css";
 import "react-range-slider-input/dist/style.css";
 import "../public/css/image-compare-viewer.min.css";
+import { canela, satoshi } from "./fonts/fonts";
 import { useEffect, useState } from "react";
 import ScrollTop from "@/components/common/ScrollTop";
 import Context from "@/context/Context";
@@ -69,9 +70,14 @@ export default function RootLayout({ children }) {
       }
 
       lastScrollY.current = currentScrollY;
+
+      // Once scrolling has stopped, bring the header back
+      clearTimeout(scrollEndTimer);
+      scrollEndTimer = setTimeout(() => setScrollDirection("up"), 200);
     };
 
     const lastScrollY = { current: window.scrollY };
+    let scrollEndTimer;
 
     // Add scroll event listener
     window.addEventListener("scroll", handleScroll);
@@ -79,6 +85,7 @@ export default function RootLayout({ children }) {
     // Cleanup: remove event listener when component unmounts
     return () => {
       window.removeEventListener("scroll", handleScroll);
+      clearTimeout(scrollEndTimer);
     };
   }, [pathname]);
   useEffect(() => {
@@ -121,7 +128,11 @@ export default function RootLayout({ children }) {
     wow.init();
   }, [pathname]);
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html
+      lang="en"
+      className={`${canela.variable} ${satoshi.variable}`}
+      suppressHydrationWarning
+    >
       <body className="preload-wrapper popup-loader" suppressHydrationWarning>
         <Context>
           <div id="wrapper">{children}</div>

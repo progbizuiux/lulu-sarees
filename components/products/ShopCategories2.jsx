@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Swiper, SwiperSlide } from "@/components/common/SwiperSSR";
 
-export default function ShopCategories2() {
+export default function ShopCategories2({ items = collections2 }) {
   return (
     <section className="flat-spacing">
       <div className="container">
@@ -20,7 +20,7 @@ export default function ShopCategories2() {
             1224: { slidesPerView: 5, spaceBetween: 20 },
           }}
         >
-          {collections2.map((slide, index) => (
+          {items.map((slide, index) => (
             <SwiperSlide key={index}>
               <div className="collection-position-2 hover-img">
                 <a className="img-style">

@@ -115,8 +115,9 @@
 }
 
 // Home page only: content spans the full width with a side gutter
+// (sections wrapped in .home-standard-width keep the normal boxed container)
 .home-fullwidth {
-  .container {
+  .container:not(.home-standard-width .container) {
     max-width: 100%;
     @media (min-width: 768px) {
       padding-left: 30px;
@@ -133,6 +134,12 @@
       left: -260px;
     }
   }
+}
+
+// Home page category cards: same 363:483 card shape as the shop page, whatever
+// the proportions of the photo (the photo is cropped to fill the card).
+.home-standard-width .collection-position-2 .img-style img {
+  aspect-ratio: 363 / 483;
 }
 
 // Home page category strip (rectangular cards with a header row)

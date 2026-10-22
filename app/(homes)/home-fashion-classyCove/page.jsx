@@ -3,7 +3,7 @@ import Products3 from "@/components/common/Products3";
 import ShopGram from "@/components/common/ShopGram2";
 import Testimonials from "@/components/common/Testimonials";
 import Footer1 from "@/components/footers/Footer1";
-import Header3 from "@/components/headers/Header3";
+import LuluHeader from "@/components/headers/LuluHeader";
 import Topbar3 from "@/components/headers/Topbar3";
 import Blogs from "@/components/homes/fashion-classyCove/Blogs";
 import Categories from "@/components/homes/fashion-classyCove/Categories";
@@ -21,7 +21,7 @@ export default function HomeFashionClassyCovePage() {
   return (
     <>
       <Topbar3 />
-      <Header3 />
+      <LuluHeader />
       <Hero />
       <Collections />
       <Products3 parentClass="flat-spacing" />

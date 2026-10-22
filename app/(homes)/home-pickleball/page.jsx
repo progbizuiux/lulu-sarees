@@ -1,5 +1,5 @@
 import Footer1 from "@/components/footers/Footer1";
-import Header16 from "@/components/headers/Header16";
+import LuluHeader from "@/components/headers/LuluHeader";
 import Topbar10 from "@/components/headers/Topbar10";
 import Banner from "@/components/homes/home-pickleball/Banner";
 import Blogs from "@/components/homes/home-pickleball/Blogs";
@@ -21,7 +21,7 @@ export default function page() {
   return (
     <>
       <Topbar10 />
-      <Header16 />
+      <LuluHeader />
       <Hero />
       <Products />
       <Banner />

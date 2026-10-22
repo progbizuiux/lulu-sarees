@@ -1,7 +1,7 @@
 import BlogGrid from "@/components/blogs/BlogGrid";
 
 import Footer1 from "@/components/footers/Footer1";
-import Header1 from "@/components/headers/Header1";
+import LuluHeader from "@/components/headers/LuluHeader";
 import Topbar6 from "@/components/headers/Topbar6";
 import Link from "next/link";
 import React from "react";
@@ -10,7 +10,7 @@ export default function BlogGridPage() {
   return (
     <>
       <Topbar6 bgColor="bg-main" />
-      <Header1 />
+      <LuluHeader />
       <div
         className="page-title"
         style={{ backgroundImage: "url(/images/section/page-title.jpg)" }}

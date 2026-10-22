@@ -1,7 +1,7 @@
 import Features2 from "@/components/common/Features2";
 import MarqueeSection2 from "@/components/common/MarqueeSection2";
 import Footer1 from "@/components/footers/Footer1";
-import Header8 from "@/components/headers/Header8";
+import LuluHeader from "@/components/headers/LuluHeader";
 import Topbar2 from "@/components/headers/Topbar2";
 import BannerTab from "@/components/common/BannerTab2";
 import Blogs from "@/components/homes/beauty/Blogs";
@@ -23,7 +23,7 @@ export default function HomeBeautyPage() {
   return (
     <>
       <Topbar2 parentClass="tf-topbar topbar-white bg-purple-2" />
-      <Header8 />
+      <LuluHeader />
       <Hero />
       <Collections />
       <Categories />

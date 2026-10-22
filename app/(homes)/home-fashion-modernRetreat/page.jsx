@@ -1,6 +1,6 @@
 import Testimonials from "@/components/common/Testimonials";
 import Footer1 from "@/components/footers/Footer1";
-import Header7 from "@/components/headers/Header7";
+import LuluHeader from "@/components/headers/LuluHeader";
 import Collections from "@/components/homes/fashion-modernRetreat/Collections";
 import Hero from "@/components/homes/fashion-modernRetreat/Hero";
 import Lookbook from "@/components/homes/fashion-modernRetreat/Lookbook";
@@ -19,7 +19,7 @@ export const metadata = {
 export default function HomeFashionModernRetreatPage() {
   return (
     <>
-      <Header7 />
+      <LuluHeader />
       <Hero />
       <Products />
       <Lookbook />

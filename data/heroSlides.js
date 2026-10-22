@@ -1,13 +1,13 @@
 export const slides = [
   {
-    imgSrc: "/images/slider/slider-women1.jpg",
+    imgSrc: "/images/home/banner1.png",
     alt: "fashion-slideshow",
     subheading: "BIKINIS & SWIMSUITS",
     heading: "Flash Sale Madness",
     btnText: "Explore Collection",
   },
   {
-    imgSrc: "/images/slider/slider-women2.jpg",
+    imgSrc: "/images/home/banner1.png",
     alt: "fashion-slideshow",
     subheading: "BIKINIS & SWIMSUITS",
     heading: "Find Your\nSignature Style",

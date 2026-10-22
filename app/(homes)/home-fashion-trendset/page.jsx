@@ -1,7 +1,7 @@
 import Features from "@/components/common/Features";
 import ShopGram from "@/components/common/ShopGram2";
 import Footer1 from "@/components/footers/Footer1";
-import Header1 from "@/components/headers/Header1";
+import LuluHeader from "@/components/headers/LuluHeader";
 import Topbar2 from "@/components/headers/Topbar2";
 import Banner from "@/components/homes/fashion-trendset/Banner";
 import Blogs from "@/components/homes/fashion-trendset/Blogs";
@@ -21,7 +21,7 @@ export const metadata = {
 export default function HomeFashionTrendsetPage() {
   return (
     <>
-      <Header1 />
+      <LuluHeader />
       <Topbar2 />
       <Hero />
       <Products />

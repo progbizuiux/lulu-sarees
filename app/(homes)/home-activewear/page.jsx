@@ -1,7 +1,7 @@
 import Features from "@/components/common/Features";
 import MarqueeSection2 from "@/components/common/MarqueeSection2";
 import Footer1 from "@/components/footers/Footer1";
-import Header1 from "@/components/headers/Header1";
+import LuluHeader from "@/components/headers/LuluHeader";
 import Topbar3 from "@/components/headers/Topbar3";
 import BannerTab from "@/components/homes/activewear/BannerTab";
 import Collections from "@/components/homes/activewear/Collections";
@@ -23,7 +23,7 @@ export default function HomeActivemearPage() {
   return (
     <>
       <Topbar3 />
-      <Header1 fullWidth />
+      <LuluHeader />
       <Hero />
       <MarqueeSection2 parentClass="tf-marquee border-0" />
       <Collections />

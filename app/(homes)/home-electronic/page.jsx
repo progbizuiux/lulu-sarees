@@ -1,7 +1,7 @@
 import Brands from "@/components/common/Brands";
 import Features from "@/components/common/Features";
 import Footer1 from "@/components/footers/Footer1";
-import Header11 from "@/components/headers/Header11";
+import LuluHeader from "@/components/headers/LuluHeader";
 import Topbar6 from "@/components/headers/Topbar6";
 import Banner from "@/components/homes/electronic/Banner";
 import Categories from "@/components/homes/electronic/Categories";
@@ -24,7 +24,7 @@ export default function HomeElectronicPage() {
   return (
     <>
       <Topbar6 />
-      <Header11 />
+      <LuluHeader />
       <Hero />
       <Categories />
       <Products />

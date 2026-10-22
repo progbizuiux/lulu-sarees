@@ -2,7 +2,7 @@ import Features from "@/components/common/Features";
 import ShopGram from "@/components/common/ShopGram";
 import Testimonials from "@/components/common/Testimonials";
 import Footer1 from "@/components/footers/Footer1";
-import Header1 from "@/components/headers/Header1";
+import LuluHeader from "@/components/headers/LuluHeader";
 import Banner from "@/components/homes/eleganceNest/Banner";
 import Categories from "@/components/homes/eleganceNest/Categories";
 import Collections from "@/components/homes/eleganceNest/Collections";
@@ -22,7 +22,7 @@ export const metadata = {
 export default function HomeFashionElegentNestPage() {
   return (
     <>
-      <Header1 />
+      <LuluHeader />
       <Hero />
       <MarqueeSection2 />
       <Categories />

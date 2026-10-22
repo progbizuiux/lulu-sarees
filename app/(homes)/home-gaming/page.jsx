@@ -1,5 +1,5 @@
 import Footer1 from "@/components/footers/Footer1";
-import Header15 from "@/components/headers/Header15";
+import LuluHeader from "@/components/headers/LuluHeader";
 import Topbar9 from "@/components/headers/Topbar9";
 import Blogs from "@/components/homes/home-gaming/Blogs";
 import Collections from "@/components/homes/home-gaming/Collections";
@@ -20,7 +20,7 @@ export default function page() {
   return (
     <>
       <Topbar9 />
-      <Header15 />
+      <LuluHeader />
       <Hero />
       <Collections />
       <Products />

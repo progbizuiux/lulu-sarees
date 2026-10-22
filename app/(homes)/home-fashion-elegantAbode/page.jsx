@@ -1,7 +1,7 @@
 import MarqueeSection from "@/components/common/MarqueeSection";
 import Products2 from "@/components/common/Products2";
 import Testimonials from "@/components/common/Testimonials";
-import Header1 from "@/components/headers/Header1";
+import LuluHeader from "@/components/headers/LuluHeader";
 import Topbar3 from "@/components/headers/Topbar3";
 import BannerCountdown from "@/components/homes/fashion-elegantAbode/BannerCountdown";
 import Categories from "@/components/homes/fashion-elegantAbode/Categories";
@@ -25,7 +25,7 @@ export default function HomeFashionElegantAbodePage() {
   return (
     <>
       <Topbar3 />
-      <Header1 />
+      <LuluHeader />
       <Hero />
       <Categories />
       <Products />

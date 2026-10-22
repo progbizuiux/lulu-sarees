@@ -4,7 +4,7 @@ import MarqueeSection2 from "@/components/common/MarqueeSection2";
 import Products5 from "@/components/common/Products5";
 import Tiktok from "@/components/common/Tiktok";
 import Footer1 from "@/components/footers/Footer1";
-import Header9 from "@/components/headers/Header9";
+import LuluHeader from "@/components/headers/LuluHeader";
 import Topbar4 from "@/components/headers/Topbar4";
 import Hero from "@/components/homes/skincare/Hero";
 import Lookbook from "@/components/homes/skincare/Lookbook";
@@ -24,7 +24,7 @@ export default function HomeSkincarePage() {
   return (
     <>
       <Topbar4 />
-      <Header9 />
+      <LuluHeader />
       <Hero />
 
       <Tiktok parentClass="flat-spacing" />

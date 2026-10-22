@@ -5,7 +5,7 @@ import Products4 from "@/components/common/Products4";
 import ShopGram from "@/components/common/ShopGram";
 import Testimonials from "@/components/common/Testimonials";
 import Footer1 from "@/components/footers/Footer1";
-import Header4 from "@/components/headers/Header4";
+import LuluHeader from "@/components/headers/LuluHeader";
 import Collections from "@/components/homes/fashion-chicHaven/Collections";
 import Hero from "@/components/homes/fashion-chicHaven/Hero";
 import MarqueeSection from "@/components/common/MarqueeSection";
@@ -21,7 +21,7 @@ export const metadata = {
 export default function HomeFashionChicHavenPage() {
   return (
     <>
-      <Header4 />
+      <LuluHeader />
       <Hero />
       <Collections />
       <Products4 parentClass="flat-spacing" />

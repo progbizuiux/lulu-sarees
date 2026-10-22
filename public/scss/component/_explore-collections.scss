@@ -1,0 +1,352 @@
+// "Explore Our Collections" home section (components/homes/home-1/ExploreCollections.jsx)
+$xc-bg: #fcfbf9;
+$xc-text: #231f21;
+$xc-muted: #8a8a8a;
+$xc-radius: 12px;
+
+.explore {
+  // side gutter; keep in sync with slidesOffsetBefore/After in the component
+  --explore-gutter: 15px;
+  --explore-title-size: clamp(30px, 4vw, 44px);
+  background-color: $xc-bg;
+  padding: 44px 0 52px;
+  overflow: hidden; // the slider bleeds off the right edge
+
+  &__head {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 0 var(--explore-gutter) 35.19px;
+  }
+
+  &__title {
+    margin: 0;
+    font-size: var(--explore-title-size);
+    line-height: 1;
+    color: $xc-text;
+  }
+
+  &__subtitle {
+    margin: 16px 0 0;
+    font-size: 15px;
+    line-height: 22px;
+    color: $xc-text;
+  }
+
+  // ---- tabs
+  &__tabs {
+    display: flex;
+    gap: 28px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+  &__tab {
+    flex: 0 0 auto;
+    padding: 5px 0 4px;
+    border: 0;
+    border-bottom: 1px solid transparent;
+    border-radius: 0;
+    background: none;
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: $xc-text;
+    cursor: pointer;
+    transition: border-color 0.2s ease, opacity 0.2s ease;
+    &:not(.is-active) {
+      opacity: 0.8;
+    }
+    &:hover {
+      opacity: 1;
+    }
+    &.is-active {
+      border-bottom-color: $xc-text;
+    }
+  }
+
+  // ---- slider
+  &__slider {
+    position: relative;
+  }
+  &__swiper {
+    overflow: visible;
+    // before Swiper initialises, keep the first card on the section gutter
+    &:not(.swiper-initialized) .swiper-wrapper {
+      padding-left: var(--explore-gutter);
+    }
+    .swiper-slide {
+      height: auto;
+      display: flex;
+      > * {
+        flex: 1 1 auto;
+        min-width: 0;
+      }
+    }
+  }
+}
+
+// ---- promo card (first slide)
+.xp {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  min-height: 380px;
+  border-radius: $xc-radius;
+  overflow: hidden;
+  color: #fff;
+
+  &__img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0.55) 0%,
+      rgba(0, 0, 0, 0) 55%
+    );
+  }
+  &__body {
+    position: relative;
+    z-index: 1;
+    padding: 20px;
+  }
+  &__text {
+    max-width: 230px;
+    margin: 0 0 14px;
+    font-size: 14px;
+    line-height: 20px;
+    color: #fff;
+  }
+  &__btn {
+    display: inline-block;
+    padding: 11px 24px;
+    border-radius: 999px;
+    background: #fff;
+    font-size: 12px;
+    line-height: 1;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: $xc-text;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    &:hover {
+      background: $xc-text;
+      color: #fff;
+    }
+  }
+}
+
+// ---- product card
+.xc {
+  display: flex;
+  flex-direction: column;
+
+  &__media {
+    position: relative;
+    aspect-ratio: 5 / 6;
+    border-radius: $xc-radius;
+    overflow: hidden;
+    background: #ece9e4;
+  }
+  &__img-link {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  &__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: opacity 0.4s ease, transform 0.6s ease;
+    &--hover {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+    }
+  }
+  &:hover &__img--hover {
+    opacity: 1;
+  }
+
+  &__badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    z-index: 2;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: #d4f0da;
+    font-size: 12px;
+    line-height: 1;
+    color: #1f6b36;
+  }
+
+  &__actions {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    opacity: 0;
+    transform: translateX(8px);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+  }
+  &__action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: #fff;
+    color: $xc-text;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: color 0.2s ease;
+    .icon {
+      font-size: 16px;
+    }
+    &:hover,
+    &.is-active {
+      color: var(--primary);
+    }
+  }
+
+  &__cta {
+    position: absolute;
+    left: 50%;
+    bottom: 14px;
+    z-index: 2;
+    padding: 12px 28px;
+    border: 0;
+    border-radius: 999px;
+    background: #fff;
+    font-size: 12px;
+    line-height: 1;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: $xc-text;
+    cursor: pointer;
+    opacity: 0;
+    transform: translate(-50%, 8px);
+    transition: opacity 0.25s ease, transform 0.25s ease,
+      background-color 0.2s ease, color 0.2s ease;
+    &:hover {
+      background: $xc-text;
+      color: #fff;
+    }
+  }
+
+  &:hover &__actions,
+  &:focus-within &__actions {
+    opacity: 1;
+    transform: none;
+  }
+  &:hover &__cta,
+  &:focus-within &__cta {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+
+  &__info {
+    display: grid;
+    justify-items: center;
+    gap: 4px;
+    padding-top: 12px;
+    text-align: center;
+    .list-color-product {
+      justify-content: center;
+      margin-top: 4px;
+    }
+  }
+  &__title {
+    font-size: 14px;
+    line-height: 20px;
+    color: $xc-text;
+    &:hover {
+      color: var(--primary);
+    }
+  }
+  &__price {
+    margin: 0;
+    font-size: 14px;
+    line-height: 20px;
+    color: $xc-text;
+  }
+  &__old-price {
+    margin-right: 6px;
+    color: $xc-muted;
+    text-decoration: line-through;
+  }
+}
+
+// Touch screens can't hover: keep the actions and the button visible
+@media (hover: none) {
+  .xc__actions {
+    opacity: 1;
+    transform: none;
+  }
+  .xc__cta {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+@media (min-width: 768px) {
+  .explore {
+    --explore-gutter: 30px;
+    padding: 60px 0 68px;
+    &__head {
+      padding-bottom: 35.19px;
+    }
+    &__tabs {
+      gap: 32px;
+    }
+  }
+  .xp {
+    min-height: 430px;
+  }
+}
+
+// title left / tabs right only when there is room for both
+@media (min-width: 1024px) {
+  .explore__head {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+  // same height as the title line, with the tabs centred in it
+  .explore__tabs {
+    flex-shrink: 0;
+    align-items: center;
+    height: var(--explore-title-size);
+  }
+}
+
+@media (min-width: 1200px) {
+  .explore {
+    --explore-gutter: 50px;
+    padding: 80px 0 88px;
+    &__subtitle {
+      font-size: 16px;
+    }
+  }
+  .xp {
+    min-height: 0;
+  }
+}

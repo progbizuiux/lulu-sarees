@@ -1,7 +1,7 @@
 import Features from "@/components/common/Features";
 import MarqueeSection2 from "@/components/common/MarqueeSection2";
 import Footer1 from "@/components/footers/Footer1";
-import Header1 from "@/components/headers/Header1";
+import LuluHeader from "@/components/headers/LuluHeader";
 import Collections from "@/components/homes/sock/Collections";
 import Collections2 from "@/components/homes/sock/Collections2";
 import Hero from "@/components/homes/sock/Hero";
@@ -20,7 +20,7 @@ export const metadata = {
 export default function HomeSockPage() {
   return (
     <>
-      <Header1 />
+      <LuluHeader />
       <Hero />
       <MarqueeSection2 />
       <Products1 />

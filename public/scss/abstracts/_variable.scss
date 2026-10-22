@@ -1,12 +1,16 @@
 //settings
-$font-main: "Kumbh Sans", sans-serif;
-$font-2: "Instrument Sans", sans-serif;
-$font-3: "Plus Jakarta Sans", sans-serif;
-$font-4: "Barlow Condensed", serif;
-$font-5: "Inter Tight", serif;
+// --font-heading / --font-body are defined by next/font in app/fonts/fonts.js
+$font-heading: var(--font-heading), Georgia, serif;
+$font-main: var(--font-body), system-ui, sans-serif;
+$font-2: $font-main;
+$font-3: $font-main;
+$font-4: $font-main;
+$font-5: $font-main;
 $fontIcon: "icomoon";
 
 :root {
+    // Bootstrap's own font stack (used by tooltips, popovers, etc.)
+    --bs-font-sans-serif: #{$font-main};
     // color
     --primary: #e43131;
     --main: #181818;

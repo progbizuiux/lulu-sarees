@@ -4,7 +4,7 @@ import Products2 from "@/components/common/Products2";
 import ShopGram from "@/components/common/ShopGram2";
 import Testimonials from "@/components/common/Testimonials";
 import Footer1 from "@/components/footers/Footer1";
-import Header5 from "@/components/headers/Header5";
+import LuluHeader from "@/components/headers/LuluHeader";
 import Topbar5 from "@/components/headers/Topbar5";
 import Banner from "@/components/homes/fashion-chicHaven-02/Banner";
 import Categories from "@/components/homes/fashion-chicHaven-02/Categories";
@@ -23,7 +23,7 @@ export default function HomeFashionChicHavenPage2() {
   return (
     <>
       <Topbar5 />
-      <Header5 />
+      <LuluHeader />
       <Hero />
       <Products />
       <MarqueeSection />

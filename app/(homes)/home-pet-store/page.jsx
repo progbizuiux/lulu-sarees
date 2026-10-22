@@ -1,6 +1,6 @@
 import MarqueeSection2 from "@/components/common/MarqueeSection2";
 import Footer1 from "@/components/footers/Footer1";
-import Header12 from "@/components/headers/Header12";
+import LuluHeader from "@/components/headers/LuluHeader";
 
 import Topbar6 from "@/components/headers/Topbar6";
 import Banner from "@/components/homes/pet-store/Banner";
@@ -24,7 +24,7 @@ export default function HomePetStorePage() {
   return (
     <>
       <Topbar6 bgColor=" has-line-bot bg-purple" />
-      <Header12 />
+      <LuluHeader />
       <Benefits />
       <Hero />
       <Categories />

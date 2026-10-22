@@ -4,7 +4,7 @@ import Products4 from "@/components/common/Products4";
 
 import ShopGram3 from "@/components/common/ShopGram3";
 import Footer1 from "@/components/footers/Footer1";
-import Header1 from "@/components/headers/Header1";
+import LuluHeader from "@/components/headers/LuluHeader";
 import BannerCollections from "@/components/homes/fashion-luxeLiving/BannerCollections";
 import Categories from "@/components/homes/fashion-luxeLiving/Categories";
 import Hero from "@/components/homes/fashion-luxeLiving/Hero";
@@ -22,7 +22,7 @@ export const metadata = {
 export default function HomeFasionLuxelivingPage() {
   return (
     <>
-      <Header1 fullWidth />
+      <LuluHeader />
       <Hero />
       <Products4 parentClass="flat-spacing" />
       <MarqueeSection />

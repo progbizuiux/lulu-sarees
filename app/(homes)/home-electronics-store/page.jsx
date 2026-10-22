@@ -1,5 +1,5 @@
 import Footer1 from "@/components/footers/Footer1";
-import Header15 from "@/components/headers/Header15";
+import LuluHeader from "@/components/headers/LuluHeader";
 import Topbar9 from "@/components/headers/Topbar9";
 import Banner from "@/components/homes/home-electronics-store/Banner";
 import Banner2 from "@/components/homes/home-electronics-store/Banner2";
@@ -22,7 +22,7 @@ export default function page() {
   return (
     <>
       <Topbar9 />
-      <Header15 />
+      <LuluHeader />
       <Hero />
       <Categories />
       <Banner />

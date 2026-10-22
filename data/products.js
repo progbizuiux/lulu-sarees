@@ -5009,6 +5009,118 @@ export const products63 = [
     wowDelay: ".5s",
   },
 ];
+// "Explore Our Collections" section on the home page (Lulu Sarees)
+export const exploreProducts = [
+  {
+    id: 9001,
+    title: "Sage Green Ruffle Midi Dress",
+    price: 1099,
+    imgSrc: "/images/home/collection-img9.png",
+    colors: [
+      { bgColor: "bg-purple-2", imgSrc: "/images/home/collection-img9.png" },
+      { bgColor: "bg-light-green", imgSrc: "/images/home/collection-img9.png" },
+    ],
+    filterColor: ["Purple", "Light Green"],
+    inStock: true,
+    tabFilterOptions2: ["New Arrivals", "Best Seller"],
+  },
+  {
+    id: 9002,
+    title: "Chocolate Brown Relaxed Fit Polo",
+    price: 999,
+    oldPrice: 1299,
+    imgSrc: "/images/home/collection-img8.png",
+    colors: [
+      { bgColor: "bg-brown", imgSrc: "/images/home/collection-img8.png" },
+      { bgColor: "bg-dark-blue", imgSrc: "/images/home/collection-img8.png" },
+    ],
+    filterColor: ["Brown", "Dark Blue"],
+    inStock: true,
+    tabFilterOptions2: ["New Arrivals", "Best Seller", "On Sale"],
+  },
+  {
+    id: 9003,
+    title: "Black Kids' Graphic Tee",
+    price: 799,
+    oldPrice: 999,
+    imgSrc: "/images/home/collection-img7.png",
+    colors: [
+      { bgColor: "bg-main", imgSrc: "/images/home/collection-img7.png" },
+      { bgColor: "bg-red", imgSrc: "/images/home/collection-img7.png" },
+    ],
+    filterColor: ["Black", "Red"],
+    inStock: true,
+    tabFilterOptions2: ["New Arrivals", "On Sale"],
+  },
+  {
+    id: 9004,
+    title: "Slate Grey Relaxed Fit Shirt",
+    price: 1199,
+    imgSrc: "/images/home/collection-img6.png",
+    colors: [
+      { bgColor: "bg-dark-grey", imgSrc: "/images/home/collection-img6.png" },
+      { bgColor: "bg-light-blue-2", imgSrc: "/images/home/collection-img6.png" },
+    ],
+    filterColor: ["Grey", "Light Blue"],
+    inStock: true,
+    tabFilterOptions2: ["New Arrivals", "Best Seller"],
+  },
+];
+// "The Festive Edit" section on the home page (Lulu Sarees). Images are placeholders.
+export const festiveProducts = [
+  {
+    id: 9101,
+    title: "Pink Kasavu Stripe Saree",
+    price: 1499,
+    oldPrice: 1899,
+    isOnSale: true,
+    imgSrc: "/images/home/festive-img6.png",
+    inStock: true,
+  },
+  {
+    id: 9102,
+    title: "Cream & Gold Festive Kurta Set",
+    price: 2499,
+    imgSrc: "/images/home/collection-img10.png",
+    inStock: true,
+  },
+  {
+    id: 9103,
+    title: "Relaxed Fit Onam Overshirt",
+    price: 1299,
+    imgSrc: "/images/home/festive-img5.png",
+    colors: [
+      { bgColor: "bg-dark-pink", imgSrc: "/images/home/festive-img5.png" },
+      { bgColor: "bg-beige", imgSrc: "/images/home/festive-img5.png" },
+      { bgColor: "bg-light-grey", imgSrc: "/images/home/festive-img5.png" },
+    ],
+    inStock: true,
+  },
+  {
+    id: 9104,
+    title: "Maroon Stripe Festive Kurta",
+    price: 1799,
+    oldPrice: 2199,
+    isOnSale: true,
+    imgSrc: "/images/home/festive-img4.png",
+    inStock: true,
+  },
+  {
+    id: 9105,
+    title: "Cream & Gold Pleated Skirt",
+    price: 1599,
+    isOnSale: true,
+    imgSrc: "/images/home/festive-img3.png",
+    inStock: true,
+  },
+  {
+    id: 9106,
+    title: "Cream & Gold Floral Festive Frock",
+    price: 1899,
+    imgSrc: "/images/home/festive-img2.png",
+    inStock: true,
+  },
+];
 export const productMain = [...products, ...products7, ...products42];
 export const allProducts = [
   ...products,
@@ -5083,6 +5195,8 @@ export const allProducts = [
   ...products61,
   ...products62,
   ...products63,
+  ...exploreProducts,
+  ...festiveProducts,
 ];
 
 const returnLastid = () => {

@@ -1,5 +1,5 @@
 import Footer1 from "@/components/footers/Footer1";
-import Header1 from "@/components/headers/Header1";
+import LuluHeader from "@/components/headers/LuluHeader";
 import Topbar6 from "@/components/headers/Topbar6";
 import AccountSidebar from "@/components/my-account/AccountSidebar";
 import Address from "@/components/my-account/Address";
@@ -16,7 +16,7 @@ export default function MyAccountAddressPage() {
   return (
     <>
       <Topbar6 bgColor="bg-main" />
-      <Header1 />
+      <LuluHeader />
       <>
         {/* page-title */}
         <div

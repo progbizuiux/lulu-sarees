@@ -1402,3 +1402,12 @@ export const collections18 = [
     btnClass: "btn-line",
   },
 ];
+
+// Home page category cards (Lulu Sarees)
+export const homeCategories = [
+  { imgSrc: "/images/home/collection-img.png", alt: "silk-sarees", text: "Silk Sarees" },
+  { imgSrc: "/images/home/collection-img4.png", alt: "kurtis-and-kurta-sets", text: "Kurtis & Kurta Sets" },
+  { imgSrc: "/images/home/collection-img3.png", alt: "kids-wear", text: "Kids' Wear" },
+  { imgSrc: "/images/home/collection-img2.png", alt: "lehengas", text: "Lehengas" },
+  { imgSrc: "/images/home/collection-img5.png", alt: "western-wear", text: "Western Wear" },
+];

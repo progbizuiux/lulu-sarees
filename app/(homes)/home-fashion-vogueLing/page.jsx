@@ -6,7 +6,7 @@ import Products from "@/components/common/Products";
 import ShopGram from "@/components/common/ShopGram2";
 import Testimonials from "@/components/common/Testimonials";
 import Footer1 from "@/components/footers/Footer1";
-import Header1 from "@/components/headers/Header1";
+import LuluHeader from "@/components/headers/LuluHeader";
 import Hero from "@/components/homes/fashion-vogueLing/Hero";
 import Lookbook from "@/components/homes/fashion-vogueLing/Lookbook";
 import React from "react";
@@ -20,7 +20,7 @@ export const metadata = {
 export default function HomeFashionVoguelingPage() {
   return (
     <>
-      <Header1 fullWidth />
+      <LuluHeader />
       <Hero />
       <MarqueeSection2 parentClass="tf-marquee py_23" />
 

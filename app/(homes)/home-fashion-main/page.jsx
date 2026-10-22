@@ -1,6 +1,6 @@
 import Features from "@/components/common/Features";
 import Footer1 from "@/components/footers/Footer1";
-import Header2 from "@/components/headers/Header2";
+import LuluHeader from "@/components/headers/LuluHeader";
 import BannerTab from "@/components/common/BannerTab";
 import Collections from "@/components/homes/fashion-main/Collections";
 import Collections2 from "@/components/homes/fashion-main/Collections2";
@@ -20,7 +20,7 @@ export const metadata = {
 export default function HomeFashionMainPage() {
   return (
     <>
-      <Header2 />
+      <LuluHeader />
       <Hero />
       <Collections />
       <BannerTab />

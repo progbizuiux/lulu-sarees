@@ -1,7 +1,7 @@
 import Features from "@/components/common/Features";
 import Testimonials3 from "@/components/common/Testimonials3";
 import Footer1 from "@/components/footers/Footer1";
-import Header10 from "@/components/headers/Header10";
+import LuluHeader from "@/components/headers/LuluHeader";
 import Topbar3 from "@/components/headers/Topbar3";
 import Blogs from "@/components/homes/jewelry-01/Blogs";
 import Categories from "@/components/homes/jewelry-01/Categories";
@@ -23,7 +23,7 @@ export default function HomeJeweleryPage1() {
   return (
     <>
       <Topbar3 />
-      <Header10 />
+      <LuluHeader />
       <Hero />
       <Tiktok parentClass="flat-spacing" />
       <Categories />

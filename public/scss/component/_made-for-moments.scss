@@ -1,0 +1,124 @@
+// "Made For Your Moments" home section (components/homes/home-1/MadeForMoments.jsx)
+$mm-text: #231f21;
+$mm-bg: #fcfbf9;
+$mm-radius: 16px;
+
+.mm {
+  // side gutter (matches the other full-width home sections)
+  --mm-gutter: 15px;
+  padding: 44px var(--mm-gutter) 52px;
+  background: $mm-bg;
+
+  &__inner {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+    align-items: center;
+  }
+
+  // ---- left: large image
+  &__hero {
+    overflow: hidden;
+    border-radius: $mm-radius;
+    aspect-ratio: 1.1;
+  }
+  &__hero-img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  // ---- right: text, second image, link
+  // full width when stacked; capped next to the hero image on desktop (see 992px block)
+  &__content {
+    max-width: 100%;
+  }
+  &__title {
+    margin: 0;
+    font-size: clamp(30px, 3.4vw, 40px);
+    line-height: 1.05;
+    color: $mm-text;
+  }
+  &__eyebrow {
+    margin: 28px 0 0;
+    font-size: 12px;
+    line-height: 16px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: $mm-text;
+  }
+  &__text {
+    margin: 14px 0 0;
+    max-width: 560px;
+    font-size: 14px;
+    line-height: 22px;
+    color: $mm-text;
+  }
+  &__figure {
+    margin: 22px 0 0;
+    overflow: hidden;
+    border-radius: $mm-radius;
+    aspect-ratio: 1.08;
+  }
+  &__figure-img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  &__link {
+    display: inline-block;
+    margin-top: 18px;
+    font-size: 12px;
+    line-height: 16px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    color: $mm-text;
+    &:hover {
+      color: var(--primary);
+    }
+  }
+}
+
+@media (min-width: 768px) {
+  .mm {
+    --mm-gutter: 30px;
+    padding-top: 60px;
+    padding-bottom: 68px;
+    &__inner {
+      gap: 40px;
+    }
+  }
+}
+
+@media (min-width: 992px) {
+  .mm {
+    &__inner {
+      grid-template-columns: 1.45fr 1fr;
+      gap: 56px;
+    }
+    &__content {
+      max-width: 460px;
+    }
+    &__text {
+      max-width: 400px;
+    }
+  }
+}
+
+@media (min-width: 1200px) {
+  .mm {
+    --mm-gutter: 50px;
+    padding-top: 80px;
+    padding-bottom: 88px;
+    &__inner {
+      gap: 72px;
+    }
+    &__text {
+      font-size: 15px;
+    }
+  }
+}

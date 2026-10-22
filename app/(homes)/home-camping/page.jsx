@@ -1,6 +1,6 @@
 import Features from "@/components/common/Features";
 import Footer1 from "@/components/footers/Footer1";
-import Header4 from "@/components/headers/Header4";
+import LuluHeader from "@/components/headers/LuluHeader";
 import BannerCountdown from "@/components/homes/camping/BannerCountdown";
 import BannerTab from "@/components/homes/camping/BannerTab";
 import Blogs from "@/components/homes/camping/Blogs";
@@ -21,7 +21,7 @@ export const metadata = {
 export default function HomeCampingPage() {
   return (
     <>
-      <Header4 />
+      <LuluHeader />
       <Hero />
       <Categories />
       <Products />

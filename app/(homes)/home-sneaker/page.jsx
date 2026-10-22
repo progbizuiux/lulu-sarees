@@ -1,6 +1,6 @@
 import Features2 from "@/components/common/Features2";
 import Footer1 from "@/components/footers/Footer1";
-import Header17 from "@/components/headers/Header17";
+import LuluHeader from "@/components/headers/LuluHeader";
 import Topbar11 from "@/components/headers/Topbar11";
 import Banner from "@/components/homes/home-sneaker/Banner";
 import Banner2 from "@/components/homes/home-sneaker/Banner2";
@@ -25,7 +25,7 @@ export default function page() {
   return (
     <>
       <Topbar11 />
-      <Header17 />
+      <LuluHeader />
       <Marquee />
       <Hero />
       <Brands />

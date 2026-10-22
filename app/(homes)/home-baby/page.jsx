@@ -1,5 +1,5 @@
 import Footer1 from "@/components/footers/Footer1";
-import Header13 from "@/components/headers/Header13";
+import LuluHeader from "@/components/headers/LuluHeader";
 import Topbar7 from "@/components/headers/Topbar7";
 import Banner from "@/components/homes/home-baby/Banner";
 import Blogs from "@/components/homes/home-baby/Blogs";
@@ -20,7 +20,7 @@ export default function page() {
   return (
     <>
       <Topbar7 />
-      <Header13 />
+      <LuluHeader />
       <Hero />
       <Collections />
       <Categories />
