@@ -4,7 +4,10 @@ import "../public/scss/main.scss";
 import "photoswipe/style.css";
 import "react-range-slider-input/dist/style.css";
 import "../public/css/image-compare-viewer.min.css";
+// Required by Lenis: unpins html/body height and makes lenis.stop() really lock scrolling.
+import "lenis/dist/lenis.css";
 import { canela, satoshi } from "./fonts/fonts";
+import LenisProvider from "@/components/common/LenisProvider";
 import { useEffect, useState } from "react";
 import ScrollTop from "@/components/common/ScrollTop";
 import Context from "@/context/Context";
@@ -134,22 +137,24 @@ export default function RootLayout({ children }) {
       suppressHydrationWarning
     >
       <body className="preload-wrapper popup-loader" suppressHydrationWarning>
-        <Context>
-          <div id="wrapper">{children}</div>
-          <CartModal />
-          <QuickView />
-          <QuickAdd />
-          <Compare />
-          <MobileMenu />
+        <LenisProvider>
+          <Context>
+            <div id="wrapper">{children}</div>
+            <CartModal />
+            <QuickView />
+            <QuickAdd />
+            <Compare />
+            <MobileMenu />
 
-          <NewsLetterModal />
-          <SearchModal />
-          <SizeGuide />
-          <Wishlist />
-          <DemoModal />
-          <Categories />
-          <AccountSidebar />
-        </Context>
+            <NewsLetterModal />
+            <SearchModal />
+            <SizeGuide />
+            <Wishlist />
+            <DemoModal />
+            <Categories />
+            <AccountSidebar />
+          </Context>
+        </LenisProvider>
       </body>
     </html>
   );

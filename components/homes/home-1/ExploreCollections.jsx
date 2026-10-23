@@ -2,6 +2,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { Autoplay } from "swiper/modules";
 import { Swiper, SwiperSlide } from "@/components/common/SwiperSSR";
 import { exploreProducts } from "@/data/products";
 import { useContextElement } from "@/context/Context";
@@ -152,6 +153,10 @@ function ExploreProductCard({ product, isNew }) {
 
 export default function ExploreCollections() {
   const [activeTab, setActiveTab] = useState(tabs[0].filter);
+  // auto scroll from the start, unless the visitor asked their system for less motion
+  const autoScroll =
+    typeof window === "undefined" ||
+    !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   const items = useMemo(
     () =>
@@ -197,6 +202,14 @@ export default function ExploreCollections() {
           dir="ltr"
           className="explore__swiper"
           grabCursor
+          modules={[Autoplay]}
+          rewind
+          autoplay={
+            autoScroll
+              ? { delay: 3000, disableOnInteraction: false, pauseOnMouseEnter: true }
+              : false
+          }
+          speed={800}
           slidesPerView={1.25}
           spaceBetween={14}
           breakpoints={slideBreakpoints}

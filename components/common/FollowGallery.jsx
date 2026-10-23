@@ -13,7 +13,22 @@ export default function FollowGallery({
     <section className={parentClass}>
       <div className="container">
         <div className="follow-head text-center wow fadeInUp">
-          <p className="follow-sub">{subheading}</p>
+          <p className="follow-sub">
+            <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+              <defs>
+                <linearGradient id="follow-ig" x1="0" y1="1" x2="1" y2="0">
+                  <stop offset="0" stopColor="#feda75" />
+                  <stop offset="0.35" stopColor="#fa7e1e" />
+                  <stop offset="0.6" stopColor="#d62976" />
+                  <stop offset="1" stopColor="#4f5bd5" />
+                </linearGradient>
+              </defs>
+              <rect x="1.5" y="1.5" width="21" height="21" rx="6" fill="url(#follow-ig)" />
+              <circle cx="12" cy="12" r="4.6" fill="none" stroke="#fff" strokeWidth="1.8" />
+              <circle cx="17.6" cy="6.4" r="1.2" fill="#fff" />
+            </svg>
+            {subheading}
+          </p>
           <a
             href={handleHref}
             target="_blank"

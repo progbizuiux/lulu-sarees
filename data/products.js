@@ -5121,6 +5121,106 @@ export const festiveProducts = [
     inStock: true,
   },
 ];
+// "See It. Love It. Shop It." video section on the home page (Lulu Sarees). Thumbnails are placeholders.
+export const reelProducts = [
+  {
+    id: 9201,
+    title: "The Festive Edit",
+    price: 2200,
+    imgSrc: "/images/products/womens/women-19.jpg",
+    inStock: true,
+  },
+  {
+    id: 9202,
+    title: "Occasion Wear",
+    price: 1200,
+    imgSrc: "/images/products/womens/women-176.jpg",
+    inStock: true,
+  },
+  {
+    id: 9203,
+    title: "Timeless Classics",
+    price: 2500,
+    imgSrc: "/images/products/womens/women-29.jpg",
+    inStock: true,
+  },
+  {
+    id: 9204,
+    title: "Everyday Style",
+    price: 1200,
+    imgSrc: "/images/products/womens/women-1.jpg",
+    inStock: true,
+  },
+];
+// "Most Selling" section on the home page (Lulu Sarees). Titles and prices are the placeholder text from the design.
+export const mostSellingProducts = [
+  {
+    id: 9301,
+    title: "Double-button trench coat",
+    price: 219.99,
+    oldPrice: 98,
+    isOnSale: true,
+    salePercentage: "25%",
+    imgSrc: "/images/home/link1.png",
+    inStock: true,
+  },
+  {
+    id: 9302,
+    title: "Double-button trench coat",
+    price: 219.99,
+    oldPrice: 98,
+    imgSrc: "/images/home/link2.png",
+    inStock: true,
+  },
+  {
+    id: 9303,
+    title: "Double-button trench coat",
+    price: 219.99,
+    oldPrice: 98,
+    imgSrc: "/images/home/link3.png",
+    inStock: true,
+  },
+  {
+    id: 9304,
+    title: "Double-button trench coat",
+    price: 219.99,
+    oldPrice: 98,
+    imgSrc: "/images/home/link4.png",
+    inStock: true,
+  },
+  {
+    id: 9305,
+    title: "Double-button trench coat",
+    price: 219.99,
+    oldPrice: 98,
+    imgSrc: "/images/home/link5.png",
+    inStock: true,
+  },
+  {
+    id: 9306,
+    title: "Double-button trench coat",
+    price: 219.99,
+    oldPrice: 98,
+    imgSrc: "/images/home/link6.png",
+    inStock: true,
+  },
+  {
+    id: 9307,
+    title: "Double-button trench coat",
+    price: 219.99,
+    oldPrice: 98,
+    imgSrc: "/images/home/link7.png",
+    inStock: true,
+  },
+  {
+    id: 9308,
+    title: "Double-button trench coat",
+    price: 219.99,
+    oldPrice: 98,
+    imgSrc: "/images/home/link8.png",
+    inStock: true,
+  },
+];
 export const productMain = [...products, ...products7, ...products42];
 export const allProducts = [
   ...products,
@@ -5197,6 +5297,8 @@ export const allProducts = [
   ...products63,
   ...exploreProducts,
   ...festiveProducts,
+  ...reelProducts,
+  ...mostSellingProducts,
 ];
 
 const returnLastid = () => {

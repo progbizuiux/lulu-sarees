@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { getLenis } from "@/utlis/lenis";
 
 export default function ScrollTop({ hasPaddingBottom = false }) {
   const [isButtonVisible, setIsButtonVisible] = useState(false);
@@ -29,7 +30,9 @@ export default function ScrollTop({ hasPaddingBottom = false }) {
 
   const handleScrollToTop = (e) => {
     e.preventDefault();
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    const lenis = getLenis();
+    if (lenis) lenis.scrollTo(0);
+    else window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (

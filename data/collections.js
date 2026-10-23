@@ -1410,4 +1410,5 @@ export const homeCategories = [
   { imgSrc: "/images/home/collection-img3.png", alt: "kids-wear", text: "Kids' Wear" },
   { imgSrc: "/images/home/collection-img2.png", alt: "lehengas", text: "Lehengas" },
   { imgSrc: "/images/home/collection-img5.png", alt: "western-wear", text: "Western Wear" },
+  { imgSrc: "/images/home/collection-img6.png", alt: "mens-wear", text: "Men's Wear" },
 ];

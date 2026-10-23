@@ -115,9 +115,8 @@
 }
 
 // Home page only: content spans the full width with a side gutter
-// (sections wrapped in .home-standard-width keep the normal boxed container)
 .home-fullwidth {
-  .container:not(.home-standard-width .container) {
+  .container {
     max-width: 100%;
     @media (min-width: 768px) {
       padding-left: 30px;
@@ -138,7 +137,7 @@
 
 // Home page category cards: same 363:483 card shape as the shop page, whatever
 // the proportions of the photo (the photo is cropped to fill the card).
-.home-standard-width .collection-position-2 .img-style img {
+.home-categories .collection-position-2 .img-style img {
   aspect-ratio: 363 / 483;
 }
 
@@ -352,15 +351,20 @@
 .follow-head {
   margin-bottom: 60px;
   .follow-sub {
-    margin: 0 0 4px;
-    font-size: 18px;
-    line-height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin: 0 0 2px;
+    font-size: 14px;
+    line-height: 22px;
     color: var(--main);
   }
   .follow-handle {
     display: inline-block;
     max-width: 100%;
-    font-size: 56px;
+    font-family: var(--font-heading), Georgia, serif;
+    font-size: clamp(36px, 2.9vw, 56px);
     line-height: 1.15;
     font-weight: 300;
     color: var(--main);
@@ -369,14 +373,16 @@
 }
 .follow-grid {
   display: grid;
-  grid-template-columns: repeat(8, minmax(0, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: clamp(16px, 1.5vw, 28px);
   align-items: start;
 }
+// Figma card: 278 x 548 (aspect 35 / 69), 10px corners
 .follow-item {
   display: block;
-  aspect-ratio: 38 / 100;
+  aspect-ratio: 35 / 69;
   overflow: hidden;
+  border-radius: 10px;
   img {
     display: block;
     width: 100%;
@@ -387,8 +393,9 @@
   &:hover img {
     transform: scale(1.05);
   }
-  &:nth-child(odd) {
-    margin-top: 70px;
+  // zig-zag: every second card sits lower (about 71px at 1920px wide)
+  &:nth-child(even) {
+    margin-top: clamp(40px, 3.7vw, 71px);
   }
 }
 @media (max-width: 1199px) {
@@ -398,11 +405,15 @@
       font-size: 44px;
     }
   }
+  // two rows of three; the middle card of each row sits lower
   .follow-grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 16px;
   }
-  .follow-item:nth-child(odd) {
+  .follow-item:nth-child(even) {
+    margin-top: 0;
+  }
+  .follow-item:nth-child(3n + 2) {
     margin-top: 40px;
   }
 }
@@ -417,6 +428,7 @@
       font-size: 32px;
     }
   }
+  // phones: one swipeable row
   .follow-grid {
     display: flex;
     gap: 12px;
@@ -431,7 +443,10 @@
   .follow-item {
     flex: 0 0 44%;
     scroll-snap-align: start;
-    &:nth-child(odd) {
+    &:nth-child(3n + 2) {
+      margin-top: 0;
+    }
+    &:nth-child(even) {
       margin-top: 36px;
     }
   }
@@ -711,4 +726,10 @@
       object-position: 70% center;
     }
   }
+}
+
+// Lenis (components/common/LenisProvider.jsx) turns off pointer events on iframes while it smooth-scrolls,
+// so they cannot swallow the wheel. The Google Maps embeds (contact, store pages) must stay usable.
+.lenis.lenis-smooth iframe[src*="google.com/maps"] {
+  pointer-events: auto;
 }

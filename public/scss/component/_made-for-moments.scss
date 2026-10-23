@@ -1,7 +1,7 @@
 // "Made For Your Moments" home section (components/homes/home-1/MadeForMoments.jsx)
 $mm-text: #231f21;
 $mm-bg: #fcfbf9;
-$mm-radius: 16px;
+$mm-radius: 20px;
 
 .mm {
   // side gutter (matches the other full-width home sections)
@@ -20,7 +20,7 @@ $mm-radius: 16px;
   &__hero {
     overflow: hidden;
     border-radius: $mm-radius;
-    aspect-ratio: 1.1;
+    aspect-ratio: 985 / 898;
   }
   &__hero-img {
     display: block;
@@ -41,7 +41,7 @@ $mm-radius: 16px;
     color: $mm-text;
   }
   &__eyebrow {
-    margin: 28px 0 0;
+    margin: 30px 0 0;
     font-size: 12px;
     line-height: 16px;
     letter-spacing: 0.5px;
@@ -49,17 +49,17 @@ $mm-radius: 16px;
     color: $mm-text;
   }
   &__text {
-    margin: 14px 0 0;
+    margin: 18px 0 0;
     max-width: 560px;
     font-size: 14px;
     line-height: 22px;
     color: $mm-text;
   }
   &__figure {
-    margin: 22px 0 0;
+    margin: 28px 0 0;
     overflow: hidden;
     border-radius: $mm-radius;
-    aspect-ratio: 1.08;
+    aspect-ratio: 633 / 586;
   }
   &__figure-img {
     display: block;
@@ -69,7 +69,7 @@ $mm-radius: 16px;
   }
   &__link {
     display: inline-block;
-    margin-top: 18px;
+    margin-top: 26px;
     font-size: 12px;
     line-height: 16px;
     letter-spacing: 0.5px;
@@ -109,16 +109,26 @@ $mm-radius: 16px;
   }
 }
 
+// Figma (1920px frame): image 985px | gap 92px | column 633px, 160px free on the right
 @media (min-width: 1200px) {
   .mm {
     --mm-gutter: 50px;
-    padding-top: 80px;
-    padding-bottom: 88px;
+    padding-top: clamp(64px, 5.2vw, 100px);
+    padding-bottom: clamp(64px, 5.2vw, 100px);
     &__inner {
-      gap: 72px;
+      grid-template-columns: 985fr 633fr;
+      column-gap: 4.8vw;
+      padding-right: 5.7vw;
+    }
+    &__content {
+      max-width: none;
+    }
+    &__title {
+      font-size: clamp(32px, 2.5vw, 48px);
     }
     &__text {
-      font-size: 15px;
+      max-width: min(560px, 100%);
+      font-size: 14px;
     }
   }
 }

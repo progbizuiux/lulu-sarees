@@ -5,7 +5,17 @@ import Image from "next/image";
 import Link from "next/link";
 import { Swiper, SwiperSlide } from "@/components/common/SwiperSSR";
 
-export default function ShopCategories2({ items = collections2 }) {
+const defaultBreakpoints = {
+  0: { slidesPerView: 2, spaceBetween: 15 },
+  568: { slidesPerView: 3, spaceBetween: 20 },
+  968: { slidesPerView: 4, spaceBetween: 20 },
+  1224: { slidesPerView: 5, spaceBetween: 20 },
+};
+
+export default function ShopCategories2({
+  items = collections2,
+  breakpoints = defaultBreakpoints,
+}) {
   return (
     <section className="flat-spacing">
       <div className="container">
@@ -13,12 +23,7 @@ export default function ShopCategories2({ items = collections2 }) {
           dir="ltr"
           spaceBetween={15}
           className="swiper tf-sw-categories"
-          breakpoints={{
-            0: { slidesPerView: 2, spaceBetween: 15 },
-            568: { slidesPerView: 3, spaceBetween: 20 },
-            968: { slidesPerView: 4, spaceBetween: 20 },
-            1224: { slidesPerView: 5, spaceBetween: 20 },
-          }}
+          breakpoints={breakpoints}
         >
           {items.map((slide, index) => (
             <SwiperSlide key={index}>

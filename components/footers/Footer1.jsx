@@ -93,15 +93,15 @@ export default function Footer1({
                     <div className="footer-logo">
                       <Link href={`/`}>
                         <Image
-                          alt=""
+                          alt="Lulu Sarees"
                           src={
                             dark
-                              ? "/images/logo/logo-white.svg"
-                              : "/images/logo/logo.svg"
+                              ? "/images/logo/sub_logo.png"
+                              : "/images/logo/lulu-logo.png"
                           }
-                          width={127}
-                          height={24}
-                          style={{ width: "auto", height: "auto" }}
+                          width={dark ? 179 : 110}
+                          height={dark ? 94 : 109}
+                          style={{ width: dark ? 179 : 110, maxWidth: "100%", height: "auto" }}
                         />
                       </Link>
                     </div>

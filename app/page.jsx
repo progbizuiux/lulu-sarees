@@ -9,8 +9,9 @@ import Features from "@/components/common/Features";
 import Hero from "@/components/homes/home-1/Hero";
 import OccasionStyle from "@/components/homes/home-1/OccasionStyle";
 import FollowGallery from "@/components/common/FollowGallery";
-import VideoBanner from "@/components/common/VideoBanner";
-import Testimonials from "@/components/common/Testimonials";
+import ShopByVideo from "@/components/homes/home-1/ShopByVideo";
+import CustomerStories from "@/components/homes/home-1/CustomerStories";
+import MostSelling from "@/components/homes/home-1/MostSelling";
 
 export const metadata = {
   title: "Home || Modave - Multipurpose React Nextjs eCommerce Template",
@@ -22,33 +23,38 @@ export default function HomePage() {
     <div className="home-fullwidth">
       <LuluHeader />
       <Hero />
-      <div className="home-standard-width">
-        <ShopCategories2 items={homeCategories} />
+      <div className="home-categories">
+        <ShopCategories2
+          items={homeCategories}
+          breakpoints={{
+            0: { slidesPerView: 2, spaceBetween: 15 },
+            568: { slidesPerView: 3, spaceBetween: 20 },
+            968: { slidesPerView: 4, spaceBetween: 20 },
+            1224: { slidesPerView: 5, spaceBetween: 20 },
+            1400: { slidesPerView: 6, spaceBetween: 20 },
+          }}
+        />
       </div>
       <ExploreCollections />
       <OccasionStyle />
       <FestiveEdit />
       <MadeForMoments />
-      <VideoBanner
-        posterSrc="/images/banner/video-poster.jpg"
-        videoSrc="/images/video/saree-film.mp4"
-      />
-      <Testimonials />
+      <ShopByVideo />
+      <CustomerStories />
+      <MostSelling />
       <FollowGallery
-        handle="@lulusarees.kannur"
+        handle="@lulu_sarees"
         items={[
-          { imgSrc: "/images/gallery/follow-1.jpg", alt: "saree-look-1" },
-          { imgSrc: "/images/gallery/follow-2.jpg", alt: "saree-look-2" },
-          { imgSrc: "/images/gallery/follow-3.jpg", alt: "saree-look-3" },
-          { imgSrc: "/images/gallery/follow-4.jpg", alt: "saree-look-4" },
-          { imgSrc: "/images/gallery/follow-5.jpg", alt: "saree-look-5" },
-          { imgSrc: "/images/gallery/follow-6.jpg", alt: "saree-look-6" },
-          { imgSrc: "/images/gallery/follow-7.jpg", alt: "saree-look-7" },
-          { imgSrc: "/images/gallery/follow-8.jpg", alt: "saree-look-8" },
+          { imgSrc: "/images/home/insta.png", alt: "Couple in gold and ivory festive wear" },
+          { imgSrc: "/images/home/insta2.png", alt: "Friends in festive menswear" },
+          { imgSrc: "/images/home/insta3.png", alt: "Group celebrating in festive wear" },
+          { imgSrc: "/images/home/insta4.png", alt: "Couple in cream and lilac" },
+          { imgSrc: "/images/home/insta5.png", alt: "Two women with a dish of flower petals" },
+          { imgSrc: "/images/home/insta6.png", alt: "Two women in pastel lehengas" },
         ]}
       />
       <Features />
-      <Footer1 />
+      <Footer1 dark />
     </div>
   );
 }

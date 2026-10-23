@@ -2,8 +2,7 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-// TODO: replace both images with the artwork from the design
-// (left: the bride with "Moments of mangalya" lettering, right: the groom).
+// Left: the bride with the "Moments of mangalya" lettering (part of the image). Right: the groom.
 export default function MadeForMoments() {
   return (
     <section className="mm" aria-labelledby="mm-title">
@@ -11,10 +10,10 @@ export default function MadeForMoments() {
         <div className="mm__hero">
           <Image
             className="mm__hero-img"
-            src="/images/banner/banner-pair-2.jpg"
+            src="/images/home/moments-bride.png"
             alt="Moments of mangalya"
-            width={2000}
-            height={1340}
+            width={1378}
+            height={1239}
             sizes="(min-width: 992px) 56vw, 100vw"
           />
         </div>
@@ -32,10 +31,10 @@ export default function MadeForMoments() {
           <div className="mm__figure">
             <Image
               className="mm__figure-img"
-              src="/images/banner/banner-pair-1.jpg"
+              src="/images/home/moments-groom.png"
               alt="Wedding moments"
-              width={2000}
-              height={1340}
+              width={1352}
+              height={1374}
               sizes="(min-width: 992px) 30vw, 100vw"
             />
           </div>
