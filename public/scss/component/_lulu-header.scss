@@ -166,3 +166,11 @@ $lulu-icon: #4b5563; // stroke colour of the exported icon PNGs
     }
   }
 }
+
+// The account pop-up opens under the user icon and is anchored to the RIGHT edge of the header,
+// so it can never stick out past the screen (it used to be offset to the left by a fixed amount).
+.lulu-header .nav-account .dropdown-account.dropdown-login {
+  left: auto;
+  right: -8px;
+  max-width: calc(100vw - 24px);
+}

@@ -843,3 +843,9 @@ html.header-visible {
     }
   }
 }
+
+// Guard: nothing may make the page scroll sideways. `clip` (not `hidden`) so the page is not turned
+// into a scroll container: Lenis, position: sticky and the sticky header keep working.
+html {
+  overflow-x: clip;
+}
