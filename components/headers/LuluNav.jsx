@@ -2,55 +2,70 @@
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  CollectionsDropdown,
-  JournalDropdown,
-  SareesDropdown,
-  StoreDropdown,
-  collectionsLinks,
-  isActiveGroup,
-  journalLinks,
-  sareesLinks,
-  storeLinks,
-} from "./NavDropdowns";
+import { luluMenu } from "@/data/luluMenu";
 
-// The existing hover dropdowns (same menus as the old header).
-const dropdowns = {
-  sarees: { Dropdown: SareesDropdown, links: sareesLinks },
-  collections: { Dropdown: CollectionsDropdown, links: collectionsLinks },
-  journal: { Dropdown: JournalDropdown, links: journalLinks, small: true },
-  store: { Dropdown: StoreDropdown, links: storeLinks, small: true },
-};
+// The page part of a link (without ?category=...)
+const pathOf = (href) => href.split("?")[0];
 
-// TODO: point each link at its own collection page once those pages exist.
-// `dropdown` picks which of the dropdowns above opens on hover (null = plain link).
-const navLinks = [
-  { label: "Sarees", href: "/shop-default-grid", dropdown: "sarees" },
-  { label: "New Arrivals", href: "/shop-default-grid", dropdown: "collections" },
-  { label: "Wedding", href: "/shop-default-grid", dropdown: "journal" },
-  { label: "Festive", href: "/shop-default-grid", dropdown: "store" },
-  { label: "Ready to Wear", href: "/shop-default-grid", dropdown: null },
-  { label: "Men", href: "/shop-default-grid", dropdown: null },
-  { label: "Women", href: "/shop-default-grid", dropdown: null },
-  { label: "Kids", href: "/shop-default-grid", dropdown: null },
-];
+// Items with two or more columns open as a full-width mega menu; single-column ones as a small list.
+function Dropdown({ item, pathname }) {
+  const mega = item.columns.length > 1;
+  const renderLinks = (links) =>
+    links.map((link) => (
+      <li
+        key={link.label + link.href}
+        className={`menu-item-li ${pathOf(link.href) === pathname ? "active" : ""}`}
+      >
+        <Link href={link.href} className="menu-link-text">
+          {link.label}
+        </Link>
+      </li>
+    ));
+
+  if (!mega) {
+    return (
+      <div className="sub-menu submenu-default">
+        <ul className="menu-list">{renderLinks(item.columns[0].links)}</ul>
+      </div>
+    );
+  }
+  return (
+    <div className="sub-menu mega-menu">
+      <div className="container">
+        <div className="row">
+          {item.columns.map((col) => (
+            <div className="col-lg-3" key={col.heading}>
+              <div className="mega-menu-item">
+                <div className="menu-heading">{col.heading}</div>
+                <ul className="menu-list">{renderLinks(col.links)}</ul>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function LuluNav() {
   const pathname = usePathname();
   return (
     <ul className="box-nav-ul">
-      {navLinks.map((link) => {
-        const menu = link.dropdown ? dropdowns[link.dropdown] : null;
-        const active = menu && isActiveGroup(menu.links, pathname);
+      {luluMenu.map((item) => {
+        const hasDropdown = !item.hideDropdown;
+        const active = hasDropdown && item.columns.some((col) =>
+          col.links.some((link) => pathOf(link.href) === pathname)
+        );
+        const mega = item.columns.length > 1;
         return (
           <li
-            key={link.label}
-            className={`menu-item ${menu?.small ? "position-relative" : ""} ${
+            key={item.label}
+            className={`menu-item ${mega || !hasDropdown ? "" : "position-relative"} ${
               active ? "active" : ""
             }`}
           >
-            <Link href={link.href}>{link.label}</Link>
-            {menu && <menu.Dropdown />}
+            <Link href={item.href}>{item.label}</Link>
+            {hasDropdown && <Dropdown item={item} pathname={pathname} />}
           </li>
         );
       })}
