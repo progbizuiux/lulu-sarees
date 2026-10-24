@@ -1,19 +1,11 @@
 "use client";
 import React from "react";
 import Link from "next/link";
-import {
-  blogLinks,
-  demoItems,
-  otherPageLinks,
-  otherShopMenus,
-  productFeatures,
-  productLinks,
-  productStyles,
-  shopFeatures,
-  shopLayout,
-  swatchLinks,
-} from "@/data/menu";
+import { luluMenu } from "@/data/luluMenu";
 import { usePathname } from "next/navigation";
+// The page part of a link (without ?category=...)
+const pathOf = (href) => href.split("?")[0];
+
 export default function MobileMenu() {
   const pathname = usePathname();
   return (
@@ -63,393 +55,82 @@ export default function MobileMenu() {
               </button>
             </form>
             <ul className="nav-ul-mb" id="wrapper-menu-navigation">
-              <li className="nav-mb-item">
-                <a
-                  href="#dropdown-menu-two"
-                  className={`collapsed mb-menu-link ${
-                    [
-                      ...shopLayout,
-                      ...shopFeatures,
-                      ...productStyles,
-                      ...otherShopMenus,
-                    ].some(
-                      (elm) => elm.href.split("/")[1] == pathname.split("/")[1]
-                    )
-                      ? "active"
-                      : ""
-                  } `}
-                  data-bs-toggle="collapse"
-                  aria-expanded="true"
-                  aria-controls="dropdown-menu-two"
-                >
-                  <span>Sarees</span>
-                  <span className="btn-open-sub" />
-                </a>
-                <div id="dropdown-menu-two" className="collapse">
-                  <ul className="sub-nav-menu">
-                    <li>
-                      <a
-                        href="#sub-shop-one"
-                        className={`sub-nav-link collapsed ${
-                          [...shopLayout].some(
-                            (elm) =>
-                              elm.href.split("/")[1] == pathname.split("/")[1]
-                          )
-                            ? "active"
-                            : ""
-                        } `}
-                        data-bs-toggle="collapse"
-                        aria-expanded="true"
-                        aria-controls="sub-shop-one"
-                      >
-                        <span>Shop layout</span>
-                        <span className="btn-open-sub" />
-                      </a>
-                      <div id="sub-shop-one" className="collapse">
-                        <ul className="sub-nav-menu sub-menu-level-2">
-                          {shopLayout.map((link, i) => (
-                            <li key={i}>
-                              <Link
-                                href={link.href}
-                                className={`sub-nav-link ${
-                                  pathname.split("/")[1] ==
-                                  link.href.split("/")[1]
-                                    ? "active"
-                                    : ""
-                                } `}
-                              >
-                                {link.name}
-                              </Link>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
+              {luluMenu.map((item, i) => {
+                const isActive = (link) => pathOf(link.href) === pathname;
+                const groupActive = item.columns.some((col) => col.links.some(isActive));
+                // dropdown switched off for this item: show it as a plain link
+                if (item.hideDropdown) {
+                  return (
+                    <li className="nav-mb-item" key={item.label}>
+                      <Link href={item.href} className="mb-menu-link">
+                        <span>{item.label}</span>
+                      </Link>
                     </li>
-                    <li>
-                      <a
-                        href="#sub-shop-two"
-                        className={`sub-nav-link collapsed ${
-                          [...shopFeatures].some(
-                            (elm) =>
-                              elm.href.split("/")[1] == pathname.split("/")[1]
-                          )
-                            ? "active"
-                            : ""
-                        } `}
-                        data-bs-toggle="collapse"
-                        aria-expanded="true"
-                        aria-controls="sub-shop-two"
+                  );
+                }
+                const menuId = `mb-menu-${i}`;
+                const renderLinks = (links) =>
+                  links.map((link) => (
+                    <li key={link.label + link.href}>
+                      <Link
+                        href={link.href}
+                        className={`sub-nav-link ${isActive(link) ? "active" : ""}`}
                       >
-                        <span>Shop Features</span>
-                        <span className="btn-open-sub" />
-                      </a>
-                      <div id="sub-shop-two" className="collapse">
-                        <ul className="sub-nav-menu sub-menu-level-2">
-                          {shopFeatures.map((link, i) => (
-                            <li key={i}>
-                              <Link
-                                href={link.href}
-                                className={`sub-nav-link ${
-                                  pathname.split("/")[1] ==
-                                  link.href.split("/")[1]
-                                    ? "active"
-                                    : ""
-                                } `}
-                              >
-                                {link.name}
-                              </Link>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
+                        {link.label}
+                      </Link>
                     </li>
-                    <li>
-                      <a
-                        href="#sub-shop-three"
-                        className={`sub-nav-link collapsed ${
-                          [...productStyles].some(
-                            (elm) =>
-                              elm.href.split("/")[1] == pathname.split("/")[1]
-                          )
-                            ? "active"
-                            : ""
-                        } `}
-                        data-bs-toggle="collapse"
-                        aria-expanded="true"
-                        aria-controls="sub-shop-three"
-                      >
-                        <span>Products Hover</span>
-                        <span className="btn-open-sub" />
-                      </a>
-                      <div id="sub-shop-three" className="collapse">
-                        <ul className="sub-nav-menu sub-menu-level-2">
-                          {productStyles.map((link, i) => (
-                            <li key={i}>
-                              <Link
-                                href={link.href}
-                                className={`sub-nav-link ${
-                                  pathname.split("/")[1] ==
-                                  link.href.split("/")[1]
-                                    ? "active"
-                                    : ""
-                                } `}
-                              >
-                                {link.name}
-                              </Link>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    </li>
-                    <li>
-                      <a
-                        href="#sub-shop-four"
-                        className={`sub-nav-link collapsed ${
-                          [...otherShopMenus].some(
-                            (elm) =>
-                              elm.href.split("/")[1] == pathname.split("/")[1]
-                          )
-                            ? "active"
-                            : ""
-                        } `}
-                        data-bs-toggle="collapse"
-                        aria-expanded="true"
-                        aria-controls="sub-shop-four"
-                      >
-                        <span>My Pages</span>
-                        <span className="btn-open-sub" />
-                      </a>
-                      <div id="sub-shop-four" className="collapse">
-                        <ul className="sub-nav-menu sub-menu-level-2">
-                          {otherShopMenus.map((link, i) => (
-                            <li key={i}>
-                              <Link
-                                href={link.href}
-                                className={`sub-nav-link ${
-                                  pathname.split("/")[1] ==
-                                  link.href.split("/")[1]
-                                    ? "active"
-                                    : ""
-                                } `}
-                              >
-                                {link.name}
-                              </Link>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    </li>
-                  </ul>
-                </div>
-              </li>
-              <li className="nav-mb-item">
-                <a
-                  href="#dropdown-menu-three"
-                  className={`collapsed mb-menu-link ${
-                    [...productLinks, ...swatchLinks, ...productFeatures].some(
-                      (elm) => elm.href.split("/")[1] == pathname.split("/")[1]
-                    )
-                      ? "active"
-                      : ""
-                  } `}
-                  data-bs-toggle="collapse"
-                  aria-expanded="true"
-                  aria-controls="dropdown-menu-three"
-                >
-                  <span>Collections</span>
-                  <span className="btn-open-sub" />
-                </a>
-                <div id="dropdown-menu-three" className="collapse">
-                  <ul className="sub-nav-menu">
-                    <li>
-                      <a
-                        href="#sub-product-one"
-                        className={`sub-nav-link collapsed ${
-                          [...productLinks].some(
-                            (elm) =>
-                              elm.href.split("/")[1] == pathname.split("/")[1]
-                          )
-                            ? "active"
-                            : ""
-                        } `}
-                        data-bs-toggle="collapse"
-                        aria-expanded="true"
-                        aria-controls="sub-product-one"
-                      >
-                        <span>Products Layout</span>
-                        <span className="btn-open-sub" />
-                      </a>
-                      <div id="sub-product-one" className="collapse">
-                        <ul className="sub-nav-menu sub-menu-level-2">
-                          {productLinks.map((link, i) => (
-                            <li key={i}>
-                              <Link
-                                href={link.href}
-                                className={`sub-nav-link ${
-                                  pathname.split("/")[1] ==
-                                  link.href.split("/")[1]
-                                    ? "active"
-                                    : ""
-                                } `}
-                              >
-                                {link.name}
-                              </Link>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    </li>
-                    <li>
-                      <a
-                        href="#sub-product-two"
-                        className={`sub-nav-link collapsed ${
-                          [...swatchLinks].some(
-                            (elm) =>
-                              elm.href.split("/")[1] == pathname.split("/")[1]
-                          )
-                            ? "active"
-                            : ""
-                        } `}
-                        data-bs-toggle="collapse"
-                        aria-expanded="true"
-                        aria-controls="sub-product-two"
-                      >
-                        <span>Colors Swatched</span>
-                        <span className="btn-open-sub" />
-                      </a>
-                      <div id="sub-product-two" className="collapse">
-                        <ul className="sub-nav-menu sub-menu-level-2">
-                          {swatchLinks.map((link, i) => (
-                            <li key={i}>
-                              <Link
-                                href={link.href}
-                                className={`sub-nav-link ${
-                                  pathname.split("/")[1] ==
-                                  link.href.split("/")[1]
-                                    ? "active"
-                                    : ""
-                                } `}
-                              >
-                                {link.name}
-                              </Link>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    </li>
-                    <li>
-                      <a
-                        href="#sub-product-three"
-                        className={`sub-nav-link collapsed ${
-                          [...productFeatures].some(
-                            (elm) =>
-                              elm.href.split("/")[1] == pathname.split("/")[1]
-                          )
-                            ? "active"
-                            : ""
-                        } `}
-                        data-bs-toggle="collapse"
-                        aria-expanded="true"
-                        aria-controls="sub-product-three"
-                      >
-                        <span>Products Features</span>
-                        <span className="btn-open-sub" />
-                      </a>
-                      <div id="sub-product-three" className="collapse">
-                        <ul className="sub-nav-menu sub-menu-level-2">
-                          {productFeatures.map((link, i) => (
-                            <li key={i}>
-                              <Link
-                                href={link.href}
-                                className={`sub-nav-link ${
-                                  pathname.split("/")[1] ==
-                                  link.href.split("/")[1]
-                                    ? "active"
-                                    : ""
-                                } `}
-                              >
-                                {link.name}
-                              </Link>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    </li>
-                  </ul>
-                </div>
-              </li>
-              <li className="nav-mb-item">
-                <a
-                  href="#dropdown-menu-four"
-                  className={`collapsed mb-menu-link ${
-                    [...blogLinks].some(
-                      (elm) => elm.href.split("/")[1] == pathname.split("/")[1]
-                    )
-                      ? "active"
-                      : ""
-                  } `}
-                  data-bs-toggle="collapse"
-                  aria-expanded="true"
-                  aria-controls="dropdown-menu-four"
-                >
-                  <span>Style Journal</span>
-                  <span className="btn-open-sub" />
-                </a>
-                <div id="dropdown-menu-four" className="collapse">
-                  <ul className="sub-nav-menu">
-                    {blogLinks.map((link, i) => (
-                      <li key={i}>
-                        <Link
-                          href={link.href}
-                          className={`sub-nav-link ${
-                            pathname.split("/")[1] == link.href.split("/")[1]
-                              ? "active"
-                              : ""
-                          } `}
-                        >
-                          {link.name}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </li>
-              <li className="nav-mb-item">
-                <a
-                  href="#dropdown-menu-five"
-                  className={`collapsed mb-menu-link ${
-                    [...otherPageLinks].some(
-                      (elm) => elm.href.split("/")[1] == pathname.split("/")[1]
-                    )
-                      ? "active"
-                      : ""
-                  } `}
-                  data-bs-toggle="collapse"
-                  aria-expanded="true"
-                  aria-controls="dropdown-menu-five"
-                >
-                  <span>Our Store</span>
-                  <span className="btn-open-sub" />
-                </a>
-                <div id="dropdown-menu-five" className="collapse">
-                  <ul className="sub-nav-menu">
-                    {otherPageLinks.map((link, i) => (
-                      <li key={i}>
-                        <Link
-                          href={link.href}
-                          className={`sub-nav-link ${
-                            pathname.split("/")[1] == link.href.split("/")[1]
-                              ? "active"
-                              : ""
-                          } `}
-                        >
-                          {link.name}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </li>
+                  ));
+                return (
+                  <li className="nav-mb-item" key={item.label}>
+                    <a
+                      href={`#${menuId}`}
+                      className={`collapsed mb-menu-link ${groupActive ? "active" : ""}`}
+                      data-bs-toggle="collapse"
+                      aria-expanded="false"
+                      aria-controls={menuId}
+                    >
+                      <span>{item.label}</span>
+                      <span className="btn-open-sub" />
+                    </a>
+                    <div id={menuId} className="collapse">
+                      <ul className="sub-nav-menu">
+                        {/* the item itself, as the first link of its list */}
+                        <li>
+                          <Link href={item.href} className="sub-nav-link">
+                            All {item.label}
+                          </Link>
+                        </li>
+                        {item.columns.length === 1
+                          ? renderLinks(item.columns[0].links)
+                          : item.columns.map((col, j) => {
+                              const subId = `${menuId}-${j}`;
+                              return (
+                                <li key={col.heading}>
+                                  <a
+                                    href={`#${subId}`}
+                                    className={`sub-nav-link collapsed ${
+                                      col.links.some(isActive) ? "active" : ""
+                                    }`}
+                                    data-bs-toggle="collapse"
+                                    aria-expanded="false"
+                                    aria-controls={subId}
+                                  >
+                                    <span>{col.heading}</span>
+                                    <span className="btn-open-sub" />
+                                  </a>
+                                  <div id={subId} className="collapse">
+                                    <ul className="sub-nav-menu sub-menu-level-2">
+                                      {renderLinks(col.links)}
+                                    </ul>
+                                  </div>
+                                </li>
+                              );
+                            })}
+                      </ul>
+                    </div>
+                  </li>
+                );
+              })}
             </ul>
           </div>
           <div className="mb-other-content">

@@ -4,7 +4,7 @@ import Image from "next/image";
 import { Autoplay, Scrollbar } from "swiper/modules";
 import { Swiper, SwiperSlide } from "@/components/common/SwiperSSR";
 
-// TODO: the third review uses placeholder photos until its images are supplied.
+// The third review uses a photo from the Most Selling section until its own images are supplied.
 const stories = [
   {
     rating: 5,
@@ -30,8 +30,8 @@ const stories = [
       "Excellent overall experience. The outfit is comfortable to wear and the quality feels great for the price. Highly recommend!",
     name: "Amelia Carter",
     product: "Everyday Fashion",
-    photo: "/images/products/womens/women-19.jpg",
-    thumb: "/images/products/womens/women-19.jpg",
+    photo: "/images/home/link5.png",
+    thumb: "/images/home/link5.png",
   },
 ];
 

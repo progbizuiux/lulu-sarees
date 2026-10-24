@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import CartLength from "../common/CartLength";
 import LuluNav from "./LuluNav";
+import { accountLinks } from "@/data/luluMenu";
 
 export default function LuluHeader() {
   return (
@@ -64,6 +65,13 @@ export default function LuluHeader() {
                   Don’t have an account? <Link href="/register">Register</Link>
                 </p>
               </div>
+              <ul className="list-menu-item">
+                {accountLinks.map((link) => (
+                  <li key={link.href}>
+                    <Link href={link.href}>{link.label}</Link>
+                  </li>
+                ))}
+              </ul>
               <div className="sub-bot">
                 <span className="body-text-">Support</span>
               </div>

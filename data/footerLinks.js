@@ -15,6 +15,8 @@ export const footerLinks = [
       { label: "Our Stories", href: "#", isLink: false },
       { label: "Size Guide", href: "#", isLink: false },
       { label: "Contact us", href: "/contact", isLink: true },
+      { label: "Showrooms", href: "/store-list-02", isLink: true },
+      { label: "Customer Feedbacks", href: "/customer-feedback", isLink: true },
       { label: "Career", href: "#", isLink: false },
       { label: "My Account", href: "/my-account", isLink: true },
     ],
