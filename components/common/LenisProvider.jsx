@@ -76,9 +76,9 @@ export default function LenisProvider({ children }) {
       lenis = new Lenis({
         // lerp, not duration/easing: Lenis runs one animator or the other. A lerp has no
         // end time, it eases toward a moving target each frame, so new wheel ticks blend
-        // into the motion already under way instead of restarting a fixed tween. Same
-        // value as the Fortune Tours site.
-        lerp: 0.055,
+        // into the motion already under way instead of restarting a fixed tween. Lower = softer,
+        // longer glide. Fortune Tours uses 0.055; this site is set slightly smoother.
+        lerp: 0.045,
         // No GSAP ticker on this site, so Lenis runs its own requestAnimationFrame loop
         // (and stops it on destroy).
         autoRaf: true,

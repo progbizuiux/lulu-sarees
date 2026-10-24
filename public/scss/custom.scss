@@ -78,12 +78,12 @@
   max-width: 100%;
   overflow-x: hidden;
 }
+// Tab switching: the old content is hidden while the new content is set (the component removes
+// `filtered`), then the new cards come in one by one (see "Tab switch animation" below).
 .tabFilter {
-  transform: translateY(30px) !important;
   opacity: 0 !important;
-  transition: 0.3s !important;
+  transition: opacity 0.15s !important;
   &.filtered {
-    transform: translateY(0px) !important;
     opacity: 1 !important;
   }
 }
@@ -356,8 +356,9 @@
     justify-content: center;
     gap: 6px;
     margin: 0 0 2px;
-    font-size: 14px;
-    line-height: 22px;
+    font-size: 18px;
+    line-height: 28px;
+    font-weight: 400;
     color: var(--main);
   }
   .follow-handle {
@@ -732,4 +733,113 @@
 // so they cannot swallow the wheel. The Google Maps embeds (contact, store pages) must stay usable.
 .lenis.lenis-smooth iframe[src*="google.com/maps"] {
   pointer-events: auto;
+}
+
+// Sticky elements keep clear of the header: it slides away while scrolling and back in when
+// scrolling stops (the page toggles html.header-visible, see app/layout.js). Used by Bootstrap's
+// .sticky-top (product images, FAQ box, Terms sidebar), the cart and checkout sidebars and the zoom panel.
+:root {
+  --sticky-top: 20px; // header hidden
+}
+html.header-visible {
+  --sticky-top: 110px; // 90px header + 20px
+}
+.sticky-top,
+.fl-sidebar-cart,
+.flat-sidebar-checkout,
+.tf-zoom-main {
+  top: var(--sticky-top);
+  transition: top 0.2s ease-out;
+}
+
+// ---- Tab switch animation (common) -------------------------------------------------------
+// Cards fade and rise in one after another whenever a tab changes. Used by:
+//   - Explore Our Collections (.is-switching on the slider, set only after a tab click)
+//   - every product tab block using .tabFilter (the component toggles .filtered on each change)
+@keyframes tab-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(28px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.explore__swiper.is-switching .swiper-slide,
+.tabFilter.filtered :is(.tf-grid-layout, .swiper-wrapper) > * {
+  animation: tab-card-in 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
+  @for $i from 1 through 12 {
+    &:nth-child(#{$i}) {
+      animation-delay: #{($i - 1) * 70}ms;
+    }
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .explore__swiper.is-switching .swiper-slide,
+  .tabFilter.filtered :is(.tf-grid-layout, .swiper-wrapper) > * {
+    animation: none;
+  }
+}
+
+// Features strip (14-Day Returns, Free Shipping ...): titles use the body font, not the heading font
+.tf-icon-box .content h6 {
+  font-family: var(--font-body), system-ui, sans-serif;
+}
+
+// Footer social icons: sit under the newsletter as small filled circles (Figma)
+.footer-social {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 28px;
+  a {
+    width: 32px;
+    height: 32px;
+    border: 0;
+    border-radius: 50%;
+    background: #f0f0f0;
+    color: var(--main);
+    .icon {
+      font-size: 14px;
+    }
+  }
+  &.style-white a {
+    background: #2b2b2b;
+    color: #fff;
+  }
+}
+
+// Footer newsletter field (Figma): 56px pill, 1px #505050 border, white at 15%, #A0A0A0 14px placeholder
+.footer .form-newsletter.style-black {
+  .subscribe-content {
+    position: relative;
+  }
+  input {
+    width: 100%;
+    height: 56px !important;
+    padding: 19px 56px 19px 16.65px;
+    border: 1px solid #505050 !important;
+    border-radius: 999px;
+    background-color: rgba(255, 255, 255, 0.15) !important;
+    font-family: var(--font-body), system-ui, sans-serif;
+    font-size: 14px !important;
+    font-weight: 400;
+    line-height: normal;
+    &::placeholder {
+      color: #a0a0a0;
+      opacity: 1;
+    }
+  }
+  button {
+    top: 8px;
+    right: 8px;
+    width: 40px;
+    height: 40px;
+    font-size: 16px;
+    border: 0;
+    &:hover {
+      border: 1px solid var(--white);
+    }
+  }
 }

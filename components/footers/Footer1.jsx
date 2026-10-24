@@ -4,7 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 
 import ToolbarBottom from "../headers/ToolbarBottom";
-import ScrollTop from "../common/ScrollTop";
 import { footerLinks, socialLinks } from "@/data/footerLinks";
 import axios from "axios";
 export default function Footer1({
@@ -127,19 +126,6 @@ export default function Footer1({
                         <p>315-666-6688</p>
                       </li>
                     </ul>
-                    <ul
-                      className={`tf-social-icon  ${
-                        dark ? "style-white" : ""
-                      } `}
-                    >
-                      {socialLinks.map((link, index) => (
-                        <li key={index}>
-                          <a href={link.href} className={link.className}>
-                            <i className={`icon ${link.iconClass}`} />
-                          </a>
-                        </li>
-                      ))}
-                    </ul>
                   </div>
                 </div>
                 <div className="col-lg-4">
@@ -255,6 +241,21 @@ export default function Footer1({
                             .
                           </label>
                         </div>
+                            <ul
+                              className={`tf-social-icon footer-social ${
+                                dark ? "style-white" : ""
+                              } `}
+                            >
+                              {socialLinks
+                                .filter((l) => ["social-facebook", "social-twiter", "social-instagram", "social-pinterest"].includes(l.className))
+                                .map((link, index) => (
+                                <li key={index}>
+                                  <a href={link.href} className={link.className}>
+                                    <i className={`icon ${link.iconClass}`} />
+                                  </a>
+                                </li>
+                              ))}
+                            </ul>
                       </div>
                     </div>
                   </div>
@@ -332,7 +333,6 @@ export default function Footer1({
           </div>
         </div>
       </footer>
-      <ScrollTop hasPaddingBottom={hasPaddingBottom} />
       <ToolbarBottom />
     </>
   );

@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import Image from "next/image";
-import { Scrollbar } from "swiper/modules";
+import { Autoplay, Scrollbar } from "swiper/modules";
 import { Swiper, SwiperSlide } from "@/components/common/SwiperSSR";
 
 // TODO: the third review uses placeholder photos until its images are supplied.
@@ -58,6 +58,10 @@ function Stars({ count }) {
 }
 
 export default function CustomerStories() {
+  // auto scroll from the start, unless the visitor asked their system for less motion
+  const autoScroll =
+    typeof window === "undefined" ||
+    !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   return (
     <section className="cs" aria-labelledby="cs-title">
       <div className="cs__head">
@@ -70,7 +74,13 @@ export default function CustomerStories() {
       <Swiper
         dir="ltr"
         className="cs__swiper"
-        modules={[Scrollbar]}
+        modules={[Autoplay, Scrollbar]}
+        autoplay={
+          autoScroll
+            ? { delay: 2000, disableOnInteraction: true, pauseOnMouseEnter: true }
+            : false
+        }
+        speed={800}
         grabCursor
         slidesPerView="auto"
         spaceBetween={14}

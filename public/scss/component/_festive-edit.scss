@@ -197,7 +197,8 @@ $fe-radius: 10px;
     // the banner card stays in view while the product grid scrolls past
     &__feature {
       position: sticky;
-      top: 110px;
+      top: 24px; // header hidden (while scrolling)
+      transition: top 0.2s ease-out;
     }
   }
 }
@@ -226,5 +227,12 @@ $fe-radius: 10px;
       font-size: 14px;
       line-height: 20px;
     }
+  }
+}
+
+// while the header is showing (scrolling stopped), the sticky banner sits below it
+@media (min-width: 992px) {
+  html.header-visible .fe__feature {
+    top: 114px; // 90px header + 24px
   }
 }

@@ -59,14 +59,24 @@ export default function RootLayout({ children }) {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
 
-      if (currentScrollY > 250) {
-        if (currentScrollY > lastScrollY.current) {
-          // Scrolling down
-          setScrollDirection("down");
-        } else {
-          // Scrolling up
-          setScrollDirection("up");
+      // The smooth scroller keeps drifting in sub-pixel steps after the wheel stops. Ignore
+      // those, or they hide the header again right after it came back (it showed twice).
+      if (Math.abs(currentScrollY - lastScrollY.current) < 2) return;
+
+      // Once the header has come back, the last bit of drift must not hide it again:
+      // only a real scroll (more than 6px from where it came back) does.
+      if (shownAt !== null) {
+        if (Math.abs(currentScrollY - shownAt) < 6) {
+          lastScrollY.current = currentScrollY;
+          return;
         }
+        shownAt = null;
+      }
+
+      if (currentScrollY > 250) {
+        // Hidden while scrolling in either direction; the timer below brings it back
+        // once scrolling stops.
+        setScrollDirection("down");
       } else {
         // Below 250px
         setScrollDirection("down");
@@ -76,11 +86,15 @@ export default function RootLayout({ children }) {
 
       // Once scrolling has stopped, bring the header back
       clearTimeout(scrollEndTimer);
-      scrollEndTimer = setTimeout(() => setScrollDirection("up"), 200);
+      scrollEndTimer = setTimeout(() => {
+        shownAt = window.scrollY;
+        setScrollDirection("up");
+      }, 300);
     };
 
     const lastScrollY = { current: window.scrollY };
     let scrollEndTimer;
+    let shownAt = null; // scroll position where the header last came back
 
     // Add scroll event listener
     window.addEventListener("scroll", handleScroll);
@@ -121,6 +135,11 @@ export default function RootLayout({ children }) {
         header.style.top = "-185px";
       }
     }
+    // lets sticky sections (e.g. The Festive Edit banner) step out of the header's way
+    document.documentElement.classList.toggle(
+      "header-visible",
+      scrollDirection == "up"
+    );
   }, [scrollDirection]);
   useEffect(() => {
     const WOW = require("@/utlis/wow");

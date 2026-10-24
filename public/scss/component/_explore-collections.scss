@@ -115,11 +115,27 @@ $xc-radius: 12px;
       rgba(0, 0, 0, 0.55) 0%,
       rgba(0, 0, 0, 0) 55%
     );
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
   }
   &__body {
     position: relative;
     z-index: 1;
     padding: 20px;
+    // shown on hover / keyboard focus only
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+  &:hover::after,
+  &:focus-within::after {
+    opacity: 1;
+  }
+  &:hover &__body,
+  &:focus-within &__body {
+    opacity: 1;
+    transform: none;
   }
   &__text {
     max-width: 230px;
@@ -297,6 +313,13 @@ $xc-radius: 12px;
 
 // Touch screens can't hover: keep the actions and the button visible
 @media (hover: none) {
+  .xp::after {
+    opacity: 1;
+  }
+  .xp__body {
+    opacity: 1;
+    transform: none;
+  }
   .xc__actions {
     opacity: 1;
     transform: none;

@@ -153,6 +153,8 @@ function ExploreProductCard({ product, isNew }) {
 
 export default function ExploreCollections() {
   const [activeTab, setActiveTab] = useState(tabs[0].filter);
+  // play the card entrance animation only after a tab change, not on first load
+  const [switched, setSwitched] = useState(false);
   // auto scroll from the start, unless the visitor asked their system for less motion
   const autoScroll =
     typeof window === "undefined" ||
@@ -188,7 +190,10 @@ export default function ExploreCollections() {
               className={`explore__tab ${
                 activeTab === tab.filter ? "is-active" : ""
               }`}
-              onClick={() => setActiveTab(tab.filter)}
+              onClick={() => {
+                setActiveTab(tab.filter);
+                setSwitched(true);
+              }}
             >
               {tab.label}
             </button>
@@ -200,13 +205,12 @@ export default function ExploreCollections() {
         <Swiper
           key={activeTab}
           dir="ltr"
-          className="explore__swiper"
+          className={`explore__swiper ${switched ? "is-switching" : ""}`}
           grabCursor
           modules={[Autoplay]}
-          rewind
           autoplay={
             autoScroll
-              ? { delay: 3000, disableOnInteraction: false, pauseOnMouseEnter: true }
+              ? { delay: 3000, disableOnInteraction: true, pauseOnMouseEnter: true }
               : false
           }
           speed={800}
