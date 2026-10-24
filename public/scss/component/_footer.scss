@@ -77,7 +77,7 @@ footer {
         .footer-menu_item {
             color: var(--secondary);
             &:hover {
-                color: var(--primary);
+                color: var(--main);
             }
         }
         .footer-menu-list {
@@ -132,7 +132,7 @@ footer {
         .footer-menu .footer-menu_item {
             color: var(--secondary-2);
             &:hover {
-                color: var(--primary);
+                color: var(--white);
             }
         }
         .footer-bottom-wrap {
