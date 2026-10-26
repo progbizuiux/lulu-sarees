@@ -11,6 +11,7 @@ import LenisProvider from "@/components/common/LenisProvider";
 import { useEffect, useState } from "react";
 import ScrollTop from "@/components/common/ScrollTop";
 import Context from "@/context/Context";
+import QueryProvider from "@/providers/QueryProvider";
 import CartModal from "@/components/modals/CartModal";
 import QuickView from "@/components/modals/QuickView";
 import QuickAdd from "@/components/modals/QuickAdd";
@@ -156,24 +157,26 @@ export default function RootLayout({ children }) {
       suppressHydrationWarning
     >
       <body className="preload-wrapper popup-loader" suppressHydrationWarning>
-        <LenisProvider>
-          <Context>
-            <div id="wrapper">{children}</div>
-            <CartModal />
-            <QuickView />
-            <QuickAdd />
-            <Compare />
-            <MobileMenu />
+        <QueryProvider>
+          <LenisProvider>
+            <Context>
+              <div id="wrapper">{children}</div>
+              <CartModal />
+              <QuickView />
+              <QuickAdd />
+              <Compare />
+              <MobileMenu />
 
-            <NewsLetterModal />
-            <SearchModal />
-            <SizeGuide />
-            <Wishlist />
-            <DemoModal />
-            <Categories />
-            <AccountSidebar />
-          </Context>
-        </LenisProvider>
+              <NewsLetterModal />
+              <SearchModal />
+              <SizeGuide />
+              <Wishlist />
+              <DemoModal />
+              <Categories />
+              <AccountSidebar />
+            </Context>
+          </LenisProvider>
+        </QueryProvider>
       </body>
     </html>
   );
