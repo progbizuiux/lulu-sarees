@@ -3,6 +3,7 @@ import LuluHeader from "@/components/headers/LuluHeader";
 import Topbar6 from "@/components/headers/Topbar6";
 import AccountSidebar from "@/components/my-account/AccountSidebar";
 import Address from "@/components/my-account/Address";
+import RequireAuth from "@/components/auth/RequireAuth";
 import Link from "next/link";
 import React from "react";
 
@@ -59,12 +60,14 @@ export default function MyAccountAddressPage() {
       </>
 
       <section className="flat-spacing">
-        <div className="container">
-          <div className="my-account-wrap">
-            <AccountSidebar />
-            <Address />
+        <RequireAuth>
+          <div className="container">
+            <div className="my-account-wrap">
+              <AccountSidebar />
+              <Address />
+            </div>
           </div>
-        </div>
+        </RequireAuth>
       </section>
       <Footer1 />
     </>

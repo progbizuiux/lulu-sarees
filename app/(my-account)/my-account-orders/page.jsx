@@ -4,6 +4,7 @@ import Topbar6 from "@/components/headers/Topbar6";
 import AccountSidebar from "@/components/my-account/AccountSidebar";
 import Information from "@/components/my-account/Information";
 import Orers from "@/components/my-account/Orers";
+import RequireAuth from "@/components/auth/RequireAuth";
 import Link from "next/link";
 import React from "react";
 
@@ -60,12 +61,14 @@ export default function MyAccountOrdersPage() {
       </>
 
       <section className="flat-spacing">
-        <div className="container">
-          <div className="my-account-wrap">
-            <AccountSidebar />
-            <Orers />
+        <RequireAuth>
+          <div className="container">
+            <div className="my-account-wrap">
+              <AccountSidebar />
+              <Orers />
+            </div>
           </div>
-        </div>
+        </RequireAuth>
       </section>
       <Footer1 />
     </>

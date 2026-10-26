@@ -39,7 +39,11 @@ export function usePlaceOrder() {
   return useMutation({
     mutationFn: (payload) => checkoutService.placeOrder(payload),
     onSuccess: (result) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.orders.all });
+      // Remember the new order so the success page can show it straight away (also for guests).
+      if (result?.order?.id !== undefined) {
+        queryClient.setQueryData(queryKeys.orders.detail(result.order.id), result.order);
+      }
+      queryClient.invalidateQueries({ queryKey: queryKeys.orders.list });
       if (!result?.payment) queryClient.invalidateQueries({ queryKey: queryKeys.cart }); // COD: cart is now empty
     },
   });

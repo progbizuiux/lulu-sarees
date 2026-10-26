@@ -4,6 +4,7 @@ import Topbar6 from "@/components/headers/Topbar6";
 import AccountSidebar from "@/components/my-account/AccountSidebar";
 import Link from "next/link";
 import OrderDetails from "@/components/my-account/OrderDetails";
+import RequireAuth from "@/components/auth/RequireAuth";
 import React from "react";
 
 export const metadata = {
@@ -59,12 +60,14 @@ export default function MyAccountOrdersDetailsPage() {
       </>
 
       <section className="flat-spacing">
-        <div className="container">
-          <div className="my-account-wrap">
-            <AccountSidebar />
-            <OrderDetails />
+        <RequireAuth>
+          <div className="container">
+            <div className="my-account-wrap">
+              <AccountSidebar />
+              <OrderDetails />
+            </div>
           </div>
-        </div>
+        </RequireAuth>
       </section>
       <Footer1 />
     </>

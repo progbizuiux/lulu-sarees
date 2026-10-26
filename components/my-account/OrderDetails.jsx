@@ -1,212 +1,239 @@
 "use client";
-import React, { useState } from "react";
+import React, { Suspense, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { useOrder } from "@/hooks/useOrders";
+import { formatAddress, formatDate, formatPrice } from "@/lib/format";
+import { orderStatusLabel } from "@/lib/orders/status";
+import OrderTimeline from "./OrderTimeline";
+
+const paymentLabel = (order) => (order.paymentMethod === "cod" ? "Cash on Delivery" : "Online payment");
+
+function Message({ children, action }) {
+  return (
+    <div className="my-account-content">
+      <div className="py-5 text-center">
+        <p className="mb_12">{children}</p>
+        {action}
+      </div>
+    </div>
+  );
+}
+
+const backToOrders = (
+  <Link href="/my-account-orders" className="tf-btn btn-fill">
+    <span className="text text-button">Back to your orders</span>
+  </Link>
+);
+
+// The order id comes from the URL: /my-account-orders-details?id=123
 export default function OrderDetails() {
+  return (
+    <Suspense fallback={null}>
+      <OrderDetailsContent />
+    </Suspense>
+  );
+}
+
+function OrderDetailsContent() {
+  const orderId = useSearchParams().get("id");
   const [activeTab, setActiveTab] = useState(1);
+  const { data: order, isPending, isError, error, refetch, isFetching } = useOrder(orderId);
+
+  if (!orderId) return <Message action={backToOrders}>Choose an order from your orders list.</Message>;
+
+  if (isPending) {
+    return (
+      <div className="my-account-content">
+        <div className="py-5 text-center">
+          <div className="spinner-border" role="status">
+            <span className="visually-hidden">Loading your order…</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (isError) {
+    if (error?.status === 404) return <Message action={backToOrders}>We couldn't find this order.</Message>;
+    return (
+      <Message
+        action={
+          <button type="button" className="tf-btn btn-fill" onClick={() => refetch()} disabled={isFetching}>
+            <span className="text text-button">{isFetching ? "Trying again…" : "Try again"}</span>
+          </button>
+        }
+      >
+        {error?.message}
+      </Message>
+    );
+  }
+
+  const { summary, address, tracking } = order;
+  const firstItem = order.items[0];
+  const tabs = ["Order History", "Item Details", "Courier", "Receiver"];
+
   return (
     <div className="my-account-content">
       <div className="account-order-details">
         <div className="wd-form-order">
           <div className="order-head">
-            <figure className="img-product">
-              <Image
-                alt="product"
-                src="/images/products/womens/women-1.jpg"
-                width={600}
-                height={800}
-              />
-            </figure>
+            {firstItem && (
+              <figure className="img-product">
+                <Image alt={firstItem.title} src={firstItem.imgSrc} width={600} height={800} />
+              </figure>
+            )}
             <div className="content">
-              <div className="badge">In Progress</div>
-              <h6 className="mt-8 fw-5">Order #17493</h6>
+              <div className="badge">{orderStatusLabel(order.status)}</div>
+              <h6 className="mt-8 fw-5">Order #{order.number}</h6>
             </div>
           </div>
           <div className="tf-grid-layout md-col-2 gap-15">
             <div className="item">
-              <div className="text-2 text_black-2">Item</div>
-              <div className="text-2 mt_4 fw-6">Fashion</div>
-            </div>
-            <div className="item">
-              <div className="text-2 text_black-2">Courier</div>
-              <div className="text-2 mt_4 fw-6">Ribbed modal T-shirt</div>
-            </div>
-            <div className="item">
-              <div className="text-2 text_black-2">Start Time</div>
+              <div className="text-2 text_black-2">Items</div>
               <div className="text-2 mt_4 fw-6">
-                04 September 2024, 13:30:23
+                {order.itemCount} {order.itemCount === 1 ? "item" : "items"}
               </div>
             </div>
             <div className="item">
-              <div className="text-2 text_black-2">Address</div>
-              <div className="text-2 mt_4 fw-6">
-                1234 Fashion Street, Suite 567, New York
-              </div>
+              <div className="text-2 text_black-2">Payment</div>
+              <div className="text-2 mt_4 fw-6">{paymentLabel(order)}</div>
+            </div>
+            <div className="item">
+              <div className="text-2 text_black-2">Placed on</div>
+              <div className="text-2 mt_4 fw-6">{formatDate(order.createdAt, { withTime: true })}</div>
+            </div>
+            <div className="item">
+              <div className="text-2 text_black-2">Delivery address</div>
+              <div className="text-2 mt_4 fw-6">{formatAddress(address) || "—"}</div>
             </div>
           </div>
           <div className="widget-tabs style-3 widget-order-tab">
-            <ul className="widget-menu-tab">
-              <li
-                className={`item-title ${activeTab == 1 ? "active" : ""} `}
-                onClick={() => setActiveTab(1)}
-              >
-                <span className="inner">Order History</span>
-              </li>
-              <li
-                className={`item-title ${activeTab == 2 ? "active" : ""} `}
-                onClick={() => setActiveTab(2)}
-              >
-                <span className="inner">Item Details</span>
-              </li>
-              <li
-                className={`item-title ${activeTab == 3 ? "active" : ""} `}
-                onClick={() => setActiveTab(3)}
-              >
-                <span className="inner">Courier</span>
-              </li>
-              <li
-                className={`item-title ${activeTab == 4 ? "active" : ""} `}
-                onClick={() => setActiveTab(4)}
-              >
-                <span className="inner">Receiver</span>
-              </li>
+            <ul className="widget-menu-tab" role="tablist">
+              {tabs.map((label, index) => (
+                <li
+                  key={label}
+                  role="tab"
+                  aria-selected={activeTab === index + 1}
+                  tabIndex={0}
+                  className={`item-title ${activeTab === index + 1 ? "active" : ""}`}
+                  onClick={() => setActiveTab(index + 1)}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter") setActiveTab(index + 1);
+                  }}
+                >
+                  <span className="inner">{label}</span>
+                </li>
+              ))}
             </ul>
             <div className="widget-content-tab">
-              <div
-                className={`widget-content-inner ${
-                  activeTab == 1 ? "active" : ""
-                } `}
-              >
-                <div className="widget-timeline">
-                  <ul className="timeline">
-                    <li>
-                      <div className="timeline-badge success" />
-                      <div className="timeline-box">
-                        <a className="timeline-panel" href="#">
-                          <div className="text-2 fw-6">Product Shipped</div>
-                          <span>10/07/2024 4:30pm</span>
-                        </a>
-                        <p>
-                          <strong>Courier Service : </strong>FedEx World Service
-                          Center
-                        </p>
-                        <p>
-                          <strong>Estimated Delivery Date : </strong>12/07/2024
-                        </p>
-                      </div>
-                    </li>
-                    <li>
-                      <div className="timeline-badge success" />
-                      <div className="timeline-box">
-                        <a className="timeline-panel" href="#">
-                          <div className="text-2 fw-6">Product Shipped</div>
-                          <span>10/07/2024 4:30pm</span>
-                        </a>
-                        <p>
-                          <strong>Tracking Number : </strong>2307-3215-6759
-                        </p>
-                        <p>
-                          <strong>Warehouse : </strong>T-Shirt 10b
-                        </p>
-                      </div>
-                    </li>
-                    <li>
-                      <div className="timeline-badge" />
-                      <div className="timeline-box">
-                        <a className="timeline-panel" href="#">
-                          <div className="text-2 fw-6">Product Packaging</div>
-                          <span>12/07/2024 4:34pm</span>
-                        </a>
-                      </div>
-                    </li>
-                    <li>
-                      <div className="timeline-badge" />
-                      <div className="timeline-box">
-                        <a className="timeline-panel" href="#">
-                          <div className="text-2 fw-6">Order Placed</div>
-                          <span>11/07/2024 2:36pm</span>
-                        </a>
-                      </div>
-                    </li>
-                  </ul>
-                </div>
+              <div className={`widget-content-inner ${activeTab === 1 ? "active" : ""}`} role="tabpanel">
+                <OrderTimeline order={order} />
               </div>
-              <div
-                className={`widget-content-inner ${
-                  activeTab == 2 ? "active" : ""
-                } `}
-              >
-                <div className="order-head">
-                  <figure className="img-product">
-                    <Image
-                      alt="product"
-                      src="/images/products/womens/women-1.jpg"
-                      width={600}
-                      height={800}
-                    />
-                  </figure>
-                  <div className="content">
-                    <div className="text-2 fw-6">Ribbed modal T-shirt</div>
-                    <div className="mt_4">
-                      <span className="fw-6">Price :</span> $28.95
-                    </div>
-                    <div className="mt_4">
-                      <span className="fw-6">Size :</span> XL
+              <div className={`widget-content-inner ${activeTab === 2 ? "active" : ""}`} role="tabpanel">
+                {order.items.map((item) => (
+                  <div className="order-head" key={item.id}>
+                    <figure className="img-product">
+                      <Image alt={item.title} src={item.imgSrc} width={600} height={800} />
+                    </figure>
+                    <div className="content">
+                      <div className="text-2 fw-6">{item.title}</div>
+                      <div className="mt_4">
+                        <span className="fw-6">Price :</span> {formatPrice(item.price)} × {item.quantity}
+                      </div>
+                      {item.variantName && (
+                        <div className="mt_4">
+                          <span className="fw-6">Variant :</span> {item.variantName}
+                        </div>
+                      )}
                     </div>
                   </div>
-                </div>
+                ))}
                 <ul>
                   <li className="d-flex justify-content-between text-2">
-                    <span>Total Price</span>
-                    <span className="fw-6">$28.95</span>
+                    <span>Subtotal</span>
+                    <span className="fw-6">{formatPrice(summary.subtotal)}</span>
                   </li>
-                  <li className="d-flex justify-content-between text-2 mt_4 pb_8 line-bt">
-                    <span>Total Discounts</span>
-                    <span className="fw-6">$10</span>
+                  {summary.discount > 0 && (
+                    <li className="d-flex justify-content-between text-2 mt_4">
+                      <span>Discount</span>
+                      <span className="fw-6">−{formatPrice(summary.discount)}</span>
+                    </li>
+                  )}
+                  <li className="d-flex justify-content-between text-2 mt_4">
+                    <span>Shipping</span>
+                    <span className="fw-6">{summary.shipping > 0 ? formatPrice(summary.shipping) : "Free"}</span>
                   </li>
-                  <li className="d-flex justify-content-between text-2 mt_8">
+                  {summary.codFee > 0 && (
+                    <li className="d-flex justify-content-between text-2 mt_4">
+                      <span>Cash on Delivery fee</span>
+                      <span className="fw-6">{formatPrice(summary.codFee)}</span>
+                    </li>
+                  )}
+                  <li className="d-flex justify-content-between text-2 mt_8 pt_8 line-top">
                     <span>Order Total</span>
-                    <span className="fw-6">$18.95</span>
+                    <span className="fw-6">{formatPrice(summary.total)}</span>
                   </li>
                 </ul>
               </div>
-              <div
-                className={`widget-content-inner ${
-                  activeTab == 3 ? "active" : ""
-                } `}
-              >
-                <p>
-                  Our courier service is dedicated to providing fast, reliable,
-                  and secure delivery solutions tailored to meet your needs.
-                  Whether you're sending documents, parcels, or larger
-                  shipments, our team ensures that your items are handled with
-                  the utmost care and delivered on time. With a commitment to
-                  customer satisfaction, real-time tracking, and a wide network
-                  of routes, we make it easy for you to send and receive
-                  packages both locally and internationally. Choose our service
-                  for a seamless and efficient delivery experience.
-                </p>
+              <div className={`widget-content-inner ${activeTab === 3 ? "active" : ""}`} role="tabpanel">
+                {tracking ? (
+                  <ul>
+                    {tracking.courier && (
+                      <li>
+                        Courier : <span className="fw-7">{tracking.courier}</span>
+                      </li>
+                    )}
+                    {tracking.trackingNumber && (
+                      <li className="mt_4">
+                        Tracking number : <span className="fw-7">{tracking.trackingNumber}</span>
+                        {tracking.trackingUrl && (
+                          <>
+                            {" "}
+                            <a href={tracking.trackingUrl} target="_blank" rel="noopener noreferrer" className="link">
+                              Track on courier site
+                            </a>
+                          </>
+                        )}
+                      </li>
+                    )}
+                    {tracking.estimatedDelivery && (
+                      <li className="mt_4">
+                        Estimated delivery : <span className="fw-7">{formatDate(tracking.estimatedDelivery)}</span>
+                      </li>
+                    )}
+                  </ul>
+                ) : (
+                  <p>Courier details will appear here once your order ships.</p>
+                )}
               </div>
-              <div
-                className={`widget-content-inner ${
-                  activeTab == 4 ? "active" : ""
-                } `}
-              >
-                <p className="text-2 text-success">
-                  Thank you Your order has been received
-                </p>
-                <ul className="mt_20">
-                  <li>
-                    Order Number : <span className="fw-7">#17493</span>
+              <div className={`widget-content-inner ${activeTab === 4 ? "active" : ""}`} role="tabpanel">
+                <ul>
+                  {address?.name && (
+                    <li>
+                      Name : <span className="fw-7">{address.name}</span>
+                    </li>
+                  )}
+                  {address?.phone && (
+                    <li className="mt_4">
+                      Phone : <span className="fw-7">{address.phone}</span>
+                    </li>
+                  )}
+                  <li className="mt_4">
+                    Address : <span className="fw-7">{formatAddress(address) || "—"}</span>
                   </li>
-                  <li>
-                    Date :<span className="fw-7"> 17/07/2024, 02:34pm</span>
+                  <li className="mt_20">
+                    Order Number : <span className="fw-7">#{order.number}</span>
                   </li>
-                  <li>
-                    Total : <span className="fw-7">$18.95</span>
+                  <li className="mt_4">
+                    Date : <span className="fw-7">{formatDate(order.createdAt, { withTime: true })}</span>
                   </li>
-                  <li>
-                    Payment Methods :
-                    <span className="fw-7">Cash on Delivery</span>
+                  <li className="mt_4">
+                    Total : <span className="fw-7">{formatPrice(summary.total)}</span>
+                  </li>
+                  <li className="mt_4">
+                    Payment Method : <span className="fw-7">{paymentLabel(order)}</span>
                   </li>
                 </ul>
               </div>

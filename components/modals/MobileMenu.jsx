@@ -3,11 +3,13 @@ import React from "react";
 import Link from "next/link";
 import { luluMenu } from "@/data/luluMenu";
 import { usePathname } from "next/navigation";
+import { useUser } from "@/hooks/useAuth";
 // The page part of a link (without ?category=...)
 const pathOf = (href) => href.split("?")[0];
 
 export default function MobileMenu() {
   const pathname = usePathname();
+  const { data: user } = useUser();
   return (
     <div className="offcanvas offcanvas-start canvas-mb" id="mobileMenu">
       <span
@@ -154,7 +156,7 @@ export default function MobileMenu() {
                 </svg>
                 Wishlist
               </Link>
-              <Link href={`/login`} className="site-nav-icon">
+              <Link href={user ? `/my-account` : `/login`} className="site-nav-icon">
                 <svg
                   className="icon"
                   width={18}
@@ -178,7 +180,7 @@ export default function MobileMenu() {
                     strokeLinejoin="round"
                   />
                 </svg>
-                Login
+                {user ? "My Account" : "Login"}
               </Link>
             </div>
             <div className="mb-notice">

@@ -1,32 +1,35 @@
 "use client";
 
-import { useContextElement } from "@/context/Context";
-import { useEffect, useState } from "react";
+import { useWishlist } from "@/hooks/useWishlist";
 import ProductCard1 from "../productCards/ProductCard1";
-import Pagination from "../common/Pagination";
 import Link from "next/link";
-import { allProducts } from "@/data/products";
 
+// Wishlist products come from the wishlist service (backend or mock). Guests can have one too.
 export default function Wishlist() {
-  const { removeFromWishlist, wishList } = useContextElement();
-  const [items, setItems] = useState([]);
-  useEffect(() => {
-    setItems([...allProducts.filter((elm) => wishList.includes(elm.id))]);
-  }, [wishList]);
+  const { data: wishlist, isPending, isError, error, refetch } = useWishlist();
+  const items = wishlist?.items ?? [];
+
   return (
     <section className="flat-spacing">
       <div className="container">
-        {items.length ? (
+        {isPending ? (
+          <div className="py-5 text-center">
+            <div className="spinner-border" role="status">
+              <span className="visually-hidden">Loading your wishlist…</span>
+            </div>
+          </div>
+        ) : isError ? (
+          <div className="p-5 text-center">
+            <p className="mb-3">{error?.message}</p>
+            <button type="button" className="tf-btn btn-fill" onClick={() => refetch()}>
+              <span className="text text-button">Try again</span>
+            </button>
+          </div>
+        ) : items.length ? (
           <div className="tf-grid-layout tf-col-2 md-col-3 xl-col-4">
-            {/* card product 1 */}
-            {items.map((product, i) => (
-              <ProductCard1 key={i} product={product} />
+            {items.map((product) => (
+              <ProductCard1 key={product.id} product={product} />
             ))}
-
-            {/* pagination */}
-            <ul className="wg-pagination justify-content-center">
-              <Pagination />
-            </ul>
           </div>
         ) : (
           <div className="p-5">

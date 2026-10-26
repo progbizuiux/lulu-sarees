@@ -1,7 +1,7 @@
 import { apiClient, unwrap } from "@/lib/api/client";
 import { ENDPOINTS } from "@/lib/api/endpoints";
 import { config } from "@/lib/config";
-import { mapCart } from "@/lib/mappers/cart.mapper";
+import { mapCart, mapCoupons } from "@/lib/mappers/cart.mapper";
 
 const mocks = () => import("@/lib/mocks/cart");
 
@@ -44,4 +44,10 @@ async function removeCoupon() {
   return cartFrom(await apiClient.delete(ENDPOINTS.cart.coupon));
 }
 
-export const cartService = { get, addItem, updateItem, removeItem, applyCoupon, removeCoupon };
+/** @returns {Promise<import("@/lib/mappers/cart.mapper").Coupon[]>} */
+async function getAvailableCoupons() {
+  if (config.useMocks) return (await mocks()).getAvailableCoupons();
+  return mapCoupons(unwrap(await apiClient.get(ENDPOINTS.cart.availableCoupons)));
+}
+
+export const cartService = { get, addItem, updateItem, removeItem, applyCoupon, removeCoupon, getAvailableCoupons };

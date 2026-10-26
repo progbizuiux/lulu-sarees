@@ -1,7 +1,10 @@
 "use client";
 import React, { useState } from "react";
+import { useUser } from "@/hooks/useAuth";
 
 export default function Information() {
+  // Only shown inside RequireAuth, so the user is already loaded here.
+  const { data: user } = useUser();
   const [passwordType, setPasswordType] = useState("password");
   const [confirmPasswordType, setConfirmPasswordType] = useState("password");
   const [newPasswordType, setNewPasswordType] = useState("password");
@@ -37,9 +40,10 @@ export default function Information() {
                   className=""
                   type="text"
                   placeholder="First Name*"
-                  name="text"
+                  name="firstName"
+                  autoComplete="given-name"
                   tabIndex={2}
-                  defaultValue="Tony"
+                  defaultValue={user?.firstName ?? ""}
                   aria-required="true"
                   required
                 />
@@ -49,9 +53,10 @@ export default function Information() {
                   className=""
                   type="text"
                   placeholder="Last Name*"
-                  name="text"
+                  name="lastName"
+                  autoComplete="family-name"
                   tabIndex={2}
-                  defaultValue="Nguyen"
+                  defaultValue={user?.lastName ?? ""}
                   aria-required="true"
                   required
                 />
@@ -62,10 +67,11 @@ export default function Information() {
                 <input
                   className=""
                   type="email"
-                  placeholder="Username or email address*"
+                  placeholder="Email address*"
                   name="email"
+                  autoComplete="email"
                   tabIndex={2}
-                  defaultValue="themesflat@gmail.com"
+                  defaultValue={user?.email ?? ""}
                   aria-required="true"
                   required
                 />
@@ -73,11 +79,12 @@ export default function Information() {
               <fieldset className="">
                 <input
                   className=""
-                  type="text"
+                  type="tel"
                   placeholder="Phone*"
-                  name="text"
+                  name="phone"
+                  autoComplete="tel"
                   tabIndex={2}
-                  defaultValue="(+12) 345 678 910"
+                  defaultValue={user?.phone ?? ""}
                   aria-required="true"
                   required
                 />

@@ -1,4 +1,7 @@
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { getRedirectParam } from "@/lib/auth/redirect";
 import { queryKeys } from "@/lib/query/keys";
 import { authService } from "@/services/auth.service";
 
@@ -21,6 +24,7 @@ function useRefreshUserData() {
   return (user) => {
     queryClient.setQueryData(queryKeys.user, user ?? null);
     queryClient.removeQueries({ queryKey: queryKeys.orders.all });
+    queryClient.removeQueries({ queryKey: queryKeys.addresses });
     queryClient.invalidateQueries({ queryKey: queryKeys.cart });
     queryClient.invalidateQueries({ queryKey: queryKeys.wishlist });
     queryClient.invalidateQueries({ queryKey: queryKeys.checkout.all });
@@ -28,8 +32,23 @@ function useRefreshUserData() {
 }
 
 /**
+ * For login/register pages: once a user is logged in (already, or just now), send them on
+ * to ?redirect= (if it's one of our pages) or to My Account.
+ */
+export function useRedirectIfLoggedIn() {
+  const router = useRouter();
+  const { data: user } = useUser();
+
+  useEffect(() => {
+    if (user) router.replace(getRedirectParam());
+  }, [user, router]);
+
+  return user;
+}
+
+/**
  * Form errors come back as `error.fieldErrors` (e.g. { email: "..." }); the general message as `error.message`.
- * @example login.mutate({ email, password }, { onSuccess: () => router.push("/my-account") });
+ * @example login.mutate({ email, password });
  */
 export function useLogin() {
   const refresh = useRefreshUserData();

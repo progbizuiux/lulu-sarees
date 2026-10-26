@@ -17,4 +17,14 @@ async function get(orderId) {
   return mapOrder(unwrap(await apiClient.get(ENDPOINTS.orders.detail(orderId))));
 }
 
-export const orderService = { list, get };
+/**
+ * Public order tracking (no login): order number + the email or phone used for the order.
+ * @param {{orderNumber: string, contact: string}} payload
+ * @returns {Promise<import("@/lib/mappers/order.mapper").Order>}
+ */
+async function track(payload) {
+  if (config.useMocks) return (await mocks()).trackOrder(payload);
+  return mapOrder(unwrap(await apiClient.post(ENDPOINTS.orders.track, payload)));
+}
+
+export const orderService = { list, get, track };

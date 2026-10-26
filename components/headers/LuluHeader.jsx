@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import CartLength from "../common/CartLength";
 import LuluNav from "./LuluNav";
-import { accountLinks } from "@/data/luluMenu";
+import HeaderAccountMenu from "./HeaderAccountMenu";
 
 export default function LuluHeader() {
   return (
@@ -56,26 +56,7 @@ export default function LuluHeader() {
                 height={6}
               />
             </a>
-            <div className="dropdown-account dropdown-login">
-              <div className="sub-top">
-                <Link href="/login" className="tf-btn btn-reset">
-                  Login
-                </Link>
-                <p className="text-center text-secondary-2">
-                  Don’t have an account? <Link href="/register">Register</Link>
-                </p>
-              </div>
-              <ul className="list-menu-item">
-                {accountLinks.map((link) => (
-                  <li key={link.href}>
-                    <Link href={link.href}>{link.label}</Link>
-                  </li>
-                ))}
-              </ul>
-              <div className="sub-bot">
-                <span className="body-text-">Support</span>
-              </div>
-            </div>
+            <HeaderAccountMenu />
           </li>
           <li>
             <Link href="/wish-list" className="lulu-header__icon" aria-label="Wishlist">

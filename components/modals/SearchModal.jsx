@@ -1,10 +1,24 @@
 "use client";
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 
 import { productMain } from "@/data/products";
 import ProductCard1 from "../productCards/ProductCard1";
 export default function SearchModal() {
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
+
+  // Searching opens the search page with the results (/search-result?q=...).
+  const handleSearch = async (event) => {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const query = String(new FormData(form).get("q") ?? "").trim();
+    if (!query) return;
+    const { Modal } = await import("bootstrap");
+    Modal.getInstance(document.getElementById("search"))?.hide();
+    form.reset();
+    router.push(`/search-result?q=${encodeURIComponent(query)}`);
+  };
 
   const [loadedItems, setLoadedItems] = useState(productMain.slice(0, 8));
   const handleLoad = () => {
@@ -28,16 +42,16 @@ export default function SearchModal() {
               data-bs-dismiss="modal"
             />
           </div>
-          <form className="form-search" onSubmit={(e) => e.preventDefault()}>
+          <form className="form-search" onSubmit={handleSearch} role="search">
             <fieldset className="text">
               <input
-                type="text"
-                placeholder="Searching..."
+                type="search"
+                placeholder="Search for sarees, colours, fabrics…"
                 className=""
-                name="text"
+                name="q"
                 tabIndex={0}
                 defaultValue=""
-                aria-required="true"
+                aria-label="Search products"
                 required
               />
             </fieldset>

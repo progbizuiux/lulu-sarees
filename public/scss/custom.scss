@@ -12,9 +12,8 @@
   }
 }
 
-#shoppingCart.show .tf-progress-bar .value {
-  width: 60% !important;
-}
+// (The template forced the cart drawer's free-shipping bar to 60% here. Its width now comes
+// from the cart data in CartModal.jsx, so that rule was removed.)
 .menu-item-li.active {
   .menu-link-text {
     color: var(--primary) !important;
@@ -848,4 +847,95 @@ html.header-visible {
 // into a scroll container: Lenis, position: sticky and the sticky header keep working.
 html {
   overflow-x: clip;
+}
+
+// Logout is a <button> (it calls the API) but must look like the other account menu links.
+// Kept low-specificity so the menu's own hover/active background still applies.
+button.my-account-nav-item {
+  width: 100%;
+  border: 0;
+  background-color: transparent;
+  color: inherit;
+  font-family: inherit;
+  text-align: left;
+  justify-content: flex-start; // the template's base button style spreads content apart
+  cursor: pointer;
+  &:disabled {
+    opacity: 0.6;
+    cursor: wait;
+  }
+}
+
+// Pop-up messages (components/common/Toaster.jsx). Above modals and the cart drawer.
+.lulu-toaster {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  z-index: 6000;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: min(420px, calc(100vw - 32px));
+  pointer-events: none;
+}
+.lulu-toast {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  background-color: var(--main, #181818);
+  color: var(--white, #fff);
+  font-size: 14px;
+  line-height: 20px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  pointer-events: auto;
+  &--error {
+    background-color: #b42318;
+  }
+  &--success {
+    background-color: #067647;
+  }
+}
+.lulu-toast__close {
+  flex-shrink: 0;
+  border: 0;
+  padding: 0;
+  background: none;
+  color: inherit;
+  font-size: 20px;
+  line-height: 20px;
+  cursor: pointer;
+}
+
+// Pretend payment window in mock mode (components/checkout/MockPaymentDialog.jsx).
+.lulu-mock-payment {
+  position: fixed;
+  inset: 0;
+  z-index: 6000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+.lulu-mock-payment__box {
+  width: min(380px, 100%);
+  padding: 28px 24px;
+  border-radius: 12px;
+  background-color: var(--white, #fff);
+  text-align: center;
+}
+
+// A <button> that looks like a text link (header Logout, cart "Remove coupon").
+.lulu-link-button {
+  border: 0;
+  padding: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
 }

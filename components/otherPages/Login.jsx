@@ -1,14 +1,43 @@
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
+import { useLogin, useRedirectIfLoggedIn } from "@/hooks/useAuth";
+import { hasErrors, validateLogin } from "@/lib/validation";
+import { FieldError, FormAlert, errorProps, readFormErrors } from "@/components/auth/FormMessages";
+
 export default function Login() {
   const [passwordType, setPasswordType] = useState("password");
+  const [clientErrors, setClientErrors] = useState({});
+  const login = useLogin();
+
+  // Already logged in, or just logged in: go to ?redirect= or My Account.
+  useRedirectIfLoggedIn();
 
   const togglePassword = () => {
     setPasswordType((prevType) =>
       prevType === "password" ? "text" : "password"
     );
   };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    if (login.isPending) return;
+
+    const form = new FormData(event.currentTarget);
+    const values = {
+      email: String(form.get("email") ?? "").trim(),
+      password: String(form.get("password") ?? ""),
+      rememberMe: form.get("rememberMe") === "on",
+    };
+
+    const errors = validateLogin(values);
+    setClientErrors(errors);
+    if (hasErrors(errors)) return;
+
+    login.mutate(values);
+  };
+
+  const { fieldErrors, general } = readFormErrors(login.error, clientErrors);
 
   return (
     <section className="flat-spacing">
@@ -19,46 +48,57 @@ export default function Login() {
               <h4>Login</h4>
             </div>
             <form
-              onSubmit={(e) => e.preventDefault()}
+              onSubmit={handleSubmit}
+              noValidate
               className="form-login form-has-password"
             >
               <div className="wrap">
-                <fieldset className="">
-                  <input
-                    className=""
-                    type="email"
-                    placeholder="Username or email address*"
-                    name="email"
-                    tabIndex={2}
-                    defaultValue=""
-                    aria-required="true"
-                    required
-                  />
-                </fieldset>
-                <fieldset className="position-relative password-item">
-                  <input
-                    className="input-password"
-                    type={passwordType}
-                    placeholder="Password*"
-                    name="password"
-                    tabIndex={2}
-                    defaultValue=""
-                    aria-required="true"
-                    required
-                  />
-                  <span
-                    className={`toggle-password ${
-                      !(passwordType === "text") ? "unshow" : ""
-                    }`}
-                    onClick={togglePassword}
-                  >
-                    <i
-                      className={`icon-eye-${
-                        !(passwordType === "text") ? "hide" : "show"
-                      }-line`}
+                <div>
+                  <fieldset className="">
+                    <input
+                      className=""
+                      type="email"
+                      placeholder="Email address*"
+                      name="email"
+                      autoComplete="email"
+                      tabIndex={2}
+                      defaultValue=""
+                      aria-required="true"
+                      required
+                      {...errorProps("login-email-error", fieldErrors.email)}
                     />
-                  </span>
-                </fieldset>
+                  </fieldset>
+                  <FieldError id="login-email-error" message={fieldErrors.email} />
+                </div>
+                <div>
+                  <fieldset className="position-relative password-item">
+                    <input
+                      className="input-password"
+                      type={passwordType}
+                      placeholder="Password*"
+                      name="password"
+                      autoComplete="current-password"
+                      tabIndex={2}
+                      defaultValue=""
+                      aria-required="true"
+                      required
+                      {...errorProps("login-password-error", fieldErrors.password)}
+                    />
+                    <span
+                      className={`toggle-password ${
+                        !(passwordType === "text") ? "unshow" : ""
+                      }`}
+                      onClick={togglePassword}
+                    >
+                      <i
+                        className={`icon-eye-${
+                          !(passwordType === "text") ? "hide" : "show"
+                        }-line`}
+                      />
+                    </span>
+                  </fieldset>
+                  <FieldError id="login-password-error" message={fieldErrors.password} />
+                </div>
                 <div className="d-flex align-items-center justify-content-between">
                   <div className="tf-cart-checkbox">
                     <div className="tf-checkbox-wrapp">
@@ -67,7 +107,7 @@ export default function Login() {
                         className=""
                         type="checkbox"
                         id="login-form_agree"
-                        name="agree_checkbox"
+                        name="rememberMe"
                       />
                       <div>
                         <i className="icon-check" />
@@ -83,9 +123,17 @@ export default function Login() {
                   </Link>
                 </div>
               </div>
+              <FormAlert>{general}</FormAlert>
               <div className="button-submit">
-                <button className="tf-btn btn-fill" type="submit">
-                  <span className="text text-button">Login</span>
+                <button
+                  className="tf-btn btn-fill"
+                  type="submit"
+                  disabled={login.isPending}
+                  aria-busy={login.isPending}
+                >
+                  <span className="text text-button">
+                    {login.isPending ? "Logging in…" : "Login"}
+                  </span>
                 </button>
               </div>
             </form>

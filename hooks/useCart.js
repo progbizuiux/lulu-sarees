@@ -2,14 +2,33 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { queryKeys } from "@/lib/query/keys";
 import { cartService } from "@/services/cart.service";
 
+// All cart changes share one key and one queue ("scope"), so quick clicks reach the backend
+// one at a time and in order. meta.errorToast shows a pop-up message if a change fails
+// (QueryProvider does that); coupon errors are shown next to the coupon box instead.
+const CART_MUTATION = { mutationKey: ["cart"], scope: { id: "cart" } };
+const WITH_ERROR_TOAST = { errorToast: true };
+
 /** Puts the backend's updated cart into the cache, so every cart view (navbar, drawer, page) updates. */
 function useSaveCart() {
   const queryClient = useQueryClient();
   return (cart) => {
+    // Another cart change is still waiting: its response will be newer, so skip this one
+    // (otherwise the quantity would jump back for a moment).
+    if (queryClient.isMutating({ mutationKey: ["cart"] }) > 1) return;
+
     if (cart) queryClient.setQueryData(queryKeys.cart, cart);
     else queryClient.invalidateQueries({ queryKey: queryKeys.cart });
     // Checkout totals depend on the cart, so they must be fetched again.
     queryClient.invalidateQueries({ queryKey: queryKeys.checkout.all });
+  };
+}
+
+/** Undo an instant (optimistic) change and fetch the real cart again. */
+function useUndoCartChange() {
+  const queryClient = useQueryClient();
+  return (_error, _variables, context) => {
+    if (context?.previous) queryClient.setQueryData(queryKeys.cart, context.previous);
+    queryClient.invalidateQueries({ queryKey: queryKeys.cart });
   };
 }
 
@@ -35,6 +54,8 @@ export function useCart(options = {}) {
 export function useAddToCart() {
   const saveCart = useSaveCart();
   return useMutation({
+    ...CART_MUTATION,
+    meta: WITH_ERROR_TOAST,
     mutationFn: (item) => cartService.addItem(item),
     onSuccess: saveCart,
   });
@@ -47,7 +68,10 @@ export function useAddToCart() {
 export function useUpdateCartItem() {
   const queryClient = useQueryClient();
   const saveCart = useSaveCart();
+  const undo = useUndoCartChange();
   return useMutation({
+    ...CART_MUTATION,
+    meta: WITH_ERROR_TOAST,
     mutationFn: ({ itemId, quantity }) => cartService.updateItem(itemId, quantity),
     onMutate: async ({ itemId, quantity }) => {
       await queryClient.cancelQueries({ queryKey: queryKeys.cart });
@@ -60,9 +84,7 @@ export function useUpdateCartItem() {
       }
       return { previous };
     },
-    onError: (_error, _variables, context) => {
-      if (context?.previous) queryClient.setQueryData(queryKeys.cart, context.previous);
-    },
+    onError: undo,
     onSuccess: saveCart,
   });
 }
@@ -71,7 +93,10 @@ export function useUpdateCartItem() {
 export function useRemoveCartItem() {
   const queryClient = useQueryClient();
   const saveCart = useSaveCart();
+  const undo = useUndoCartChange();
   return useMutation({
+    ...CART_MUTATION,
+    meta: WITH_ERROR_TOAST,
     mutationFn: (itemId) => cartService.removeItem(itemId),
     onMutate: async (itemId) => {
       await queryClient.cancelQueries({ queryKey: queryKeys.cart });
@@ -84,9 +109,7 @@ export function useRemoveCartItem() {
       }
       return { previous };
     },
-    onError: (_error, _variables, context) => {
-      if (context?.previous) queryClient.setQueryData(queryKeys.cart, context.previous);
-    },
+    onError: undo,
     onSuccess: saveCart,
   });
 }
@@ -98,6 +121,7 @@ export function useRemoveCartItem() {
 export function useApplyCoupon() {
   const saveCart = useSaveCart();
   return useMutation({
+    ...CART_MUTATION,
     mutationFn: (code) => cartService.applyCoupon(code),
     onSuccess: saveCart,
   });
@@ -106,7 +130,19 @@ export function useApplyCoupon() {
 export function useRemoveCoupon() {
   const saveCart = useSaveCart();
   return useMutation({
+    ...CART_MUTATION,
+    meta: WITH_ERROR_TOAST,
     mutationFn: () => cartService.removeCoupon(),
     onSuccess: saveCart,
+  });
+}
+
+/** Coupons the customer can pick from on the cart page. */
+export function useAvailableCoupons(options = {}) {
+  return useQuery({
+    queryKey: queryKeys.coupons,
+    queryFn: () => cartService.getAvailableCoupons(),
+    staleTime: 10 * 60 * 1000,
+    ...options,
   });
 }

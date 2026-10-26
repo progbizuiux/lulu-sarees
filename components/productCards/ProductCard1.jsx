@@ -48,13 +48,16 @@ export default function ProductCard1({
             height={800}
           />
 
-          <Image
-            className="lazyload img-hover"
-            src={product.imgHover}
-            alt={product.title}
-            width={600}
-            height={800}
-          />
+          {/* Not every product has a second photo for the hover effect. */}
+          {product.imgHover && (
+            <Image
+              className="lazyload img-hover"
+              src={product.imgHover}
+              alt={product.title}
+              width={600}
+              height={800}
+            />
+          )}
         </Link>
         {product.hotSale && (
           <div className="marquee-product bg-main">

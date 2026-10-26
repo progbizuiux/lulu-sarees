@@ -1,7 +1,13 @@
 import { apiClient, unwrap } from "@/lib/api/client";
 import { ENDPOINTS } from "@/lib/api/endpoints";
 import { config } from "@/lib/config";
-import { mapCheckoutSummary, mapOrder, mapPincodeCheck, mapPlaceOrderResult } from "@/lib/mappers/order.mapper";
+import {
+  mapCheckoutSummary,
+  mapOrder,
+  mapPincodeCheck,
+  mapPlaceOrderInput,
+  mapPlaceOrderResult,
+} from "@/lib/mappers/order.mapper";
 import { compact } from "@/lib/mappers/utils";
 
 const mocks = () => import("@/lib/mocks/orders");
@@ -28,11 +34,11 @@ async function checkPincode(pincode) {
 /**
  * Creates the order. For online payment the result includes `payment` details for the gateway popup;
  * for COD `payment` is null and the order is already confirmed.
- * @param {{paymentMethod: "cod"|"online", addressId?: string|number, address?: Object}} payload
+ * @param {{paymentMethod: "cod"|"online", addressId?: string|number, address?: Object, email?: string, note?: string}} payload
  */
 async function placeOrder(payload) {
   if (config.useMocks) return (await mocks()).placeOrder(payload);
-  return mapPlaceOrderResult(unwrap(await apiClient.post(ENDPOINTS.orders.create, payload)));
+  return mapPlaceOrderResult(unwrap(await apiClient.post(ENDPOINTS.orders.create, mapPlaceOrderInput(payload))));
 }
 
 /**
