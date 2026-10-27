@@ -3,8 +3,7 @@ import React from "react";
 
 export const metadata = {
   title:
-    "Comming Soon || Modave - Multipurpose React Nextjs eCommerce Template",
-  description: "Modave - Multipurpose React Nextjs eCommerce Template",
+    "Comming Soon",
 };
 
 export default function CommingSoonPage() {

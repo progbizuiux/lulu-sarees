@@ -3,8 +3,11 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useUser } from "@/hooks/useAuth";
+import LogoutButton from "@/components/auth/LogoutButton";
 export default function AccountSidebar() {
   const pathname = usePathname();
+  const { data: user } = useUser();
   return (
     <div className="wrap-sidebar-account">
       <div className="sidebar-account">
@@ -17,8 +20,8 @@ export default function AccountSidebar() {
               height={280}
             />
           </div>
-          <h6 className="mb_4">Tony Nguyen</h6>
-          <div className="body-text-1">themesflat@gmail.com</div>
+          <h6 className="mb_4">{user?.name || "My Account"}</h6>
+          <div className="body-text-1">{user?.email}</div>
         </div>
         <ul className="my-account-nav">
           <li>
@@ -111,12 +114,7 @@ export default function AccountSidebar() {
             </Link>
           </li>
           <li>
-            <Link
-              href={`/login`}
-              className={`my-account-nav-item ${
-                pathname == "/login" ? "active" : ""
-              } `}
-            >
+            <LogoutButton className="my-account-nav-item">
               <svg
                 width={24}
                 height={24}
@@ -147,7 +145,7 @@ export default function AccountSidebar() {
                 />
               </svg>
               Logout
-            </Link>
+            </LogoutButton>
           </li>
         </ul>
       </div>

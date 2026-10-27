@@ -14,8 +14,7 @@ import React from "react";
 
 export const metadata = {
   title:
-    "Home Camping || Modave - Multipurpose React Nextjs eCommerce Template",
-  description: "Modave - Multipurpose React Nextjs eCommerce Template",
+    "Home Camping",
 };
 
 export default function HomeCampingPage() {

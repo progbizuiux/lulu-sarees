@@ -29,7 +29,10 @@ export default function ProductCard1({
   }, [product]);
 
   return (
+    // suppressHydrationWarning: the template's scroll animation (WOW.js) adds its own class and style to
+    // this element, sometimes before React has taken over server-rendered cards. That's expected.
     <div
+      suppressHydrationWarning
       className={`${parentClass} ${gridClass} ${
         product.isOnSale ? "on-sale" : ""
       } ${product.sizes ? "card-product-size" : ""}`}
@@ -40,21 +43,29 @@ export default function ProductCard1({
         } ${radiusClass} `}
       >
         <Link href={`/product-detail/${product.id}`} className="product-img">
+          {/* sizes: cards are about half the screen on phones, a third on tablets, a quarter on desktop,
+              so the browser downloads a photo of the right size. */}
           <Image
             className="lazyload img-product"
             src={currentImage}
             alt={product.title}
             width={600}
             height={800}
+            sizes="(max-width: 767px) 50vw, (max-width: 1199px) 33vw, 25vw"
           />
 
-          <Image
-            className="lazyload img-hover"
-            src={product.imgHover}
-            alt={product.title}
-            width={600}
-            height={800}
-          />
+          {/* On hover the template hides the main photo and shows this one. Products without a second
+              photo use the main photo here, so the card never goes blank on hover. */}
+          {(product.imgHover || currentImage) && (
+            <Image
+              className="lazyload img-hover"
+              src={product.imgHover || currentImage}
+              alt={product.title}
+              width={600}
+              height={800}
+              sizes="(max-width: 767px) 50vw, (max-width: 1199px) 33vw, 25vw"
+            />
+          )}
         </Link>
         {product.hotSale && (
           <div className="marquee-product bg-main">

@@ -1,12 +1,90 @@
 "use client";
 import { products } from "@/data/products";
-import React from "react";
+import React, { Suspense } from "react";
+import { useRouter } from "next/navigation";
 import { Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "@/components/common/SwiperSSR";
 import ProductCard1 from "../productCards/ProductCard1";
 import Link from "next/link";
+import { useProducts } from "@/hooks/useProducts";
+import { useShopFilters } from "@/hooks/useShopFilters";
+import { DEFAULT_PAGE_SIZE } from "@/lib/shop/filters";
+import ShopPagination from "@/components/shop/ShopPagination";
 
+// Needed because the page reads ?q= from the URL.
 export default function SearchProducts() {
+  return (
+    <Suspense fallback={null}>
+      <SearchProductsContent />
+    </Suspense>
+  );
+}
+
+/** Results for ?q=, from the product service. */
+function SearchResults({ query, page, pageHref }) {
+  const { data, isPending, isError, error, refetch, isFetching, isPlaceholderData } = useProducts({
+    search: query,
+    page,
+    pageSize: DEFAULT_PAGE_SIZE,
+  });
+
+  if (isPending) {
+    return (
+      <div className="py-5 text-center">
+        <div className="spinner-border" role="status">
+          <span className="visually-hidden">Searching…</span>
+        </div>
+      </div>
+    );
+  }
+  if (isError) {
+    return (
+      <div className="py-5 text-center">
+        <p className="mb_12">{error?.message}</p>
+        <button type="button" className="tf-btn btn-fill" onClick={() => refetch()}>
+          <span className="text text-button">Try again</span>
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <p className="text-center mb_24" aria-live="polite">
+        {data.total === 0
+          ? `No products found for “${query}”. Try a different word.`
+          : `${data.total} ${data.total === 1 ? "product" : "products"} found for “${query}”`}
+      </p>
+      {data.items.length > 0 && (
+        <div
+          className="tf-grid-layout tf-col-2 md-col-3 xl-col-4"
+          style={{ opacity: isFetching && isPlaceholderData ? 0.5 : 1 }}
+        >
+          {data.items.map((product) => (
+            <ProductCard1 key={product.id} product={product} />
+          ))}
+          {data.totalPages > 1 && (
+            <ul className="wg-pagination justify-content-center">
+              <ShopPagination page={data.page} totalPages={data.totalPages} pageHref={pageHref} />
+            </ul>
+          )}
+        </div>
+      )}
+    </>
+  );
+}
+
+function SearchProductsContent() {
+  const router = useRouter();
+  const { filters, pageHref } = useShopFilters();
+  const query = filters.search;
+
+  const handleSearch = (event) => {
+    event.preventDefault();
+    const value = String(new FormData(event.currentTarget).get("q") ?? "").trim();
+    router.push(value ? `/search-result?q=${encodeURIComponent(value)}` : "/search-result");
+  };
+
   return (
     <>
       {/* search */}
@@ -16,18 +94,19 @@ export default function SearchProducts() {
             <div className="col-xl-6">
               <form
                 className="form-search"
-                onSubmit={(e) => e.preventDefault()}
+                onSubmit={handleSearch}
+                role="search"
               >
                 <fieldset className="text">
                   <input
-                    type="text"
-                    placeholder="Searching..."
+                    key={query}
+                    type="search"
+                    placeholder="Search for sarees, colours, fabrics…"
                     className=""
-                    name="text"
+                    name="q"
                     tabIndex={0}
-                    defaultValue=""
-                    aria-required="true"
-                    required
+                    defaultValue={query}
+                    aria-label="Search products"
                   />
                 </fieldset>
                 <button className="" type="submit">
@@ -76,10 +155,17 @@ export default function SearchProducts() {
         </div>
       </section>
       {/* /search */}
-      {/* Top pick */}
+      {query ? (
+        <section className="flat-spacing pt-0">
+          <div className="container">
+            <SearchResults query={query} page={filters.page} pageHref={pageHref} />
+          </div>
+        </section>
+      ) : (
+      // Shown until the customer searches. Still demo products: needs a "recent/popular" API.
       <section className="flat-spacing pt-0">
         <div className="container">
-          <div className="heading-section text-center wow fadeInUp">
+          <div className="heading-section text-center">
             <h3 className="heading">Product Recent</h3>
           </div>
           <Swiper
@@ -108,6 +194,7 @@ export default function SearchProducts() {
           </Swiper>
         </div>
       </section>
+      )}
     </>
   );
 }

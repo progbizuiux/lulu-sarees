@@ -1,7 +1,42 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
+import { useTrackOrder } from "@/hooks/useOrders";
+import { useUser } from "@/hooks/useAuth";
+import { hasErrors, validateTrackOrder } from "@/lib/validation";
+import { formatDate } from "@/lib/format";
+import { orderStatusLabel } from "@/lib/orders/status";
+import { FieldError, FormAlert, errorProps, readFormErrors } from "@/components/auth/FormMessages";
+import OrderTimeline from "@/components/my-account/OrderTimeline";
+
+/**
+ * Track an order without logging in: order number + the email or phone used for the order.
+ * The backend gives the same answer for any wrong detail, so nobody can guess other people's orders.
+ */
 export default function OrderTrac() {
+  const [clientErrors, setClientErrors] = useState({});
+  const trackOrder = useTrackOrder();
+  const { data: user } = useUser();
+  const order = trackOrder.data;
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    if (trackOrder.isPending) return;
+
+    const form = new FormData(event.currentTarget);
+    const values = {
+      orderNumber: String(form.get("orderNumber") ?? "").trim().replace(/^#/, ""),
+      contact: String(form.get("contact") ?? "").trim(),
+    };
+    const errors = validateTrackOrder(values);
+    setClientErrors(errors);
+    if (hasErrors(errors)) return;
+
+    trackOrder.mutate(values);
+  };
+
+  const { fieldErrors, general } = readFormErrors(trackOrder.error, clientErrors);
+
   return (
     <section className="flat-spacing">
       <div className="container">
@@ -10,37 +45,93 @@ export default function OrderTrac() {
             <div className="heading">
               <h4 className="mb_8">Order Tracking</h4>
               <p>
-                To track your order please enter your Order ID in the box below
-                and press the "Track" button. This was given to you on your
-                receipt and in the confirmation email you should have received.
+                Enter your order number and the email or mobile number you used when ordering. You'll
+                find the order number in your confirmation email.
               </p>
             </div>
-            <form onSubmit={(e) => e.preventDefault()} className="form-login">
+            <form onSubmit={handleSubmit} noValidate className="form-login">
               <div className="wrap">
-                <fieldset>
-                  <input type="text" placeholder="Username or email address*" />
-                </fieldset>
-                <fieldset>
-                  <input type="text" placeholder="Billing Email*" />
-                </fieldset>
+                <div>
+                  <fieldset>
+                    <input
+                      type="text"
+                      name="orderNumber"
+                      placeholder="Order number*"
+                      autoComplete="off"
+                      aria-label="Order number"
+                      aria-required="true"
+                      {...errorProps("track-order-number-error", fieldErrors.orderNumber)}
+                    />
+                  </fieldset>
+                  <FieldError id="track-order-number-error" message={fieldErrors.orderNumber} />
+                </div>
+                <div>
+                  <fieldset>
+                    <input
+                      type="text"
+                      name="contact"
+                      placeholder="Email or mobile number*"
+                      autoComplete="email"
+                      aria-label="Email or mobile number"
+                      aria-required="true"
+                      {...errorProps("track-contact-error", fieldErrors.contact)}
+                    />
+                  </fieldset>
+                  <FieldError id="track-contact-error" message={fieldErrors.contact} />
+                </div>
               </div>
+              <FormAlert>{general}</FormAlert>
               <div className="button-submit">
-                <button className="tf-btn btn-fill" type="submit">
-                  <span className="text">Tracking Orders</span>
+                <button
+                  className="tf-btn btn-fill"
+                  type="submit"
+                  disabled={trackOrder.isPending}
+                  aria-busy={trackOrder.isPending}
+                >
+                  <span className="text">{trackOrder.isPending ? "Finding your order…" : "Track Order"}</span>
                 </button>
               </div>
             </form>
+            {order && (
+              <div className="mt-5 pt-4 border-top" aria-live="polite">
+                <h5 className="mb_8">Order #{order.number}</h5>
+                <p className="mb_4">
+                  Status: <strong>{orderStatusLabel(order.status)}</strong>
+                </p>
+                <p className="mb_12 text-secondary">Placed on {formatDate(order.createdAt)}</p>
+                {order.tracking?.trackingNumber && (
+                  <p className="mb_12">
+                    {order.tracking.courier && <>{order.tracking.courier} · </>}
+                    Tracking number <strong>{order.tracking.trackingNumber}</strong>
+                    {order.tracking.estimatedDelivery && (
+                      <> · Expected by {formatDate(order.tracking.estimatedDelivery)}</>
+                    )}
+                  </p>
+                )}
+                <OrderTimeline order={order} />
+              </div>
+            )}
           </div>
           <div className="right">
-            <h4 className="mb_8">Already have an account?</h4>
-            <p className="text-secondary">
-              Welcome back. Sign in to access your personalized experience,
-              saved preferences, and more. We're thrilled to have you with us
-              again!
-            </p>
-            <Link href={`/login`} className="tf-btn btn-fill">
-              <span className="text">Login</span>
-            </Link>
+            {user ? (
+              <>
+                <h4 className="mb_8">Your orders</h4>
+                <p className="text-secondary">See all your orders and their details in your account.</p>
+                <Link href={`/my-account-orders`} className="tf-btn btn-fill">
+                  <span className="text">View your orders</span>
+                </Link>
+              </>
+            ) : (
+              <>
+                <h4 className="mb_8">Already have an account?</h4>
+                <p className="text-secondary">
+                  Log in to see all your orders, track deliveries and reorder your favourites.
+                </p>
+                <Link href={`/login?redirect=${encodeURIComponent("/my-account-orders")}`} className="tf-btn btn-fill">
+                  <span className="text">Login</span>
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </div>

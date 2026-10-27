@@ -3,6 +3,12 @@ import LuluHeader from "@/components/headers/LuluHeader";
 import Topbar6 from "@/components/headers/Topbar6";
 import SearchProducts from "@/components/products/SearchProducts";
 import React from "react";
+import { NO_INDEX } from "@/lib/site";
+
+export const metadata = {
+  title: "Search",
+  robots: NO_INDEX,
+};
 
 export default function SearchResultPage() {
   return (

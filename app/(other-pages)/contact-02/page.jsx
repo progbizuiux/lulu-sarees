@@ -6,8 +6,7 @@ import StoreLocations3 from "@/components/otherPages/StoreLocations3";
 import React from "react";
 import Link from "next/link";
 export const metadata = {
-  title: "Countact 02 || Modave - Multipurpose React Nextjs eCommerce Template",
-  description: "Modave - Multipurpose React Nextjs eCommerce Template",
+  title: "Countact 02",
 };
 
 export default function ContactPage2() {

@@ -1,23 +1,45 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useContextElement } from "@/context/Context";
 import { products41 } from "@/data/products";
+import { useApplyCoupon, useCart, useRemoveCartItem, useRemoveCoupon } from "@/hooks/useCart";
+import { EMPTY_CART } from "@/lib/mappers/cart.mapper";
+import { formatPrice } from "@/lib/format";
+import { FieldError, errorProps } from "@/components/auth/FormMessages";
 export default function CartModal() {
-  const {
-    cartProducts,
-    setCartProducts,
-    totalPrice,
-    addProductToCart,
-    isAddedToCartProducts,
-  } = useContextElement();
-
-  const removeItem = (id) => {
-    setCartProducts((pre) => [...pre.filter((elm) => elm.id != id)]);
-  };
+  const { addProductToCart, isAddedToCartProducts } = useContextElement();
+  const { data: cart = EMPTY_CART, isPending: isCartLoading } = useCart();
+  const removeItem = useRemoveCartItem();
+  const applyCoupon = useApplyCoupon();
+  const removeCoupon = useRemoveCoupon();
 
   const [currentOpenPopup, setCurrentOpenPopup] = useState("");
+
+  const { summary, freeShipping } = cart;
+  const freeShippingProgress = freeShipping?.threshold
+    ? Math.min(100, Math.round(((freeShipping.threshold - freeShipping.remaining) / freeShipping.threshold) * 100))
+    : 0;
+  const couponError = applyCoupon.error?.fieldErrors?.code ?? applyCoupon.error?.message;
+
+  const handleCoupon = (event) => {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const code = String(new FormData(form).get("code") ?? "").trim();
+    if (!code || applyCoupon.isPending) return;
+    applyCoupon.mutate(code, {
+      onSuccess: () => {
+        form.reset();
+        setCurrentOpenPopup("");
+      },
+    });
+  };
+
+  const closePopup = () => {
+    setCurrentOpenPopup("");
+    applyCoupon.reset();
+  };
 
   return (
     <div className="modal fullRight fade modal-shopping-cart" id="shoppingCart">
@@ -43,7 +65,7 @@ export default function CartModal() {
                       <div className="name">
                         <Link
                           className="link text-line-clamp-1"
-                          href="/product-detail"
+                          href={`/product-detail/${product.id}`}
                         >
                           {product.title}
                         </Link>
@@ -76,35 +98,50 @@ export default function CartModal() {
               />
             </div>
             <div className="wrap">
-              <div className="tf-mini-cart-threshold">
-                <div className="tf-progress-bar">
-                  <div
-                    className="value"
-                    style={{ width: "0%" }}
-                    data-progress={75}
-                  >
-                    <i className="icon icon-shipping" />
+              {freeShipping && cart.items.length > 0 && (
+                <div className="tf-mini-cart-threshold">
+                  <div className="tf-progress-bar">
+                    <div
+                      className="value"
+                      style={{ width: `${freeShippingProgress}%` }}
+                      data-progress={freeShippingProgress}
+                    >
+                      <i className="icon icon-shipping" />
+                    </div>
+                  </div>
+                  <div className="text-caption-1">
+                    {freeShipping.remaining > 0 ? (
+                      <>
+                        Add <span className="fw-semibold">{formatPrice(freeShipping.remaining)}</span> more
+                        to get free shipping
+                      </>
+                    ) : (
+                      "Congratulations! You've got free shipping!"
+                    )}
                   </div>
                 </div>
-                <div className="text-caption-1">
-                  Congratulations! You've got free shipping!
-                </div>
-              </div>
+              )}
               <div className="tf-mini-cart-wrap">
                 <div className="tf-mini-cart-main">
                   <div className="tf-mini-cart-sroll">
-                    {cartProducts.length ? (
+                    {isCartLoading ? (
+                      <div className="p-4 text-center">
+                        <div className="spinner-border spinner-border-sm" role="status">
+                          <span className="visually-hidden">Loading your cart…</span>
+                        </div>
+                      </div>
+                    ) : cart.items.length ? (
                       <div className="tf-mini-cart-items">
-                        {cartProducts.map((product, i) => (
+                        {cart.items.map((item) => (
                           <div
-                            key={i}
+                            key={item.id}
                             className="tf-mini-cart-item file-delete"
                           >
                             <div className="tf-mini-cart-image">
                               <Image
                                 className="lazyload"
-                                alt=""
-                                src={product.imgSrc}
+                                alt={item.title}
+                                src={item.imgSrc}
                                 width={600}
                                 height={800}
                               />
@@ -113,24 +150,32 @@ export default function CartModal() {
                               <div className="mb_12 d-flex align-items-center justify-content-between flex-wrap gap-12">
                                 <div className="text-title">
                                   <Link
-                                    href={`/product-detail/${product.id}`}
+                                    href={`/product-detail/${item.productId}`}
                                     className="link text-line-clamp-1"
                                   >
-                                    {product.title}
+                                    {item.title}
                                   </Link>
                                 </div>
                                 <div
                                   className="text-button tf-btn-remove remove"
-                                  onClick={() => removeItem(product.id)}
+                                  role="button"
+                                  tabIndex={0}
+                                  onClick={() => removeItem.mutate(item.id)}
+                                  onKeyDown={(event) => {
+                                    if (event.key === "Enter") removeItem.mutate(item.id);
+                                  }}
                                 >
                                   Remove
                                 </div>
                               </div>
                               <div className="d-flex align-items-center justify-content-between flex-wrap gap-12">
-                                <div className="text-secondary-2">XL/Blue</div>
+                                {item.variantName ? (
+                                  <div className="text-secondary-2">{item.variantName}</div>
+                                ) : (
+                                  <span />
+                                )}
                                 <div className="text-button">
-                                  {product.quantity} X $
-                                  {product.price.toFixed(2)}
+                                  {item.quantity} X {formatPrice(item.price)}
                                 </div>
                               </div>
                             </div>
@@ -262,10 +307,26 @@ export default function CartModal() {
                     </div>
                   </div>
                   <div className="tf-mini-cart-bottom-wrap">
+                    {cart.coupon && (
+                      <div className="tf-cart-totals-discounts mb_8">
+                        <span className="text-button">
+                          Coupon {cart.coupon.code}{" "}
+                          <button
+                            type="button"
+                            className="lulu-link-button text-secondary-2"
+                            onClick={() => removeCoupon.mutate()}
+                            disabled={removeCoupon.isPending}
+                          >
+                            Remove
+                          </button>
+                        </span>
+                        <span className="text-button">−{formatPrice(summary.discount)}</span>
+                      </div>
+                    )}
                     <div className="tf-cart-totals-discounts">
                       <h5>Subtotal</h5>
                       <h5 className="tf-totals-total-value">
-                        ${totalPrice.toFixed(2)}
+                        {formatPrice(summary.subtotal)}
                       </h5>
                     </div>
                     <div className="tf-cart-checkbox">
@@ -295,7 +356,7 @@ export default function CartModal() {
                         <span className="text">View cart</span>
                       </Link>
                       <Link
-                        href={`/shopping-cart`}
+                        href={`/checkout`}
                         className="tf-btn w-100 btn-fill radius-4"
                       >
                         <span className="text">Check Out</span>
@@ -652,7 +713,8 @@ export default function CartModal() {
                     </label>
                     <form
                       className="form-add-coupon tf-mini-cart-tool-wrap"
-                      onSubmit={(e) => e.preventDefault()}
+                      onSubmit={handleCoupon}
+                      noValidate
                     >
                       <fieldset className="">
                         <div className="text-caption-1 text-secondary mb_8">
@@ -662,20 +724,30 @@ export default function CartModal() {
                           className=""
                           type="text"
                           placeholder="Discount code"
-                          name="text"
+                          name="code"
+                          autoComplete="off"
                           tabIndex={2}
                           defaultValue=""
                           aria-required="true"
                           required
+                          {...errorProps("drawer-coupon-error", couponError)}
                         />
+                        <FieldError id="drawer-coupon-error" message={couponError} />
                       </fieldset>
                       <div className="tf-cart-tool-btns">
-                        <button type="submit" className="btn-style-2 w-100">
-                          <span className="text text-btn-uppercase">Save</span>
+                        <button
+                          type="submit"
+                          className="btn-style-2 w-100"
+                          disabled={applyCoupon.isPending}
+                          aria-busy={applyCoupon.isPending}
+                        >
+                          <span className="text text-btn-uppercase">
+                            {applyCoupon.isPending ? "Applying…" : "Apply"}
+                          </span>
                         </button>
                         <div
                           className="text-center w-100 text-btn-uppercase tf-mini-cart-tool-close"
-                          onClick={() => setCurrentOpenPopup("")}
+                          onClick={closePopup}
                         >
                           Cancel
                         </div>

@@ -11,8 +11,7 @@ import React from "react";
 
 export const metadata = {
   title:
-    "Product Grid 01 || Modave - Multipurpose React Nextjs eCommerce Template",
-  description: "Modave - Multipurpose React Nextjs eCommerce Template",
+    "Product Grid 01",
 };
 export default async function ProductGridPage1({ params }) {
   const { id } = await params;

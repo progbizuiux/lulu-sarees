@@ -6,6 +6,10 @@ import Topbar6 from "@/components/headers/Topbar6";
 import Link from "next/link";
 import React from "react";
 
+export const metadata = {
+  title: "Real Brides",
+};
+
 export default function BlogGridPage() {
   return (
     <>

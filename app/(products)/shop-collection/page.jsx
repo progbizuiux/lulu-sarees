@@ -12,7 +12,7 @@ export default function ShopCollectionPage() {
       <LuluHeader />
       <div
         className="page-title"
-        style={{ backgroundImage: "url(/images/section/page-title.jpg)" }}
+        style={{ backgroundImage: "url(/images/banners/lulu-collections.jpg)" }}
       >
         <div className="container-full">
           <div className="row">

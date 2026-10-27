@@ -1,9 +1,5 @@
 @use "sass:meta";
-// Fonts
-@import "/fonts/font-icons.css";
-
-// CSS
-@import "/css/bootstrap.min.css";
-@import "/css/swiper-bundle.min.css";
-@import "/css/animate.css";
+// The icon font, Bootstrap, Swiper, animate.css and bootstrap-select used to be pulled in here with
+// CSS @import. They are now imported in app/layout.js (before this file) so they're bundled in the
+// right order: a CSS @import only works at the very top of the final stylesheet, which isn't guaranteed.
 @include meta.load-css("app.scss");

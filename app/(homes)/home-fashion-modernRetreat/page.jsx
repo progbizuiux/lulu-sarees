@@ -12,8 +12,7 @@ import Features from "../../../components/common/Features2";
 
 export const metadata = {
   title:
-    "Home Fashion Modern Retreate || Modave - Multipurpose React Nextjs eCommerce Template",
-  description: "Modave - Multipurpose React Nextjs eCommerce Template",
+    "Home Fashion Modern Retreate",
 };
 
 export default function HomeFashionModernRetreatPage() {

@@ -8,6 +8,10 @@ import Topbar6 from "@/components/headers/Topbar6";
 import { allBlogs } from "@/data/blogs";
 import React from "react";
 
+export const metadata = {
+  title: "Wedding Journal",
+};
+
 export default async function BlogDetailsPage1({ params }) {
   const { id } = await params;
 

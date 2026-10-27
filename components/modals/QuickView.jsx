@@ -40,6 +40,18 @@ export default function QuickView() {
       lastBackdrop.style.zIndex = "1057";
     }
   };
+
+  // No product chosen yet: keep the empty popup in the page so Bootstrap can open it.
+  if (!quickViewItem) {
+    return (
+      <div className="modal fullRight fade modal-quick-view" id="quickView">
+        <div className="modal-dialog">
+          <div className="modal-content" />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="modal fullRight fade modal-quick-view" id="quickView">
       <div className="modal-dialog">

@@ -1,16 +1,13 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useContextElement } from "@/context/Context";
-import { allProducts } from "@/data/products";
+import { formatPrice } from "@/lib/format";
 
 export default function Wishlist() {
-  const { removeFromWishlist, wishList } = useContextElement();
-  const [items, setItems] = useState([]);
-  useEffect(() => {
-    setItems([...allProducts.filter((elm) => wishList.includes(elm.id))]);
-  }, [wishList]);
+  // Products come from the wishlist service (backend or mock), not the demo data file.
+  const { removeFromWishlist, wishlistItems: items } = useContextElement();
   return (
     <div className="modal fullRight fade modal-wishlist" id="wishlist">
       <div className="modal-dialog">
@@ -28,12 +25,12 @@ export default function Wishlist() {
                 <div className="tf-mini-cart-sroll">
                   {items.length ? (
                     <div className="tf-mini-cart-items">
-                      {items.map((elm, i) => (
-                        <div key={i} className="tf-mini-cart-item file-delete">
+                      {items.map((elm) => (
+                        <div key={elm.id} className="tf-mini-cart-item file-delete">
                           <div className="tf-mini-cart-image">
                             <Image
                               className="lazyload"
-                              alt=""
+                              alt={elm.title}
                               src={elm.imgSrc}
                               width={600}
                               height={800}
@@ -51,15 +48,20 @@ export default function Wishlist() {
                               </div>
                               <div
                                 className="text-button tf-btn-remove remove"
+                                role="button"
+                                tabIndex={0}
                                 onClick={() => removeFromWishlist(elm.id)}
+                                onKeyDown={(event) => {
+                                  if (event.key === "Enter") removeFromWishlist(elm.id);
+                                }}
                               >
                                 Remove
                               </div>
                             </div>
                             <div className="d-flex align-items-center justify-content-between flex-wrap gap-12">
-                              <div className="text-secondary-2">XL/Blue</div>
+                              <span />
                               <div className="text-button">
-                                ${elm.price.toFixed(2)}
+                                {formatPrice(elm.price)}
                               </div>
                             </div>
                           </div>

@@ -4,11 +4,11 @@ import Topbar6 from "@/components/headers/Topbar6";
 import ForgotPass from "@/components/otherPages/ForgotPass";
 import Link from "next/link";
 import React from "react";
+import { NO_INDEX } from "@/lib/site";
 
 export const metadata = {
-  title:
-    "Forgot Password || Modave - Multipurpose React Nextjs eCommerce Template",
-  description: "Modave - Multipurpose React Nextjs eCommerce Template",
+  title: "Reset Your Password",
+  robots: NO_INDEX,
 };
 
 export default function ForgotPasswordPage() {

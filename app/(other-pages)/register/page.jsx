@@ -4,10 +4,11 @@ import Topbar6 from "@/components/headers/Topbar6";
 import Register from "@/components/otherPages/Register";
 import Link from "next/link";
 import React from "react";
+import { NO_INDEX } from "@/lib/site";
 
 export const metadata = {
-  title: "Login || Modave - Multipurpose React Nextjs eCommerce Template",
-  description: "Modave - Multipurpose React Nextjs eCommerce Template",
+  title: "Create an Account",
+  robots: NO_INDEX,
 };
 
 export default function RegisterPage() {

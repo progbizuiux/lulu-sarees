@@ -1,6 +1,10 @@
+"use client";
 import React from "react";
 import Link from "next/link";
+import { useUser } from "@/hooks/useAuth";
+import LogoutButton from "@/components/auth/LogoutButton";
 export default function AccountSidebar() {
+  const { data: user } = useUser();
   return (
     <div className="offcanvas offcanvas-start canvas-sidebar" id="mbAccount">
       <div className="canvas-wrapper">
@@ -18,8 +22,8 @@ export default function AccountSidebar() {
               <div className="image">
                 <img src="/images/avatar/user-account.jpg" alt="" />
               </div>
-              <h6 className="mb_4">Tony Nguyen</h6>
-              <div className="body-text-1">themesflat@gmail.com</div>
+              <h6 className="mb_4">{user?.name || "My Account"}</h6>
+              <div className="body-text-1">{user?.email}</div>
             </div>
             <ul className="my-account-nav">
               <li>
@@ -103,7 +107,7 @@ export default function AccountSidebar() {
                 </Link>
               </li>
               <li>
-                <Link href={`/login`} className="my-account-nav-item">
+                <LogoutButton className="my-account-nav-item" data-bs-dismiss="offcanvas">
                   <svg
                     width={24}
                     height={24}
@@ -134,7 +138,7 @@ export default function AccountSidebar() {
                     />
                   </svg>
                   Logout
-                </Link>
+                </LogoutButton>
               </li>
             </ul>
           </div>

@@ -4,6 +4,12 @@ import Topbar6 from "@/components/headers/Topbar6";
 import Checkout from "@/components/otherPages/Checkout";
 import Link from "next/link";
 import React from "react";
+import { NO_INDEX } from "@/lib/site";
+
+export const metadata = {
+  title: "Checkout",
+  robots: NO_INDEX,
+};
 
 export default function CheckoutPage() {
   return (

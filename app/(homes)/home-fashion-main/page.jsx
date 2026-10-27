@@ -13,8 +13,7 @@ import Features2 from "@/components/common/Features2";
 
 export const metadata = {
   title:
-    "Home Fashion Main || Modave - Multipurpose React Nextjs eCommerce Template",
-  description: "Modave - Multipurpose React Nextjs eCommerce Template",
+    "Home Fashion Main",
 };
 
 export default function HomeFashionMainPage() {

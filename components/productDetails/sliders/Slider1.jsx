@@ -14,8 +14,9 @@ export default function Slider1({
   thumbSlidePerView = 6,
   thumbSlidePerViewOnMobile = 6,
 }) {
+  // Copy the first slide instead of changing it: the default list is shared by every product page.
   const items = [...slideItems];
-  items[0].src = firstItem ?? items[0].src;
+  items[0] = { ...items[0], src: firstItem ?? items[0].src };
 
   useEffect(() => {
     // Function to initialize Drift

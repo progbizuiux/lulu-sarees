@@ -5,9 +5,7 @@ import Terms from "@/components/otherPages/Terms";
 import React from "react";
 import Link from "next/link";
 export const metadata = {
-  title:
-    "Terms of Use || Modave - Multipurpose React Nextjs eCommerce Template",
-  description: "Modave - Multipurpose React Nextjs eCommerce Template",
+  title: "Terms of Use",
 };
 
 export default function TermsOfUsePage() {

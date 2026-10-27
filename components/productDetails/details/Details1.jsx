@@ -33,6 +33,7 @@ export default function Details1({ product }) {
                   setActiveColor={setActiveColor}
                   activeColor={activeColor}
                   firstItem={product.imgSrc}
+                  slideItems={product.gallery}
                 />
               </div>
             </div>
