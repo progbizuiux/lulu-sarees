@@ -6,6 +6,7 @@ import Descriptions1 from "@/components/productDetails/descriptions/Descriptions
 import Details1 from "@/components/productDetails/details/Details1";
 import RelatedProducts from "@/components/productDetails/RelatedProducts";
 import { productService } from "@/services/product.service";
+import { SITE_NAME, absoluteUrl } from "@/lib/site";
 import { notFound } from "next/navigation";
 import React, { cache } from "react";
 
@@ -20,20 +21,50 @@ const getProduct = cache(async (id) => {
   }
 });
 
+const productPath = (product) => `/product-detail/${encodeURIComponent(product.id)}`;
+const describe = (product) =>
+  product.description ? product.description.slice(0, 160) : `Shop ${product.title} online at Lulu Sarees.`;
+
 export async function generateMetadata({ params }) {
   const { id } = await params;
   const product = await getProduct(id);
-  if (!product) return { title: "Product not found | Lulu Sarees" };
+  if (!product) return { title: "Product not found", robots: { index: false, follow: true } };
 
-  const title = `${product.title} | Lulu Sarees`;
-  const description = product.description
-    ? product.description.slice(0, 160)
-    : `Shop ${product.title} online at Lulu Sarees.`;
-
+  const description = describe(product);
   return {
-    title,
+    title: product.title, // the site template adds " | Lulu Sarees"
     description,
-    openGraph: { title, description, images: product.imgSrc ? [product.imgSrc] : [] },
+    alternates: { canonical: productPath(product) },
+    openGraph: {
+      title: product.title,
+      description,
+      url: productPath(product),
+      images: product.imgSrc ? [{ url: product.imgSrc, alt: product.title }] : [],
+    },
+  };
+}
+
+/**
+ * Product structured data (schema.org), so search results can show price and stock.
+ * https://developers.google.com/search/docs/appearance/structured-data/product
+ */
+function productJsonLd(product) {
+  const images = (product.images?.length ? product.images : [product.imgSrc]).filter(Boolean).map(absoluteUrl);
+  return {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.title,
+    description: describe(product),
+    image: images,
+    sku: String(product.id),
+    brand: { "@type": "Brand", name: SITE_NAME },
+    offers: {
+      "@type": "Offer",
+      url: absoluteUrl(productPath(product)),
+      priceCurrency: "INR",
+      price: product.price,
+      availability: product.inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+    },
   };
 }
 
@@ -44,6 +75,11 @@ export default async function ProductDetailPage({ params }) {
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        // "<" is escaped so text from the backend can never close this script tag (XSS safety).
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd(product)).replace(/</g, "\\u003c") }}
+      />
       <Topbar6 bgColor="bg-main" />
       <LuluHeader />
       <Breadcumb product={product} />

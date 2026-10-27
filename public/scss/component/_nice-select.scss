@@ -220,8 +220,7 @@
   display: block;
 }
 
-// image select
-@import url(/css/bootstrap-select.min.css);
+// image select (bootstrap-select's CSS is imported in app/layout.js)
 
 .image-select {
   &.style-default {

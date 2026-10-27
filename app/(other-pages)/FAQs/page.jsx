@@ -5,8 +5,7 @@ import Faqs from "@/components/otherPages/Faqs";
 import React from "react";
 import Link from "next/link";
 export const metadata = {
-  title: "Faqs || Modave - Multipurpose React Nextjs eCommerce Template",
-  description: "Modave - Multipurpose React Nextjs eCommerce Template",
+  title: "FAQs",
 };
 
 export default function FAQSPage() {

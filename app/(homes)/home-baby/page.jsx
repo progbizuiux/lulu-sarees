@@ -13,8 +13,7 @@ import Products2 from "@/components/homes/home-baby/Products2";
 import React from "react";
 
 export const metadata = {
-  title: "Home Baby || Modave - Multipurpose React Nextjs eCommerce Template",
-  description: "Modave - Multipurpose React Nextjs eCommerce Template",
+  title: "Home Baby",
 };
 export default function page() {
   return (

@@ -1,5 +1,4 @@
 "use client";
-import { allProducts } from "@/data/products";
 import { openCartModal } from "@/utlis/openCartModal";
 import { openWistlistModal } from "@/utlis/openWishlist";
 import { useAddToCart, useCart, useRemoveCartItem, useUpdateCartItem } from "@/hooks/useCart";
@@ -103,7 +102,9 @@ export default function Context({ children }) {
 
   // ---- Compare and quick view (UI only, unchanged)
   const [compareItem, setCompareItem] = useState([1, 2, 3]);
-  const [quickViewItem, setQuickViewItem] = useState(allProducts[0]);
+  // Set when a product's "Quick view" is clicked. Starts empty so the big demo product file isn't
+  // loaded on every page just for a starting value.
+  const [quickViewItem, setQuickViewItem] = useState(null);
   const [quickAddItem, setQuickAddItem] = useState(1);
 
   const addToCompareItem = (id) => {

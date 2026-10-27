@@ -2,13 +2,9 @@
 import React from "react";
 import Link from "next/link";
 import { luluMenu } from "@/data/luluMenu";
-import { usePathname } from "next/navigation";
 import { useUser } from "@/hooks/useAuth";
-// The page part of a link (without ?category=...)
-const pathOf = (href) => href.split("?")[0];
 
 export default function MobileMenu() {
-  const pathname = usePathname();
   const { data: user } = useUser();
   return (
     <div className="offcanvas offcanvas-start canvas-mb" id="mobileMenu">
@@ -57,9 +53,9 @@ export default function MobileMenu() {
               </button>
             </form>
             <ul className="nav-ul-mb" id="wrapper-menu-navigation">
+              {/* No "active" highlight on menu links: many open the same page with a different
+                  ?category=, so whole groups used to stay highlighted (same as the desktop menu). */}
               {luluMenu.map((item, i) => {
-                const isActive = (link) => pathOf(link.href) === pathname;
-                const groupActive = item.columns.some((col) => col.links.some(isActive));
                 // dropdown switched off for this item: show it as a plain link
                 if (item.hideDropdown) {
                   return (
@@ -74,10 +70,7 @@ export default function MobileMenu() {
                 const renderLinks = (links) =>
                   links.map((link) => (
                     <li key={link.label + link.href}>
-                      <Link
-                        href={link.href}
-                        className={`sub-nav-link ${isActive(link) ? "active" : ""}`}
-                      >
+                      <Link href={link.href} className="sub-nav-link">
                         {link.label}
                       </Link>
                     </li>
@@ -86,7 +79,7 @@ export default function MobileMenu() {
                   <li className="nav-mb-item" key={item.label}>
                     <a
                       href={`#${menuId}`}
-                      className={`collapsed mb-menu-link ${groupActive ? "active" : ""}`}
+                      className="collapsed mb-menu-link"
                       data-bs-toggle="collapse"
                       aria-expanded="false"
                       aria-controls={menuId}
@@ -110,9 +103,7 @@ export default function MobileMenu() {
                                 <li key={col.heading}>
                                   <a
                                     href={`#${subId}`}
-                                    className={`sub-nav-link collapsed ${
-                                      col.links.some(isActive) ? "active" : ""
-                                    }`}
+                                    className="sub-nav-link collapsed"
                                     data-bs-toggle="collapse"
                                     aria-expanded="false"
                                     aria-controls={subId}

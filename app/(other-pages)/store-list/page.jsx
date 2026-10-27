@@ -5,8 +5,7 @@ import StoreLocations1 from "@/components/otherPages/StoreLocations1";
 import React from "react";
 import Link from "next/link";
 export const metadata = {
-  title: "Store List || Modave - Multipurpose React Nextjs eCommerce Template",
-  description: "Modave - Multipurpose React Nextjs eCommerce Template",
+  title: "Store List",
 };
 
 export default function StorelistPage() {

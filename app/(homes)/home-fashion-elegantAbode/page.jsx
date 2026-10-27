@@ -17,8 +17,7 @@ import MarqueeSection2 from "@/components/common/MarqueeSection2";
 
 export const metadata = {
   title:
-    "Home Fashion Elegant Abode || Modave - Multipurpose React Nextjs eCommerce Template",
-  description: "Modave - Multipurpose React Nextjs eCommerce Template",
+    "Home Fashion Elegant Abode",
 };
 
 export default function HomeFashionElegantAbodePage() {

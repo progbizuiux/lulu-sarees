@@ -7,8 +7,7 @@ import React from "react";
 
 export const metadata = {
   title:
-    "Store List 02 || Modave - Multipurpose React Nextjs eCommerce Template",
-  description: "Modave - Multipurpose React Nextjs eCommerce Template",
+    "Store List 02",
 };
 
 export default function StorelistPage2() {

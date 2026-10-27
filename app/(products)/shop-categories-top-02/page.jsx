@@ -4,22 +4,35 @@ import Topbar6 from "@/components/headers/Topbar6";
 import Products1 from "@/components/products/Products1";
 
 import ShopCategories2 from "@/components/products/ShopCategories2";
+import { loadShopList, shopBanner, shopHeading, shopMetadata } from "@/lib/shop/server";
 import Link from "next/link";
 import React from "react";
 
-export default function ShopCategoriesTopPag2() {
+const PATH = "/shop-categories-top-02";
+
+export async function generateMetadata({ searchParams }) {
+  return shopMetadata(await searchParams, { title: "Women", path: PATH });
+}
+
+export default async function ShopCategoriesTopPag2({ searchParams }) {
+  const params = await searchParams;
+  // Products for this URL, loaded on the server so the HTML already contains them.
+  const initialList = await loadShopList(params);
+  const heading = shopHeading(params, "Women");
+  const banner = shopBanner(params, { path: PATH, fallback: "women" });
+
   return (
     <>
       <Topbar6 bgColor="bg-main" />
       <LuluHeader />
       <div
         className="page-title"
-        style={{ backgroundImage: "url(/images/section/page-title.jpg)" }}
+        style={{ backgroundImage: `url(${banner})` }}
       >
         <div className="container-full">
           <div className="row">
             <div className="col-12">
-              <h3 className="heading text-center">Women</h3>
+              <h3 className="heading text-center">{heading}</h3>
               <ul className="breadcrumbs d-flex align-items-center justify-content-center">
                 <li>
                   <Link className="link" href={`/`}>
@@ -29,14 +42,14 @@ export default function ShopCategoriesTopPag2() {
                 <li>
                   <i className="icon-arrRight" />
                 </li>
-                <li>Women</li>
+                <li>{heading}</li>
               </ul>
             </div>
           </div>
         </div>
       </div>
       <ShopCategories2 />
-      <Products1 parentClass="flat-spacing pt-0" />
+      <Products1 parentClass="flat-spacing pt-0" initialList={initialList} />
       <Footer1 />
     </>
   );

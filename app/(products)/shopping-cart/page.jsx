@@ -5,11 +5,11 @@ import RecentProducts from "@/components/otherPages/RecentProducts";
 import ShopCart from "@/components/otherPages/ShopCart";
 import Link from "next/link";
 import React from "react";
+import { NO_INDEX } from "@/lib/site";
 
 export const metadata = {
-  title:
-    "Shopping Cart || Modave - Multipurpose React Nextjs eCommerce Template",
-  description: "Modave - Multipurpose React Nextjs eCommerce Template",
+  title: "Shopping Cart",
+  robots: NO_INDEX,
 };
 
 export default function ShopingCartPage() {

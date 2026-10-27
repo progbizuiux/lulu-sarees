@@ -12,8 +12,7 @@ import React from "react";
 
 export const metadata = {
   title:
-    "Home Organic || Modave - Multipurpose React Nextjs eCommerce Template",
-  description: "Modave - Multipurpose React Nextjs eCommerce Template",
+    "Home Organic",
 };
 
 export default function HomeOrganicPage() {

@@ -13,8 +13,7 @@ import Testimonials from "@/components/homes/home-gaming/Testimonials";
 import React from "react";
 
 export const metadata = {
-  title: "Home Gaming || Modave - Multipurpose React Nextjs eCommerce Template",
-  description: "Modave - Multipurpose React Nextjs eCommerce Template",
+  title: "Home Gaming",
 };
 export default function page() {
   return (

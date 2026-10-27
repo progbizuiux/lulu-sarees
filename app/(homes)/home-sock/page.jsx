@@ -13,8 +13,7 @@ import Testimonials from "@/components/homes/sock/Testimonials";
 import React from "react";
 
 export const metadata = {
-  title: "Home Sock || Modave - Multipurpose React Nextjs eCommerce Template",
-  description: "Modave - Multipurpose React Nextjs eCommerce Template",
+  title: "Home Sock",
 };
 
 export default function HomeSockPage() {

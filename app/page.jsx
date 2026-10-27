@@ -13,11 +13,6 @@ import ShopByVideo from "@/components/homes/home-1/ShopByVideo";
 import CustomerStories from "@/components/homes/home-1/CustomerStories";
 import MostSelling from "@/components/homes/home-1/MostSelling";
 
-export const metadata = {
-  title: "Home || Modave - Multipurpose React Nextjs eCommerce Template",
-  description: "Modave - Multipurpose React Nextjs eCommerce Template",
-};
-
 export default function HomePage() {
   return (
     <div className="home-fullwidth">

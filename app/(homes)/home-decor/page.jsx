@@ -12,8 +12,7 @@ import Testimonials from "@/components/homes/decor/Testimonials";
 import React from "react";
 
 export const metadata = {
-  title: "Home Decor || Modave - Multipurpose React Nextjs eCommerce Template",
-  description: "Modave - Multipurpose React Nextjs eCommerce Template",
+  title: "Home Decor",
 };
 
 export default function HomeDecorPage() {

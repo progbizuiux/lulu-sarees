@@ -6,11 +6,11 @@ import Link from "next/link";
 import OrderDetails from "@/components/my-account/OrderDetails";
 import RequireAuth from "@/components/auth/RequireAuth";
 import React from "react";
+import { NO_INDEX } from "@/lib/site";
 
 export const metadata = {
-  title:
-    "My Account Order Details || Modave - Multipurpose React Nextjs eCommerce Template",
-  description: "Modave - Multipurpose React Nextjs eCommerce Template",
+  title: "Order Details",
+  robots: NO_INDEX,
 };
 
 export default function MyAccountOrdersDetailsPage() {

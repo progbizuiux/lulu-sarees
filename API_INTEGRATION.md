@@ -15,6 +15,22 @@ Page / component
 
 While `NEXT_PUBLIC_USE_MOCKS=true`, services use `lib/mocks/` (built on `data/products.js`) instead of the API.
 
+## Settings (environment variables)
+
+Put these in `.env.local` for local development, and in the hosting provider's settings for staging and live.
+Restart `npm run dev` after changing them. `NEXT_PUBLIC_*` values are baked in at build time.
+
+| Setting | Example | What it does |
+|---|---|---|
+| `NEXT_PUBLIC_API_URL` | `https://api.lulusarees.com/api` | Base URL of the .NET API, no trailing slash |
+| `NEXT_PUBLIC_USE_MOCKS` | `true` / `false` | `true` = demo data, no backend needed |
+| `NEXT_PUBLIC_API_TIMEOUT` | `15000` | Milliseconds to wait for the API |
+| `NEXT_PUBLIC_MOCK_DELAY` | `400` | Fake delay for mock responses, to see loaders |
+| `AUTH_COOKIE_NAME` | *(empty, on hold)* | Session cookie name; turns on `middleware.js` |
+| `NEXT_PUBLIC_SITE_URL` | `https://www.lulusarees.com` | The site's own address. Used for SEO: canonical links, sitemap, link previews. **Must be set on live** |
+| `IMAGE_HOSTNAMES` | `cdn.lulusarees.com` | Comma-separated hosts the backend serves product photos from. Next.js only optimises images from hosts listed here |
+| `NEXT_PUBLIC_ALLOW_INDEXING` | `false` on staging | `false` = robots.txt blocks search engines. Leave unset on the live site |
+
 ## When the real APIs arrive
 
 1. **`.env.local`**: set `NEXT_PUBLIC_API_URL` and `NEXT_PUBLIC_USE_MOCKS=false`, then restart `npm run dev`.
@@ -27,6 +43,22 @@ While `NEXT_PUBLIC_USE_MOCKS=true`, services use `lib/mocks/` (built on `data/pr
    Until then the middleware stays off and `RequireAuth` protects the account pages on its own.
 7. **Guest wishlist**: guests can have a wishlist. Confirm whether the backend stores it for guests
    or the frontend keeps it in the browser, and whether it merges into the account on login.
+
+## Speed and SEO (Phase 5)
+
+- **Images are optimised** by Next.js (resized per screen, served as WebP). Product photos from the backend
+  need their host in `IMAGE_HOSTNAMES`. Keep using `next/image` (`<Image>`) rather than `<img>`.
+- **Page titles** use the template `"<page> | Lulu Sarees"` from `app/layout.js`: pages set only their own
+  part (`title: "Checkout"`). Private pages use `robots: NO_INDEX` from `lib/site.js`.
+- **Shop pages** (`/shop-default-grid`, `/shop-fullwidth-grid`, `/shop-categories-top-02`) load the first
+  screen of products on the server (`lib/shop/server.js`), so the HTML contains real products. Category pages
+  get their own title; filtered or sorted versions are `noindex`.
+- **Product pages** include Product structured data (price, stock) and a canonical link.
+- **`/sitemap.xml`** lists the main pages, menu categories and every product (refreshed hourly).
+  **`/robots.txt`** points to it and skips account/checkout pages.
+- **Popups** (cart, search, quick view, menus) load right after the page is interactive (`LazyModals`).
+- **Template CSS** (Bootstrap, icon font, Swiper, animate.css) is imported in `app/layout.js`, not with
+  CSS `@import` in `main.scss`. Keep it that way: `@import` breaks if any other CSS ends up above it.
 
 ## Shop and product pages
 

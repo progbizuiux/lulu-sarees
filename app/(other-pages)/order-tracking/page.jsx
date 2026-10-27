@@ -7,9 +7,7 @@ import Link from "next/link";
 import React from "react";
 
 export const metadata = {
-  title:
-    "Order Tracking || Modave - Multipurpose React Nextjs eCommerce Template",
-  description: "Modave - Multipurpose React Nextjs eCommerce Template",
+  title: "Track Your Order",
 };
 
 export default function OrderTrackingPage() {

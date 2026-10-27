@@ -8,14 +8,13 @@ import { luluMenu } from "@/data/luluMenu";
 const pathOf = (href) => href.split("?")[0];
 
 // Items with two or more columns open as a full-width mega menu; single-column ones as a small list.
-function Dropdown({ item, pathname }) {
+function Dropdown({ item }) {
   const mega = item.columns.length > 1;
   const renderLinks = (links) =>
+    // No "active" highlight on these links: many of them open the same page with a different
+    // ?category=, so the whole list used to stay highlighted after visiting any one of them.
     links.map((link) => (
-      <li
-        key={link.label + link.href}
-        className={`menu-item-li ${pathOf(link.href) === pathname ? "active" : ""}`}
-      >
+      <li key={link.label + link.href} className="menu-item-li">
         <Link href={link.href} className="menu-link-text">
           {link.label}
         </Link>
@@ -65,7 +64,7 @@ export default function LuluNav() {
             }`}
           >
             <Link href={item.href}>{item.label}</Link>
-            {hasDropdown && <Dropdown item={item} pathname={pathname} />}
+            {hasDropdown && <Dropdown item={item} />}
           </li>
         );
       })}

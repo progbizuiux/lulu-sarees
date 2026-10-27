@@ -53,8 +53,10 @@ export const luluMenu = [
     ],
   },
   {
-    label: "New Arrivals",
+    label: "Collections",
     href: "/shop-collection",
+    // Dropdown switched off for now (COLLECTIONS stays a plain link). Remove this line to show it again.
+    hideDropdown: true,
     columns: [
       {
         links: [

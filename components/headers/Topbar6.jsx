@@ -1,6 +1,11 @@
 import React from "react";
 import Link from "next/link";
+
+// Top bar switched off on every page for now. Set to true to show it again.
+const SHOW_TOPBAR = false;
+
 export default function Topbar6({ bgColor = "bg-blue-2" }) {
+  if (!SHOW_TOPBAR) return null;
   return (
     <div className={`tf-topbar ${bgColor}`}>
       <div className="container">

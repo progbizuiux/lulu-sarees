@@ -10,8 +10,7 @@ import React from "react";
 
 export const metadata = {
   title:
-    "Product Right Thumbnail || Modave - Multipurpose React Nextjs eCommerce Template",
-  description: "Modave - Multipurpose React Nextjs eCommerce Template",
+    "Product Right Thumbnail",
 };
 
 export default async function ProductRighrThumbnailPage({ params }) {

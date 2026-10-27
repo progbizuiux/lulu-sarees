@@ -14,21 +14,35 @@
 
 // (The template forced the cart drawer's free-shipping bar to 60% here. Its width now comes
 // from the cart data in CartModal.jsx, so that rule was removed.)
+// Brand green for menu links: a deeper shade of the logo green (#12a652) so the text is easy to
+// read on white (5.2:1 contrast). Used instead of the template's red.
+:root {
+  --lulu-accent: #0b7d3e;
+}
+
+// Header dropdown links: green text and underline on hover.
+.lulu-header .box-nav-ul .menu-list .menu-link-text:hover {
+  color: var(--lulu-accent);
+  &::before {
+    background-color: var(--lulu-accent);
+  }
+}
+
 .menu-item-li.active {
   .menu-link-text {
-    color: var(--primary) !important;
+    color: var(--lulu-accent) !important;
     &::before {
       width: 100%;
       left: 0;
       right: auto;
-      background-color: var(--primary) !important;
+      background-color: var(--lulu-accent) !important;
     }
   }
 }
 .sub-nav-link.active,
 .mb-menu-link.active,
 .sub-nav-link.active {
-  color: var(--primary) !important;
+  color: var(--lulu-accent) !important;
 }
 @media only screen and (max-width: 767px) {
   .footer .footer-col-block .tf-collapse-content {

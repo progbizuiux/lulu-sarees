@@ -16,8 +16,7 @@ import Features2 from "@/components/common/Features2";
 
 export const metadata = {
   title:
-    "Home Fashion Tiktok || Modave - Multipurpose React Nextjs eCommerce Template",
-  description: "Modave - Multipurpose React Nextjs eCommerce Template",
+    "Home Fashion Tiktok",
 };
 
 export default function HomeFashionTiktokPage() {

@@ -34,12 +34,16 @@ export default function ShopListing(props) {
   );
 }
 
-function ShopListingContent({ parentClass = "flat-spacing", containerClass = "container" }) {
+function ShopListingContent({ parentClass = "flat-spacing", containerClass = "container", initialList = null }) {
   const [activeLayout, setActiveLayout] = useState(4);
   const { filters, setFilters, clearFilters, pageHref } = useShopFilters();
-  const { data, isPending, isError, error, refetch, isFetching, isPlaceholderData } = useProducts(
-    toServiceParams(filters)
-  );
+  const params = toServiceParams(filters);
+  // Reuse the products the server already loaded for this exact URL (no second request, no spinner).
+  const serverData =
+    initialList && JSON.stringify(initialList.params) === JSON.stringify(params) ? initialList.data : undefined;
+  const { data, isPending, isError, error, refetch, isFetching, isPlaceholderData } = useProducts(params, {
+    initialData: serverData,
+  });
 
   const items = data?.items ?? [];
   // Old results stay on screen (faded) while new ones load, so the grid doesn't jump.

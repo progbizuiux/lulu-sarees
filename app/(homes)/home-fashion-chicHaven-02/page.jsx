@@ -15,8 +15,7 @@ import React from "react";
 
 export const metadata = {
   title:
-    "Home Fashion Chichaven 02 || Modave - Multipurpose React Nextjs eCommerce Template",
-  description: "Modave - Multipurpose React Nextjs eCommerce Template",
+    "Home Fashion Chichaven 02",
 };
 
 export default function HomeFashionChicHavenPage2() {

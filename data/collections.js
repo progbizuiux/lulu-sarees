@@ -1064,64 +1064,65 @@ export const categories6 = [
   },
 ];
 
+// Collections page tiles (/shop-collection). Images are dummy photos from the home page for now.
 export const collections11 = [
   {
-    imgSrc: "/images/collections/shop-cls/men-cls.jpg",
+    imgSrc: "/images/home/collection-img6.png",
     text: "Men's",
     count: "12 items",
   },
   {
-    imgSrc: "/images/collections/shop-cls/women-cls.jpg",
+    imgSrc: "/images/home/collection-img.png",
     text: "Women's",
     count: "12 items",
   },
   {
-    imgSrc: "/images/collections/shop-cls/kid-cls.jpg",
+    imgSrc: "/images/home/collection-img3.png",
     text: "Kid's",
     count: "12 items",
   },
   {
-    imgSrc: "/images/collections/shop-cls/jewelry-cls.jpg",
+    imgSrc: "/images/home/moments-bride.png",
     text: "Jewelry",
     count: "12 items",
   },
   {
-    imgSrc: "/images/collections/shop-cls/dresses-cls.jpg",
+    imgSrc: "/images/home/collection-img9.png",
     text: "Dresses",
     count: "12 items",
   },
   {
-    imgSrc: "/images/collections/shop-cls/top-cls.jpg",
+    imgSrc: "/images/home/testimonial-3.png",
     text: "Tops",
     count: "12 items",
   },
   {
-    imgSrc: "/images/collections/shop-cls/bottom-cls.jpg",
+    imgSrc: "/images/home/testimonial-2.png",
     text: "Bottoms",
     count: "12 items",
   },
   {
-    imgSrc: "/images/collections/shop-cls/outerwear-cls.jpg",
+    imgSrc: "/images/home/testimonial-1.png",
     text: "Outerwear",
     count: "12 items",
   },
   {
-    imgSrc: "/images/collections/shop-cls/shoes-cls.jpg",
+    imgSrc: "/images/home/collection-img8.png",
     text: "Shoes",
     count: "12 items",
   },
   {
-    imgSrc: "/images/collections/shop-cls/bags-cls.jpg",
+    imgSrc: "/images/home/collection-img5.png",
     text: "Bags",
     count: "12 items",
   },
   {
-    imgSrc: "/images/collections/shop-cls/accessories-cls.jpg",
+    imgSrc: "/images/home/testimonial-4.png",
     text: "Accessories",
     count: "12 items",
   },
   {
-    imgSrc: "/images/collections/shop-cls/lingerie-cls.jpg",
+    imgSrc: "/images/home/collection-img10.png",
     text: "Lingerie",
     count: "12 items",
   },

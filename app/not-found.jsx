@@ -2,9 +2,8 @@ import Image from "next/image";
 import React from "react";
 import Link from "next/link";
 export const metadata = {
-  title:
-    "Page Not Found || Modave - Multipurpose React Nextjs eCommerce Template",
-  description: "Modave - Multipurpose React Nextjs eCommerce Template",
+  title: "Page not found",
+  robots: { index: false, follow: true },
 };
 
 export default function PageNotFoundPage() {

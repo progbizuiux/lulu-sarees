@@ -9,8 +9,7 @@ import React from "react";
 
 export const metadata = {
   title:
-    "Product Fixed Price || Modave - Multipurpose React Nextjs eCommerce Template",
-  description: "Modave - Multipurpose React Nextjs eCommerce Template",
+    "Product Fixed Price",
 };
 
 export default async function ProductFixedProcePage({ params }) {

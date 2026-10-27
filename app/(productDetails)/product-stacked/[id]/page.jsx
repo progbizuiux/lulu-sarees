@@ -11,8 +11,7 @@ import React from "react";
 
 export const metadata = {
   title:
-    "Product Stacked || Modave - Multipurpose React Nextjs eCommerce Template",
-  description: "Modave - Multipurpose React Nextjs eCommerce Template",
+    "Product Stacked",
 };
 
 export default async function ProductStackedPage({ params }) {

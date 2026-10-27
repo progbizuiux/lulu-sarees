@@ -7,11 +7,11 @@ import Orers from "@/components/my-account/Orers";
 import RequireAuth from "@/components/auth/RequireAuth";
 import Link from "next/link";
 import React from "react";
+import { NO_INDEX } from "@/lib/site";
 
 export const metadata = {
-  title:
-    "My Account Orders || Modave - Multipurpose React Nextjs eCommerce Template",
-  description: "Modave - Multipurpose React Nextjs eCommerce Template",
+  title: "Your Orders",
+  robots: NO_INDEX,
 };
 
 export default function MyAccountOrdersPage() {

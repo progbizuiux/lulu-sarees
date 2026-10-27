@@ -76,11 +76,13 @@ export default function NewsLetterModal() {
           <div className="modal-top">
             <Image
               className="lazyload"
-              data-src="/images/section/newsletter.jpg"
-              alt="/images"
-              src="/images/section/newsletter.jpg"
+              data-src="/images/home/festive-img.png"
+              alt="Lulu Sarees festive collection"
+              src="/images/home/festive-img.png"
               width={660}
               height={440}
+              // Keep the popup the same size as before: show the photo at 3:2, trimming the edges.
+              style={{ aspectRatio: "3 / 2", objectFit: "cover" }}
             />
             <span
               className="icon icon-close btn-hide-popup"

@@ -6,11 +6,11 @@ import Address from "@/components/my-account/Address";
 import RequireAuth from "@/components/auth/RequireAuth";
 import Link from "next/link";
 import React from "react";
+import { NO_INDEX } from "@/lib/site";
 
 export const metadata = {
-  title:
-    "My Account Address || Modave - Multipurpose React Nextjs eCommerce Template",
-  description: "Modave - Multipurpose React Nextjs eCommerce Template",
+  title: "Your Addresses",
+  robots: NO_INDEX,
 };
 
 export default function MyAccountAddressPage() {

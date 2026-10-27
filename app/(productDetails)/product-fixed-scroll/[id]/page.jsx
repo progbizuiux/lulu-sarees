@@ -9,8 +9,7 @@ import React from "react";
 
 export const metadata = {
   title:
-    "Product Fixed Scroll || Modave - Multipurpose React Nextjs eCommerce Template",
-  description: "Modave - Multipurpose React Nextjs eCommerce Template",
+    "Product Fixed Scroll",
 };
 
 export default async function ProductFixedScrollPage({ params }) {
