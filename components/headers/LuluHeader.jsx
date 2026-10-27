@@ -2,6 +2,7 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import CartLength from "../common/CartLength";
+import WishlistLength from "../common/WishlistLength";
 import LuluNav from "./LuluNav";
 import HeaderAccountMenu from "./HeaderAccountMenu";
 
@@ -61,6 +62,9 @@ export default function LuluHeader() {
           <li>
             <Link href="/wish-list" className="lulu-header__icon" aria-label="Wishlist">
               <Image src="/images/icons/heart.png" alt="" width={21} height={18} />
+              <span className="lulu-header__count">
+                <WishlistLength />
+              </span>
             </Link>
           </li>
           <li>

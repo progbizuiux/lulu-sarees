@@ -8,7 +8,7 @@ import { footerLinks, socialLinks } from "@/data/footerLinks";
 import axios from "axios";
 export default function Footer1({
   border = true,
-  dark = false,
+  dark = true, // Black footer on every page.
   hasPaddingBottom = false,
 }) {
   const [success, setSuccess] = useState(true);

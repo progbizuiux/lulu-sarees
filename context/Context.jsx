@@ -90,8 +90,12 @@ export default function Context({ children }) {
 
   const isAddedtoWishlist = (id) => wishList.some((wishId) => sameId(wishId, id));
 
+  // The heart buttons toggle: a second click removes the item again.
   const addToWishlist = (id) => {
-    if (isAddedtoWishlist(id)) return;
+    if (isAddedtoWishlist(id)) {
+      removeWishlistItem.mutate(id);
+      return;
+    }
     addWishlistItem.mutate(id);
     openWistlistModal();
   };

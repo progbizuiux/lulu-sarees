@@ -197,7 +197,8 @@ export default function SingleProduct2() {
                         </span>
                       </a>
                       <a
-                        onClick={() => addToWishlist(products44[2].id)}
+                        data-wished={isAddedtoWishlist(products44[2].id) || undefined}
+            onClick={() => addToWishlist(products44[2].id)}
                         className="box-icon hover-tooltip text-caption-2 wishlist btn-icon-action"
                       >
                         <span className="icon icon-heart" />

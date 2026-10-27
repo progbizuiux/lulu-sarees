@@ -135,7 +135,8 @@ export default function Products2() {
                             : "ADD TO CART"}
                         </a>
                         <a
-                          onClick={() => addToWishlist(product.id)}
+                          data-wished={isAddedtoWishlist(product.id) || undefined}
+            onClick={() => addToWishlist(product.id)}
                           className="box-icon wishlist btn-icon-action"
                         >
                           <span className="icon icon-heart" />

@@ -176,6 +176,7 @@ export default function ProductCard5({ product = products34[0] }) {
         <div className="list-product-btn">
           <a
             href="#"
+            data-wished={isAddedtoWishlist(product.id) || undefined}
             onClick={() => addToWishlist(product.id)}
             className="box-icon wishlist btn-icon-action"
           >

@@ -183,6 +183,7 @@ export default function ProductCard7({ product, gridClass = "" }) {
             <span className="tooltip">Add To Cart</span>
           </a>
           <a
+            data-wished={isAddedtoWishlist(product.id) || undefined}
             onClick={() => addToWishlist(product.id)}
             className="box-icon wishlist btn-icon-action"
           >
