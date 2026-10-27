@@ -108,7 +108,8 @@ export default function ProductsCards6({ product }) {
                 : "Add To cart"}
             </a>
             <a
-              onClick={() => addToWishlist(product.id)}
+              data-wished={isAddedtoWishlist(product.id) || undefined}
+            onClick={() => addToWishlist(product.id)}
               className="box-icon wishlist btn-icon-action"
             >
               <span className="icon icon-heart" />

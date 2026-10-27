@@ -192,7 +192,8 @@ export default function QuickView() {
                       </span>
                     </a>
                     <a
-                      onClick={() => addToWishlist(quickViewItem.id)}
+                      data-wished={isAddedtoWishlist(quickViewItem.id) || undefined}
+            onClick={() => addToWishlist(quickViewItem.id)}
                       className="box-icon hover-tooltip text-caption-2 wishlist btn-icon-action"
                     >
                       <span className="icon icon-heart" />

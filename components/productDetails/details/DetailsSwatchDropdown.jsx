@@ -168,7 +168,8 @@ export default function DetailsSwatchDropdown({ product }) {
                           </span>
                         </a>
                         <a
-                          onClick={() => addToWishlist(product.id)}
+                          data-wished={isAddedtoWishlist(product.id) || undefined}
+            onClick={() => addToWishlist(product.id)}
                           className="box-icon hover-tooltip text-caption-2 wishlist btn-icon-action"
                         >
                           <span className="icon icon-heart" />

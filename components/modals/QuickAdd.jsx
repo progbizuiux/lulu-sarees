@@ -124,7 +124,8 @@ export default function QuickAdd() {
                       </span>
                     </a>
                     <a
-                      onClick={() => addToWishlist(item.id)}
+                      data-wished={isAddedtoWishlist(item.id) || undefined}
+            onClick={() => addToWishlist(item.id)}
                       className="box-icon hover-tooltip text-caption-2 wishlist btn-icon-action"
                     >
                       <span className="icon icon-heart" />

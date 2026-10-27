@@ -81,6 +81,7 @@ function ExploreProductCard({ product, isNew }) {
             className={`xc__action ${
               isAddedtoWishlist(product.id) ? "is-active" : ""
             }`}
+            data-wished={isAddedtoWishlist(product.id) || undefined}
             onClick={() => addToWishlist(product.id)}
             aria-label={
               isAddedtoWishlist(product.id)
