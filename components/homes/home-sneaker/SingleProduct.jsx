@@ -41,14 +41,11 @@ export default function SingleProduct() {
   const [quantity, setQuantity] = useState(1);
   const {
     quickViewItem,
-    addProductToCart,
-    isAddedToCartProducts,
+    addProductToCart, buyNow,
     addToWishlist,
     isAddedtoWishlist,
     addToCompareItem,
     isAddedtoCompareItem,
-    cartProducts,
-    updateQuantity,
   } = useContextElement();
   return (
     <section className="flat-spacing bg-surface">
@@ -100,10 +97,10 @@ export default function SingleProduct() {
                       <div className="tf-product-info-price">
                         <h5 className="price-on-sale">
                           {" "}
-                          ${products44[4].price.toFixed(2)}
+                          ₹{products44[4].price.toFixed(2)}
                         </h5>
                         <div className="compare-at-price">
-                          ${products44[4].oldPrice.toFixed(2)}
+                          ₹{products44[4].oldPrice.toFixed(2)}
                         </div>
                         <div className="badges-on-sale text-btn-uppercase">
                           -25%
@@ -130,20 +127,8 @@ export default function SingleProduct() {
                     <div className="tf-product-info-quantity">
                       <div className="title mb_12">Quantity:</div>
                       <QuantitySelect
-                        quantity={
-                          isAddedToCartProducts(products44[4].id)
-                            ? cartProducts.filter(
-                                (elm) => elm.id == products44[4].id
-                              )[0].quantity
-                            : quantity
-                        }
-                        setQuantity={(qty) => {
-                          if (isAddedToCartProducts(products44[4].id)) {
-                            updateQuantity(products44[4].id, qty);
-                          } else {
-                            setQuantity(qty);
-                          }
-                        }}
+                        quantity={quantity}
+                        setQuantity={setQuantity}
                       />
                     </div>
                     <div>
@@ -158,12 +143,10 @@ export default function SingleProduct() {
                         >
                           <span>
                             {" "}
-                            {isAddedToCartProducts(products44[4].id)
-                              ? "Already Added"
-                              : "Add to Cart"}
+                            {"Add to Cart"}
                           </span>
                           <span className="tf-qty-price total-price">
-                            ${products44[4].price.toFixed(2)}
+                            ₹{products44[4].price.toFixed(2)}
                           </span>
                         </a>
                         <a
@@ -193,7 +176,7 @@ export default function SingleProduct() {
                           </span>
                         </a>
                       </div>
-                      <a href="#" className="btn-style-3 text-btn-uppercase">
+                      <a href="#" className="btn-style-3 text-btn-uppercase" onClick={(event) => { event.preventDefault(); buyNow(products44[4].id, quantity); }}>
                         Buy it now
                       </a>
                     </div>

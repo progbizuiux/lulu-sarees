@@ -6,6 +6,8 @@ import { Autoplay } from "swiper/modules";
 import { Swiper, SwiperSlide } from "@/components/common/SwiperSSR";
 import { exploreProducts } from "@/data/products";
 import { useContextElement } from "@/context/Context";
+import CartControl from "@/components/common/CartControl";
+import { formatPrice } from "@/lib/format";
 
 // label shown on the tab -> value used in products[].tabFilterOptions2
 const tabs = [
@@ -26,10 +28,6 @@ const slideBreakpoints = {
   1600: { slidesPerView: 4.3, spaceBetween: 24, slidesOffsetBefore: 50, slidesOffsetAfter: 50 },
 };
 
-function formatPrice(value) {
-  return `₹${Number(value).toLocaleString("en-IN")}`;
-}
-
 function ExploreProductCard({ product, isNew }) {
   const [currentImage, setCurrentImage] = useState(product.imgSrc);
   const {
@@ -38,7 +36,6 @@ function ExploreProductCard({ product, isNew }) {
     isAddedtoWishlist,
     setQuickViewItem,
     addProductToCart,
-    isAddedToCartProducts,
   } = useContextElement();
 
   useEffect(() => {
@@ -112,13 +109,15 @@ function ExploreProductCard({ product, isNew }) {
             Quick Add
           </a>
         ) : (
-          <button
-            type="button"
-            className="xc__cta"
-            onClick={() => addProductToCart(product.id)}
-          >
-            {isAddedToCartProducts(product.id) ? "Already Added" : "Add to cart"}
-          </button>
+          <CartControl productId={product.id}>
+            <button
+              type="button"
+              className="xc__cta"
+              onClick={() => addProductToCart(product.id)}
+            >
+              {"Add to cart"}
+            </button>
+          </CartControl>
         )}
       </div>
 

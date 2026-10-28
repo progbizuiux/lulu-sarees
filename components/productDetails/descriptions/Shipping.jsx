@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 
 export default function Shipping() {
   return (
@@ -39,29 +40,30 @@ export default function Shipping() {
       </div>
       <div className="w-100">
         <div className="text-btn-uppercase mb_12">Need more information?</div>
+        {/* these went nowhere (href="#"); they open the contact page until there are policy pages */}
         <div>
-          <a
-            href="#"
+          <Link
+            href="/contact"
             className="link text-secondary text-decoration-underline mb_6 font-2"
           >
             Orders &amp; delivery
-          </a>
+          </Link>
         </div>
         <div>
-          <a
-            href="#"
+          <Link
+            href="/contact"
             className="link text-secondary text-decoration-underline mb_6 font-2"
           >
             Returns &amp; refunds
-          </a>
+          </Link>
         </div>
         <div>
-          <a
-            href="#"
+          <Link
+            href="/contact"
             className="link text-secondary text-decoration-underline font-2"
           >
             Duties &amp; taxes
-          </a>
+          </Link>
         </div>
       </div>
     </>

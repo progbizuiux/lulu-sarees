@@ -1,15 +1,38 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+import { useProduct } from "@/hooks/useProducts";
+import { getLenis } from "@/utlis/lenis";
 import Description from "./Description";
 import Reviews from "./Reviews";
 
 import Shipping from "./Shipping";
 import ReturnPolicies from "./ReturnPolicies";
 
-export default function Descriptions1() {
+export default function Descriptions1({ product: productProp }) {
   const [activeTab, setActiveTab] = useState(1);
+  // The page should pass the product; until it does, load it by the id in the address.
+  const params = useParams();
+  const { data: loadedProduct } = useProduct(params?.id, {
+    enabled: !productProp && Boolean(params?.id),
+  });
+  const product = productProp ?? loadedProduct;
+
+  // "Delivery & Return" next to the product opens the Shipping & Returns tab and scrolls to it.
+  useEffect(() => {
+    const showShipping = () => {
+      setActiveTab(3);
+      const tabs = document.getElementById("product-tabs");
+      const lenis = getLenis(); // the site's smooth scroller, when it is on
+      if (lenis) lenis.scrollTo(tabs, { offset: -20 });
+      else tabs?.scrollIntoView({ behavior: "smooth", block: "start" });
+    };
+    window.addEventListener("show-shipping-tab", showShipping);
+    return () => window.removeEventListener("show-shipping-tab", showShipping);
+  }, []);
+
   return (
-    <section className="">
+    <section className="" id="product-tabs">
       <div className="container">
         <div className="row">
           <div className="col-12">
@@ -47,7 +70,7 @@ export default function Descriptions1() {
                   } `}
                 >
                   <div className="tab-description">
-                    <Description />
+                    <Description product={product} />
                   </div>
                 </div>
                 <div

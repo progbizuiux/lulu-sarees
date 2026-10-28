@@ -5152,75 +5152,13 @@ export const reelProducts = [
     inStock: true,
   },
 ];
-// "Most Selling" section on the home page (Lulu Sarees). Titles and prices are the placeholder text from the design.
-export const mostSellingProducts = [
-  {
-    id: 9301,
-    title: "Double-button trench coat",
-    price: 219.99,
-    oldPrice: 98,
-    isOnSale: true,
-    salePercentage: "25%",
-    imgSrc: "/images/home/link1.png",
-    inStock: true,
-  },
-  {
-    id: 9302,
-    title: "Double-button trench coat",
-    price: 219.99,
-    oldPrice: 98,
-    imgSrc: "/images/home/link2.png",
-    inStock: true,
-  },
-  {
-    id: 9303,
-    title: "Double-button trench coat",
-    price: 219.99,
-    oldPrice: 98,
-    imgSrc: "/images/home/link3.png",
-    inStock: true,
-  },
-  {
-    id: 9304,
-    title: "Double-button trench coat",
-    price: 219.99,
-    oldPrice: 98,
-    imgSrc: "/images/home/link4.png",
-    inStock: true,
-  },
-  {
-    id: 9305,
-    title: "Double-button trench coat",
-    price: 219.99,
-    oldPrice: 98,
-    imgSrc: "/images/home/link5.png",
-    inStock: true,
-  },
-  {
-    id: 9306,
-    title: "Double-button trench coat",
-    price: 219.99,
-    oldPrice: 98,
-    imgSrc: "/images/home/link6.png",
-    inStock: true,
-  },
-  {
-    id: 9307,
-    title: "Double-button trench coat",
-    price: 219.99,
-    oldPrice: 98,
-    imgSrc: "/images/home/link7.png",
-    inStock: true,
-  },
-  {
-    id: 9308,
-    title: "Double-button trench coat",
-    price: 219.99,
-    oldPrice: 98,
-    imgSrc: "/images/home/link8.png",
-    inStock: true,
-  },
-];
+// "Most Selling" section on the home page (Lulu Sarees). Reuses products from the Festive Edit and
+// Explore sections above (same ids, photos and prices), so the cart and product pages work for them.
+// It used to be 8 copies of the design's placeholder "Double-button trench coat".
+const mostSellingIds = [9101, 9002, 9104, 9102, 9003, 9103, 9001, 9106];
+export const mostSellingProducts = mostSellingIds.map((id) =>
+  [...festiveProducts, ...exploreProducts].find((product) => product.id === id)
+);
 export const productMain = [...products, ...products7, ...products42];
 export const allProducts = [
   ...products,
@@ -5298,17 +5236,6 @@ export const allProducts = [
   ...exploreProducts,
   ...festiveProducts,
   ...reelProducts,
-  ...mostSellingProducts,
+  // (Most Selling reuses Festive/Explore products, so it isn't added again: duplicates showed twice in Compare)
 ];
 
-const returnLastid = () => {
-  let id = 1;
-  allProducts.forEach((elm) => {
-    if (elm.id >= id) {
-      id = elm.id;
-    }
-  });
-  return id;
-};
-
-console.log(returnLastid());

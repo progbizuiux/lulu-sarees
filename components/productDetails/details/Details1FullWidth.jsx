@@ -11,14 +11,11 @@ export default function Details1FullWidth({ product }) {
   const [activeColor, setActiveColor] = useState("gray");
   const [quantity, setQuantity] = useState(1);
   const {
-    addProductToCart,
-    isAddedToCartProducts,
+    addProductToCart, buyNow,
     addToWishlist,
     isAddedtoCompareItem,
     isAddedtoWishlist,
     addToCompareItem,
-    cartProducts,
-    updateQuantity,
   } = useContextElement();
 
   return (
@@ -67,13 +64,13 @@ export default function Details1FullWidth({ product }) {
                   <div className="tf-product-info-price">
                     <h5 className="price-on-sale font-2">
                       {" "}
-                      ${product.price.toFixed(2)}
+                      ₹{product.price.toFixed(2)}
                     </h5>
                     {product.oldPrice ? (
                       <>
                         <div className="compare-at-price font-2">
                           {" "}
-                          ${product.oldPrice.toFixed(2)}
+                          ₹{product.oldPrice.toFixed(2)}
                         </div>
                         <div className="badges-on-sale text-btn-uppercase">
                           -25%
@@ -106,19 +103,8 @@ export default function Details1FullWidth({ product }) {
                 <div className="tf-product-info-quantity">
                   <div className="title mb_12">Quantity:</div>
                   <QuantitySelect
-                    quantity={
-                      isAddedToCartProducts(product.id)
-                        ? cartProducts.filter((elm) => elm.id == product.id)[0]
-                            .quantity
-                        : quantity
-                    }
-                    setQuantity={(qty) => {
-                      if (isAddedToCartProducts(product.id)) {
-                        updateQuantity(product.id, qty);
-                      } else {
-                        setQuantity(qty);
-                      }
-                    }}
+                    quantity={quantity}
+                    setQuantity={setQuantity}
                   />
                 </div>
                 <div>
@@ -128,20 +114,11 @@ export default function Details1FullWidth({ product }) {
                       className="btn-style-2 flex-grow-1 text-btn-uppercase fw-6 btn-add-to-cart"
                     >
                       <span>
-                        {isAddedToCartProducts(product.id)
-                          ? "Already Added"
-                          : "Add to cart -"}
+                        {"Add to cart -"}
                       </span>
                       <span className="tf-qty-price total-price">
-                        $
-                        {isAddedToCartProducts(product.id)
-                          ? (
-                              product.price *
-                              cartProducts.filter(
-                                (elm) => elm.id == product.id
-                              )[0].quantity
-                            ).toFixed(2)
-                          : (product.price * quantity).toFixed(2)}{" "}
+                        ₹
+                        {(product.price * quantity).toFixed(2)}{" "}
                       </span>
                     </a>
                     <a
@@ -171,7 +148,7 @@ export default function Details1FullWidth({ product }) {
                       </span>
                     </a>
                   </div>
-                  <a href="#" className="btn-style-3 text-btn-uppercase">
+                  <a href="#" className="btn-style-3 text-btn-uppercase" onClick={(event) => { event.preventDefault(); buyNow(product.id, quantity); }}>
                     Buy it now
                   </a>
                 </div>

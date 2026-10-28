@@ -5,8 +5,21 @@ import Link from "next/link";
 import CountdownTimer from "../common/Countdown";
 
 import { useContextElement } from "@/context/Context";
+import CartControl from "@/components/common/CartControl";
+import { formatPrice } from "@/lib/format";
+
+// "-21%" badge from the product's own sale data (its salePercentage, or worked out from oldPrice).
+function saleLabel(product) {
+  if (product.isOnSale && product.salePercentage) return product.salePercentage;
+  if (product.oldPrice > product.price) {
+    return `${Math.round((1 - product.price / product.oldPrice) * 100)}%`;
+  }
+  return null;
+}
+
 export default function ProductsCards6({ product }) {
   const [currentImage, setCurrentImage] = useState(product.imgSrc);
+  const sale = saleLabel(product);
 
   const {
     setQuickAddItem,
@@ -16,7 +29,6 @@ export default function ProductsCards6({ product }) {
     isAddedtoCompareItem,
     setQuickViewItem,
     addProductToCart,
-    isAddedToCartProducts,
   } = useContextElement();
 
   useEffect(() => {
@@ -37,17 +49,18 @@ export default function ProductsCards6({ product }) {
             width={600}
             height={800}
           />
+          {/* Products without a second photo use the main photo, so the card never goes blank on hover. */}
           <Image
             className="lazyload img-hover"
-            src={product.imgHover}
+            src={product.imgHover || currentImage}
             alt={product.title}
             width={600}
             height={800}
           />
         </Link>
-        {product.isOnSale && (
+        {sale && (
           <div className="on-sale-wrap">
-            <span className="on-sale-item">-25%</span>
+            <span className="on-sale-item">-{sale}</span>
           </div>
         )}
       </div>
@@ -56,16 +69,17 @@ export default function ProductsCards6({ product }) {
           {product.title}
         </Link>
         <span className="price current-price">
-          {product.oldPrice && (
-            <span className="old-price">${product.oldPrice.toFixed(2)}</span>
+          {product.oldPrice > product.price && (
+            <span className="old-price">{formatPrice(product.oldPrice)}</span>
           )}{" "}
-          ${product.price?.toFixed(2)}
+          {formatPrice(product.price)}
         </span>
-        <p className="description text-secondary text-line-clamp-2">
-          The garments labelled as Committed are products that have been
-          produced using sustainable fibres or processes, reducing their
-          environmental impact.
-        </p>
+        {/* The product's own description (the template showed the same demo text on every card). */}
+        {product.description && (
+          <p className="description text-secondary text-line-clamp-2">
+            {product.description}
+          </p>
+        )}
         <div className="variant-wrap-list">
           {product.colors && (
             <ul className="list-color-product">
@@ -91,22 +105,23 @@ export default function ProductsCards6({ product }) {
           )}
           {product.sizes && (
             <div className="size-box list-product-btn">
-              <span className="size-item box-icon">S</span>
-              <span className="size-item box-icon">M</span>
-              <span className="size-item box-icon">L</span>
-              <span className="size-item box-icon">XL</span>
-              <span className="size-item box-icon disable">XXL</span>
+              {/* the product's own sizes (the template always showed S–XXL) */}
+              {product.sizes.map((size) => (
+                <span key={size} className="size-item box-icon">
+                  {size}
+                </span>
+              ))}
             </div>
           )}
           <div className="list-product-btn">
-            <a
-              onClick={() => addProductToCart(product.id)}
-              className="btn-main-product"
-            >
-              {isAddedToCartProducts(product.id)
-                ? "Already Added"
-                : "Add To cart"}
-            </a>
+            <CartControl productId={product.id}>
+              <a
+                onClick={() => addProductToCart(product.id)}
+                className="btn-main-product"
+              >
+                {"Add To cart"}
+              </a>
+            </CartControl>
             <a
               data-wished={isAddedtoWishlist(product.id) || undefined}
             onClick={() => addToWishlist(product.id)}
@@ -115,7 +130,7 @@ export default function ProductsCards6({ product }) {
               <span className="icon icon-heart" />
               <span className="tooltip">
                 {isAddedtoWishlist(product.id)
-                  ? "Already Wishlished"
+                  ? "In wishlist"
                   : "Wishlist"}
               </span>
             </a>

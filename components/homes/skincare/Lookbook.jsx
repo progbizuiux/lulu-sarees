@@ -142,9 +142,9 @@ export default function Lookbook() {
                     </Link>
                     <span className="price">
                       <span className="old-price">
-                        ${product.oldPrice.toFixed(2)}
+                        ₹{product.oldPrice.toFixed(2)}
                       </span>
-                      ${product.price.toFixed(2)}
+                      ₹{product.price.toFixed(2)}
                     </span>
                   </div>
                 </div>

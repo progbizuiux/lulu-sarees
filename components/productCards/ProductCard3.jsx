@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useContextElement } from "@/context/Context";
 import CountdownTimer from "../common/Countdown";
+import CartControl from "@/components/common/CartControl";
 export default function ProductCard3({ product }) {
   const [currentImage, setCurrentImage] = useState(product.imgSrc);
 
@@ -15,7 +16,6 @@ export default function ProductCard3({ product }) {
     isAddedtoCompareItem,
     setQuickViewItem,
     addProductToCart,
-    isAddedToCartProducts,
   } = useContextElement();
 
   useEffect(() => {
@@ -181,7 +181,7 @@ export default function ProductCard3({ product }) {
             <span className="icon icon-heart" />
             <span className="tooltip">
               {isAddedtoWishlist(product.id)
-                ? "Already Wishlished"
+                ? "In wishlist"
                 : "Wishlist"}
             </span>
           </a>
@@ -211,16 +211,16 @@ export default function ProductCard3({ product }) {
           </a>
         </div>
         <div className="list-btn-main">
-          <a
-            href="#shoppingCart"
-            data-bs-toggle="modal"
-            className="btn-main-product"
-            onClick={() => addProductToCart(product.id)}
-          >
-            {isAddedToCartProducts(product.id)
-              ? "Already Added"
-              : "ADD TO CART"}
-          </a>
+          <CartControl productId={product.id}>
+            <a
+              href="#shoppingCart"
+              data-bs-toggle="modal"
+              className="btn-main-product"
+              onClick={() => addProductToCart(product.id)}
+            >
+              {"ADD TO CART"}
+            </a>
+          </CartControl>
         </div>
       </div>
       <div className="card-product-info">
@@ -237,9 +237,9 @@ export default function ProductCard3({ product }) {
         </div>
         <span className="price">
           {product.oldPrice && (
-            <span className="old-price">${product.oldPrice.toFixed(2)}</span>
+            <span className="old-price">₹{product.oldPrice.toFixed(2)}</span>
           )}{" "}
-          ${product.price.toFixed(2)}
+          ₹{product.price.toFixed(2)}
         </span>
         <div className="box-progress-stock">
           <div className="progress">

@@ -1,9 +1,16 @@
 "use client";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
-import { productMain } from "@/data/products";
+import { exploreProducts, festiveProducts } from "@/data/products";
 import ProductCard1 from "../productCards/ProductCard1";
+
+// The store's own products (the template showed its demo products here).
+const suggestedProducts = [...festiveProducts, ...exploreProducts];
+// Each keyword runs that search (they used to link to "#").
+const keywords = ["Silk sarees", "Kurta sets", "Lehengas", "Kasavu", "Kids"];
+
 export default function SearchModal() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -20,13 +27,13 @@ export default function SearchModal() {
     router.push(`/search-result?q=${encodeURIComponent(query)}`);
   };
 
-  const [loadedItems, setLoadedItems] = useState(productMain.slice(0, 8));
+  const [loadedItems, setLoadedItems] = useState(suggestedProducts.slice(0, 8));
   const handleLoad = () => {
     setLoading(true);
     setTimeout(() => {
       setLoadedItems((pre) => [
         ...pre,
-        ...productMain.slice(pre.length, pre.length + 4),
+        ...suggestedProducts.slice(pre.length, pre.length + 4),
       ]);
       setLoading(false);
     }, 1000);
@@ -84,26 +91,16 @@ export default function SearchModal() {
           <div>
             <h5 className="mb_16">Feature keywords Today</h5>
             <ul className="list-tags">
-              <li>
-                <a href="#" className="radius-60 link">
-                  Dresses
-                </a>
-              </li>
-              <li>
-                <a href="#" className="radius-60 link">
-                  Dresses women
-                </a>
-              </li>
-              <li>
-                <a href="#" className="radius-60 link">
-                  Dresses midi
-                </a>
-              </li>
-              <li>
-                <a href="#" className="radius-60 link">
-                  Dress summer
-                </a>
-              </li>
+              {keywords.map((keyword) => (
+                <li key={keyword}>
+                  <Link
+                    href={`/search-result?q=${encodeURIComponent(keyword)}`}
+                    className="radius-60 link"
+                  >
+                    {keyword}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
           <div>
@@ -116,7 +113,7 @@ export default function SearchModal() {
           </div>
           {/* Load Item */}
 
-          {productMain.length == loadedItems.length ? (
+          {suggestedProducts.length == loadedItems.length ? (
             ""
           ) : (
             <div

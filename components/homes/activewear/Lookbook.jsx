@@ -71,7 +71,7 @@ export default function Lookbook() {
                             {item.title}
                           </Link>
                           <div className="price text-button">
-                            ${item.price.toFixed(2)}
+                            ₹{item.price.toFixed(2)}
                           </div>
                         </div>
                         <a

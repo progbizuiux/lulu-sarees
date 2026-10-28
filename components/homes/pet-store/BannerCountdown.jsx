@@ -49,7 +49,7 @@ export default function BannerCountdown() {
           <div className="right text-center">
             <h3 className="fw-6">Up To 25%</h3>
             <p className="body-text-1">
-              Get 20% off if you spend 120$ or more!
+              Get 20% off if you spend ₹120 or more!
             </p>
             <div className="tf-countdown-lg">
               <div

@@ -673,7 +673,7 @@ a {
 .link {
     @include mixin.transition3;
     &:hover {
-        color: var(--primary) !important;
+        color: var(--lulu-accent) !important;
     }
 }
 

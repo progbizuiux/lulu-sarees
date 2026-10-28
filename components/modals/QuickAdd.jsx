@@ -4,29 +4,35 @@ import { allProducts } from "@/data/products";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import ColorSelect from "../productDetails/ColorSelect";
 import SizeSelect from "../productDetails/SizeSelect";
 import QuantitySelect from "../productDetails/QuantitySelect";
+import { formatPrice } from "@/lib/format";
 export default function QuickAdd() {
   const [quantity, setQuantity] = useState(1);
+  const [variantId, setVariantId] = useState(null);
   const {
     quickAddItem,
-    addProductToCart,
-    isAddedToCartProducts,
+    addProductToCart, buyNow,
     addToCompareItem,
     addToWishlist,
     isAddedtoWishlist,
     isAddedtoCompareItem,
-    cartProducts,
-    updateQuantity,
   } = useContextElement();
   const [item, setItem] = useState(allProducts[0]);
   useEffect(() => {
-    const filtered = allProducts.filter((el) => el.id == quickAddItem);
-    if (filtered) {
-      setItem(filtered[0]);
+    const found = allProducts.find((el) => el.id == quickAddItem);
+    // (an unknown id used to set `undefined` here and crash the popup)
+    if (found) {
+      setItem(found);
+      // start fresh for each product: quantity 1 and its first option in stock
+      setQuantity(1);
+      setVariantId(found.variants?.find((variant) => variant?.inStock)?.id ?? null);
     }
   }, [quickAddItem]);
+  // Product options [{ id, name, price, inStock }]. (Some demo data has plain-text "variants": skipped.)
+  const variants = (item.variants ?? []).filter((variant) => variant?.id != null);
+  const variant = variants.find((option) => option.id === variantId);
+  const price = variant?.price ?? item.price;
   return (
     <div className="modal fade modal-quick-add" id="quickAdd">
       <div className="modal-dialog modal-dialog-centered">
@@ -47,16 +53,18 @@ export default function QuickAdd() {
                   <Link href={`/product-detail/${item.id}`}>{item.title}</Link>
                   <div className="tf-product-info-price">
                     <h5 className="price-on-sale font-2">
-                      ${item.price.toFixed(2)}
+                      {formatPrice(price)}
                     </h5>
                     {item.oldPrice ? (
                       <>
                         <div className="compare-at-price font-2">
-                          ${item.oldPrice.toFixed(2)}
+                          {formatPrice(item.oldPrice)}
                         </div>
-                        <div className="badges-on-sale text-btn-uppercase">
-                          -25%
-                        </div>
+                        {item.isOnSale && item.salePercentage && (
+                          <div className="badges-on-sale text-btn-uppercase">
+                            -{item.salePercentage}
+                          </div>
+                        )}
                       </>
                     ) : (
                       ""
@@ -65,47 +73,33 @@ export default function QuickAdd() {
                 </div>
               </div>
               <div className="tf-product-info-choose-option">
-                <ColorSelect />
-                <SizeSelect />
+                {/* Colour/size picker: only for products that have options */}
+                {variants.length > 0 && (
+                  <SizeSelect
+                    variants={variants}
+                    selectedId={variantId}
+                    onSelect={setVariantId}
+                  />
+                )}
                 <div className="tf-product-info-quantity">
                   <div className="title mb_12">Quantity:</div>
                   <QuantitySelect
-                    quantity={
-                      isAddedToCartProducts(item.id)
-                        ? cartProducts.filter((elm) => elm.id == item.id)[0]
-                            .quantity
-                        : quantity
-                    }
-                    setQuantity={(qty) => {
-                      if (isAddedToCartProducts(item.id)) {
-                        updateQuantity(item.id, qty);
-                      } else {
-                        setQuantity(qty);
-                      }
-                    }}
+                    quantity={quantity}
+                    setQuantity={setQuantity}
                   />
                 </div>
                 <div>
                   <div className="tf-product-info-by-btn mb_10">
                     <a
                       className="btn-style-2 flex-grow-1 text-btn-uppercase fw-6 show-shopping-cart"
-                      onClick={() => addProductToCart(item.id, quantity)}
+                      onClick={() => addProductToCart(item.id, quantity, true, variantId)}
                     >
                       <span>
-                        {isAddedToCartProducts(item.id)
-                          ? "Already Added"
-                          : "Add to cart -"}
+                        {"Add to cart -"}
                         &nbsp;
                       </span>
                       <span className="tf-qty-price total-price">
-                        $
-                        {isAddedToCartProducts(item.id)
-                          ? (
-                              item.price *
-                              cartProducts.filter((elm) => elm.id == item.id)[0]
-                                .quantity
-                            ).toFixed(2)
-                          : (item.price * quantity).toFixed(2)}
+                        {formatPrice(price * quantity)}
                       </span>
                     </a>
                     <a
@@ -131,12 +125,12 @@ export default function QuickAdd() {
                       <span className="icon icon-heart" />
                       <span className="tooltip text-caption-2">
                         {isAddedtoWishlist(item.id)
-                          ? "Already Wishlished"
+                          ? "In wishlist"
                           : "Wishlist"}
                       </span>
                     </a>
                   </div>
-                  <a href="#" className="btn-style-3 text-btn-uppercase">
+                  <a href="#" className="btn-style-3 text-btn-uppercase" onClick={(event) => { event.preventDefault(); buyNow(item.id, quantity, variantId); }}>
                     Buy it now
                   </a>
                 </div>

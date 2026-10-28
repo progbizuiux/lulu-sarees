@@ -2,6 +2,8 @@
 import React, { useState } from "react";
 import { useAddresses, useCreateAddress, useDeleteAddress, useUpdateAddress } from "@/hooks/useAddresses";
 import AddressForm from "./AddressForm";
+import { confirmAction } from "@/lib/confirm";
+import { notify } from "@/lib/notify";
 
 /** "My Address": the customer's saved addresses (default first), from the address service. */
 export default function Address() {
@@ -23,9 +25,16 @@ export default function Address() {
     setEditingId((current) => (current === id ? null : id));
   };
 
-  const handleDelete = (address) => {
-    if (window.confirm(`Delete the address for ${address.name || "this person"}?`)) {
-      deleteAddress.mutate(address.id);
+  const handleDelete = async (address) => {
+    const confirmed = await confirmAction({
+      title: "Delete this address?",
+      message: `The address for ${address.name || "this person"} will be removed from your account.`,
+      confirmLabel: "Delete",
+    });
+    if (confirmed) {
+      deleteAddress.mutate(address.id, {
+        onSuccess: () => notify("Address deleted.", { type: "success" }),
+      });
     }
   };
 

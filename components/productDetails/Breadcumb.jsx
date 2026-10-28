@@ -1,10 +1,7 @@
 "use client";
 import React from "react";
 import Link from "next/link";
-import { allProducts } from "@/data/products";
-import { usePathname } from "next/navigation";
 export default function Breadcumb({ product }) {
-  const pathname = usePathname();
   return (
     <div className="tf-breadcrumb">
       <div className="container">
@@ -17,25 +14,15 @@ export default function Breadcumb({ product }) {
             <i className="icon icon-arrRight" />
             <span className="text text-caption-1">{product.title}</span>
           </div>
+          {/* The template's previous/next product arrows were removed: they guessed ids (id - 1 / id + 1)
+              and led to missing or demo products. The grid icon goes back to the shop. */}
           <div className="tf-breadcrumb-prev-next">
             <Link
-              href={`/${pathname.split("/")[1]}/${
-                product.id <= 1 ? 1 : product.id - 1
-              }`}
-              className="tf-breadcrumb-prev"
+              href="/shop-default-grid"
+              className="tf-breadcrumb-back"
+              aria-label="Back to the shop"
             >
-              <i className="icon icon-arrLeft" />
-            </Link>
-            <a href="#" className="tf-breadcrumb-back">
               <i className="icon icon-squares-four" />
-            </a>
-            <Link
-              href={`/${pathname.split("/")[1]}/${
-                product.id >= allProducts.length ? 1 : product.id + 1
-              }`}
-              className="tf-breadcrumb-next"
-            >
-              <i className="icon icon-arrRight" />
             </Link>
           </div>
         </div>

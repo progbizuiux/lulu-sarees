@@ -7,6 +7,7 @@ import { EMPTY_CART } from "@/lib/mappers/cart.mapper";
 
 import React, { useMemo, useRef } from "react";
 import { useContext, useState } from "react";
+import { useRouter } from "next/navigation";
 const dataContext = React.createContext();
 export const useContextElement = () => {
   return useContext(dataContext);
@@ -28,7 +29,7 @@ export default function Context({ children }) {
   const addToCart = useAddToCart();
   const updateCartItem = useUpdateCartItem();
   const removeCartItem = useRemoveCartItem();
-  const addingToCart = useRef(new Set()); // stops double-clicks adding the same product twice
+  const addingToCart = useRef(new Set()); // ignores a second click while the first add is still saving
 
   // The template expects product fields + quantity, with `id` being the product id.
   // `lineId` is the backend's cart line id (needed when the same product is in the cart twice,
@@ -42,17 +43,49 @@ export default function Context({ children }) {
 
   const isAddedToCartProducts = (id) => Boolean(findLine(id));
 
-  const addProductToCart = (id, qty, isModal = true) => {
+  // Adding a product that is already in the cart raises its quantity (the backend adds `qty` more).
+  // `variantId`: the colour/size option picked on the product page, when the product has options.
+  const addProductToCart = (id, qty, isModal = true, variantId = null) => {
     const key = String(id);
-    if (isAddedToCartProducts(id) || addingToCart.current.has(key)) return;
+    if (addingToCart.current.has(key)) return;
 
     addingToCart.current.add(key);
     addToCart.mutate(
-      { productId: id, quantity: Number(qty) || 1 },
+      { productId: id, variantId, quantity: Number(qty) || 1 },
       {
         onSuccess: () => {
           if (isModal) openCartModal();
         },
+        onSettled: () => addingToCart.current.delete(key),
+      }
+    );
+  };
+
+  // "Buy it now": buys the quantity chosen on the page — puts it in the cart (or sets the cart's
+  // quantity to it if the item is already there) and goes to checkout.
+  const router = useRouter();
+  const goToCheckout = () => {
+    // close an open popup (e.g. quick view) so its dark backdrop doesn't stay over the checkout page
+    const bootstrap = require("bootstrap");
+    document.querySelectorAll(".modal.show").forEach((el) => bootstrap.Modal.getInstance(el)?.hide());
+    router.push("/checkout");
+  };
+  const buyNow = (id, qty, variantId = null) => {
+    const line = findLine(id);
+    if (line) {
+      const quantity = Number(qty) || 1;
+      if (quantity === line.quantity) return goToCheckout();
+      updateCartItem.mutate({ itemId: line.id, quantity }, { onSuccess: goToCheckout });
+      return;
+    }
+    const key = String(id);
+    if (addingToCart.current.has(key)) return;
+
+    addingToCart.current.add(key);
+    addToCart.mutate(
+      { productId: id, variantId, quantity: Number(qty) || 1 },
+      {
+        onSuccess: goToCheckout,
         onSettled: () => addingToCart.current.delete(key),
       }
     );
@@ -105,7 +138,7 @@ export default function Context({ children }) {
   };
 
   // ---- Compare and quick view (UI only, unchanged)
-  const [compareItem, setCompareItem] = useState([1, 2, 3]);
+  const [compareItem, setCompareItem] = useState([]); // starts empty (the template pre-filled 3 demo products)
   // Set when a product's "Quick view" is clicked. Starts empty so the big demo product file isn't
   // loaded on every page just for a starting value.
   const [quickViewItem, setQuickViewItem] = useState(null);
@@ -131,6 +164,7 @@ export default function Context({ children }) {
     isCartLoading,
     totalPrice: cart.summary.subtotal, // from the backend
     addProductToCart,
+    buyNow,
     isAddedToCartProducts,
     updateQuantity,
     removeFromCart,

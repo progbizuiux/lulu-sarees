@@ -6,10 +6,7 @@ import { products41 } from "@/data/products";
 
 export default function SubscribeAndSave() {
   const {
-    isAddedToCartProducts,
 
-    cartProducts,
-    updateQuantity,
   } = useContextElement();
   const [quantity, setQuantity] = useState(1); // Initial quantity is 1
   return (
@@ -31,7 +28,7 @@ export default function SubscribeAndSave() {
           <label htmlFor="subscribe-save" className="">
             Subscribe &amp;
             <span className="text-button text-primary">Save 10%</span>
-            ($31.47)
+            (₹31.47)
           </label>
           <input
             className=""
@@ -123,20 +120,8 @@ export default function SubscribeAndSave() {
               <div className="title mb_12">Quantity:</div>
               <QuantitySelect
                 styleClass="style-1"
-                quantity={
-                  isAddedToCartProducts(products41[2].id)
-                    ? cartProducts.filter(
-                        (elm) => elm.id == products41[2].id
-                      )[0].quantity
-                    : quantity
-                }
-                setQuantity={(qty) => {
-                  if (isAddedToCartProducts(products41[2].id)) {
-                    updateQuantity(products41[2].id, qty);
-                  } else {
-                    setQuantity(qty);
-                  }
-                }}
+                quantity={quantity}
+                setQuantity={setQuantity}
               />
             </div>
           </div>

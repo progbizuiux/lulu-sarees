@@ -4,13 +4,13 @@ import { allProducts } from "@/data/products";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
+import CartControl from "@/components/common/CartControl";
 
 export default function ProductCompare() {
   const {
     compareItem,
 
     addProductToCart,
-    isAddedToCartProducts,
   } = useContextElement();
   const [items, setItems] = useState([]);
   useEffect(() => {
@@ -95,7 +95,7 @@ export default function ProductCompare() {
                   key={i}
                   className="tf-compare-col tf-compare-field text-center"
                 >
-                  <span className="price">${elm.price.toFixed(2)}</span>
+                  <span className="price">₹{elm.price.toFixed(2)}</span>
                 </div>
               ))}
             </div>
@@ -179,14 +179,14 @@ export default function ProductCompare() {
                   key={i}
                   className="tf-compare-col tf-compare-field tf-compare-viewcart text-center"
                 >
-                  <a
-                    className="btn-view-cart"
-                    onClick={() => addProductToCart(elm.id)}
-                  >
-                    {isAddedToCartProducts(elm.id)
-                      ? "Already Added"
-                      : "Add to Cart"}
-                  </a>
+                  <CartControl productId={elm.id}>
+                    <a
+                      className="btn-view-cart"
+                      onClick={() => addProductToCart(elm.id)}
+                    >
+                      {"Add to Cart"}
+                    </a>
+                  </CartControl>
                 </div>
               ))}
             </div>

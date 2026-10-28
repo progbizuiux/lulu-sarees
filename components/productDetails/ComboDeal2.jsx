@@ -21,8 +21,8 @@ export default function ComboDeal2() {
           </div>
           <div className="d-flex align-items-center gap-8">
             <div className="tf-product-info-price">
-              <div className="price-on-sale text-title">$79.99</div>
-              <div className="compare-at-price">$98.99</div>
+              <div className="price-on-sale text-title">₹79.99</div>
+              <div className="compare-at-price">₹98.99</div>
               <div className="text-btn-uppercase badges-on-sale">-10%</div>
             </div>
           </div>
@@ -43,8 +43,8 @@ export default function ComboDeal2() {
           </div>
           <div className="d-flex align-items-center gap-8">
             <div className="tf-product-info-price">
-              <div className="price-on-sale text-title">$150.99</div>
-              <div className="compare-at-price">$200.99</div>
+              <div className="price-on-sale text-title">₹150.99</div>
+              <div className="compare-at-price">₹200.99</div>
               <div className="text-btn-uppercase badges-on-sale">-15%</div>
             </div>
           </div>
@@ -65,8 +65,8 @@ export default function ComboDeal2() {
           </div>
           <div className="d-flex align-items-center gap-8">
             <div className="tf-product-info-price">
-              <div className="price-on-sale text-title">$400.99</div>
-              <div className="compare-at-price">$500.99</div>
+              <div className="price-on-sale text-title">₹400.99</div>
+              <div className="compare-at-price">₹500.99</div>
               <div className="text-btn-uppercase badges-on-sale">-25%</div>
             </div>
           </div>

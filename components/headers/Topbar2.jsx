@@ -7,7 +7,7 @@ const topBarMessages = [
   {
     id: 1,
     message:
-      "SPRING DEALS | 30% OFF EVERYTHING spending $220 or more | Use code: EXTRA30",
+      "SPRING DEALS | 30% OFF EVERYTHING spending ₹220 or more | Use code: EXTRA30",
   },
   {
     id: 2,

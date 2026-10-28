@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import CountdownTimer from "@/components/common/Countdown";
 import { useContextElement } from "@/context/Context";
+import CartControl from "@/components/common/CartControl";
 export default function Products2() {
   const {
     addToWishlist,
@@ -12,7 +13,6 @@ export default function Products2() {
     addToCompareItem,
     isAddedtoCompareItem,
     addProductToCart,
-    isAddedToCartProducts,
   } = useContextElement();
   return (
     <section className="flat-spacing">
@@ -119,21 +119,21 @@ export default function Products2() {
                           (1.234)
                         </span>
                       </div>
-                      <span className="price">${product.price.toFixed(2)}</span>
+                      <span className="price">₹{product.price.toFixed(2)}</span>
                     </div>
                     <div className="inner-bottom">
                       <p className="description text-secondary text-caption-1 text-line-clamp-2">
                         {product.description}
                       </p>
                       <div className="list-product-btn">
-                        <a
-                          className="btn-main-product"
-                          onClick={() => addProductToCart(product.id)}
-                        >
-                          {isAddedToCartProducts(product.id)
-                            ? "Already Added"
-                            : "ADD TO CART"}
-                        </a>
+                        <CartControl productId={product.id}>
+                          <a
+                            className="btn-main-product"
+                            onClick={() => addProductToCart(product.id)}
+                          >
+                            {"ADD TO CART"}
+                          </a>
+                        </CartControl>
                         <a
                           data-wished={isAddedtoWishlist(product.id) || undefined}
             onClick={() => addToWishlist(product.id)}

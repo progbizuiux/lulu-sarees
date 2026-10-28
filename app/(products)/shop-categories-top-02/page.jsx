@@ -4,6 +4,7 @@ import Topbar6 from "@/components/headers/Topbar6";
 import Products1 from "@/components/products/Products1";
 
 import ShopCategories2 from "@/components/products/ShopCategories2";
+import { homeCategories } from "@/data/collections";
 import { loadShopList, shopBanner, shopHeading, shopMetadata } from "@/lib/shop/server";
 import Link from "next/link";
 import React from "react";
@@ -48,7 +49,11 @@ export default async function ShopCategoriesTopPag2({ searchParams }) {
           </div>
         </div>
       </div>
-      <ShopCategories2 />
+      {/* The same category cards as the home page (without items it showed the template's demo
+          categories). The wrapper gives them the home page's card shape. */}
+      <div className="home-categories">
+        <ShopCategories2 items={homeCategories} />
+      </div>
       <Products1 parentClass="flat-spacing pt-0" initialList={initialList} />
       <Footer1 />
     </>

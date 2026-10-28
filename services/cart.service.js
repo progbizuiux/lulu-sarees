@@ -18,7 +18,11 @@ async function get() {
   return mapCart(unwrap(await apiClient.get(ENDPOINTS.cart.get)));
 }
 
-/** @param {{productId: string|number, variantId?: string|number|null, quantity?: number}} item */
+/**
+ * If the product (same variant) is already in the cart, the backend adds `quantity` to that line
+ * instead of creating a second one. The "Add to cart" buttons rely on this to add an item again.
+ * @param {{productId: string|number, variantId?: string|number|null, quantity?: number}} item
+ */
 async function addItem({ productId, variantId = null, quantity = 1 }) {
   if (config.useMocks) return (await mocks()).addItem({ productId, variantId, quantity });
   return cartFrom(await apiClient.post(ENDPOINTS.cart.items, { productId, variantId, quantity }));
@@ -44,10 +48,25 @@ async function removeCoupon() {
   return cartFrom(await apiClient.delete(ENDPOINTS.cart.coupon));
 }
 
+/** Removes every item (and any coupon) from the cart: DELETE /cart. */
+async function clear() {
+  if (config.useMocks) return (await mocks()).emptyCart();
+  return cartFrom(await apiClient.delete(ENDPOINTS.cart.get));
+}
+
 /** @returns {Promise<import("@/lib/mappers/cart.mapper").Coupon[]>} */
 async function getAvailableCoupons() {
   if (config.useMocks) return (await mocks()).getAvailableCoupons();
   return mapCoupons(unwrap(await apiClient.get(ENDPOINTS.cart.availableCoupons)));
 }
 
-export const cartService = { get, addItem, updateItem, removeItem, applyCoupon, removeCoupon, getAvailableCoupons };
+export const cartService = {
+  get,
+  addItem,
+  updateItem,
+  removeItem,
+  clear,
+  applyCoupon,
+  removeCoupon,
+  getAvailableCoupons,
+};

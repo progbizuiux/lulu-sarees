@@ -44,7 +44,10 @@ export default function HeaderAccountMenu() {
         ))}
       </ul>
       <div className="sub-bot">
-        <span className="body-text-">Support</span>
+        {/* was plain text; now opens the contact page */}
+        <Link href="/contact" className="body-text-">
+          Support
+        </Link>
       </div>
     </div>
   );

@@ -1,24 +1,55 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import Link from "next/link";
 import Slider1 from "../sliders/Slider1";
-import ColorSelect from "../ColorSelect";
 import SizeSelect from "../SizeSelect";
 import QuantitySelect from "../QuantitySelect";
 import Image from "next/image";
 import { useContextElement } from "@/context/Context";
-import ProductStikyBottom from "../ProductStikyBottom";
+import { formatPrice } from "@/lib/format";
+import { notify } from "@/lib/notify";
+
+// "Share": the device's share sheet where there is one, otherwise copy the page link.
+async function shareLink(title) {
+  const url = window.location.href;
+  try {
+    if (navigator.share) return await navigator.share({ title, url });
+  } catch (error) {
+    if (error?.name === "AbortError") return; // share sheet closed
+  }
+  try {
+    await navigator.clipboard.writeText(url);
+    notify("Link copied.", { type: "success" });
+  } catch {
+    notify("Couldn't copy the link. Please copy it from the address bar.", { type: "error" });
+  }
+}
+
+// "Delivery & Return": opens the "Shipping & Returns" tab below (Descriptions1 listens for this).
+function showShippingTab(event) {
+  if (!document.getElementById("product-tabs")) return; // no tabs on this page: plain link
+  event.preventDefault();
+  window.dispatchEvent(new Event("show-shipping-tab"));
+}
+
 export default function Details1({ product }) {
   const [activeColor, setActiveColor] = useState("gray");
   const [quantity, setQuantity] = useState(1);
+  // The product's options (colour/size). Starts on the first one in stock; none for products without options.
+  const variants = product.variants ?? [];
+  const [variantId, setVariantId] = useState(
+    () => variants.find((variant) => variant.inStock)?.id ?? null
+  );
+  const variant = variants.find((item) => item.id === variantId);
+  const price = variant?.price ?? product.price;
+  const category =
+    typeof product.category === "string" ? product.category : product.category?.name;
   const {
-    addProductToCart,
-    isAddedToCartProducts,
+    addProductToCart, buyNow,
     addToWishlist,
     isAddedtoWishlist,
     isAddedtoCompareItem,
     addToCompareItem,
-    cartProducts,
-    updateQuantity,
   } = useContextElement();
 
   return (
@@ -45,7 +76,9 @@ export default function Details1({ product }) {
                 <div className="tf-product-info-list other-image-zoom">
                   <div className="tf-product-info-heading">
                     <div className="tf-product-info-name">
-                      <div className="text text-btn-uppercase">Clothing</div>
+                      {category && (
+                        <div className="text text-btn-uppercase">{category}</div>
+                      )}
                       <h3 className="name">{product.title}</h3>
                       <div className="sub">
                         <div className="tf-product-info-rate">
@@ -72,27 +105,25 @@ export default function Details1({ product }) {
                       <div className="tf-product-info-price">
                         <h5 className="price-on-sale font-2">
                           {" "}
-                          ${product.price.toFixed(2)}
+                          {formatPrice(price)}
                         </h5>
                         {product.oldPrice ? (
                           <>
                             <div className="compare-at-price font-2">
                               {" "}
-                              ${product.oldPrice.toFixed(2)}
+                              {formatPrice(product.oldPrice)}
                             </div>
-                            <div className="badges-on-sale text-btn-uppercase">
-                              -25%
-                            </div>
+                            {product.isOnSale && product.salePercentage && (
+                              <div className="badges-on-sale text-btn-uppercase">
+                                -{product.salePercentage}
+                              </div>
+                            )}
                           </>
                         ) : (
                           ""
                         )}
                       </div>
-                      <p>
-                        The garments labelled as Committed are products that
-                        have been produced using sustainable fibres or
-                        processes, reducing their environmental impact.
-                      </p>
+                      {product.description && <p>{product.description}</p>}
                       <div className="tf-product-info-liveview">
                         <i className="icon icon-eye" />
                         <p className="text-caption-1">
@@ -103,51 +134,34 @@ export default function Details1({ product }) {
                     </div>
                   </div>
                   <div className="tf-product-info-choose-option">
-                    <ColorSelect
-                      setActiveColor={setActiveColor}
-                      activeColor={activeColor}
-                    />
-                    <SizeSelect />
+                    {/* Colour/size picker: only for products that have options */}
+                    {variants.length > 0 && (
+                      <SizeSelect
+                        variants={variants}
+                        selectedId={variantId}
+                        onSelect={setVariantId}
+                      />
+                    )}
                     <div className="tf-product-info-quantity">
                       <div className="title mb_12">Quantity:</div>
                       <QuantitySelect
-                        quantity={
-                          isAddedToCartProducts(product.id)
-                            ? cartProducts.filter(
-                                (elm) => elm.id == product.id
-                              )[0].quantity
-                            : quantity
-                        }
-                        setQuantity={(qty) => {
-                          if (isAddedToCartProducts(product.id)) {
-                            updateQuantity(product.id, qty);
-                          } else {
-                            setQuantity(qty);
-                          }
-                        }}
+                        quantity={quantity}
+                        setQuantity={setQuantity}
                       />
                     </div>
                     <div>
                       <div className="tf-product-info-by-btn mb_10">
                         <a
-                          onClick={() => addProductToCart(product.id, quantity)}
+                          onClick={() =>
+                            addProductToCart(product.id, quantity, true, variantId)
+                          }
                           className="btn-style-2 flex-grow-1 text-btn-uppercase fw-6 btn-add-to-cart"
                         >
                           <span>
-                            {isAddedToCartProducts(product.id)
-                              ? "Already Added"
-                              : "Add to cart -"}
+                            {"Add to cart -"}
                           </span>
                           <span className="tf-qty-price total-price">
-                            $
-                            {isAddedToCartProducts(product.id)
-                              ? (
-                                  product.price *
-                                  cartProducts.filter(
-                                    (elm) => elm.id == product.id
-                                  )[0].quantity
-                                ).toFixed(2)
-                              : (product.price * quantity).toFixed(2)}{" "}
+                            {formatPrice(price * quantity)}{" "}
                           </span>
                         </a>
                         <a
@@ -172,20 +186,20 @@ export default function Details1({ product }) {
                           <span className="icon icon-heart" />
                           <span className="tooltip text-caption-2">
                             {isAddedtoWishlist(product.id)
-                              ? "Already Wishlished"
+                              ? "In wishlist"
                               : "Wishlist"}
                           </span>
                         </a>
                       </div>
-                      <a href="#" className="btn-style-3 text-btn-uppercase">
+                      <a href="#" className="btn-style-3 text-btn-uppercase" onClick={(event) => { event.preventDefault(); buyNow(product.id, quantity, variantId); }}>
                         Buy it now
                       </a>
                     </div>
                     <div className="tf-product-info-help">
                       <div className="tf-product-info-extra-link">
                         <a
-                          href="#delivery_return"
-                          data-bs-toggle="modal"
+                          href="#product-tabs"
+                          onClick={showShippingTab}
                           className="tf-product-extra-icon"
                         >
                           <div className="icon">
@@ -195,19 +209,18 @@ export default function Details1({ product }) {
                             Delivery &amp; Return
                           </p>
                         </a>
-                        <a
-                          href="#ask_question"
-                          data-bs-toggle="modal"
-                          className="tf-product-extra-icon"
-                        >
+                        <Link href="/contact" className="tf-product-extra-icon">
                           <div className="icon">
                             <i className="icon-question" />
                           </div>
                           <p className="text-caption-1">Ask A Question</p>
-                        </a>
+                        </Link>
                         <a
-                          href="#share_social"
-                          data-bs-toggle="modal"
+                          href="#"
+                          onClick={(event) => {
+                            event.preventDefault();
+                            shareLink(product.title);
+                          }}
                           className="tf-product-extra-icon"
                         >
                           <div className="icon">
@@ -267,39 +280,38 @@ export default function Details1({ product }) {
                       </div>
                     </div>
                     <ul className="tf-product-info-sku">
-                      <li>
-                        <p className="text-caption-1">SKU:</p>
-                        <p className="text-caption-1 text-1">53453412</p>
-                      </li>
+                      {product.sku && (
+                        <li>
+                          <p className="text-caption-1">SKU:</p>
+                          <p className="text-caption-1 text-1">{product.sku}</p>
+                        </li>
+                      )}
                       <li>
                         <p className="text-caption-1">Vendor:</p>
-                        <p className="text-caption-1 text-1">Modave</p>
+                        <p className="text-caption-1 text-1">Lulu Sarees</p>
                       </li>
                       <li>
                         <p className="text-caption-1">Available:</p>
-                        <p className="text-caption-1 text-1">Instock</p>
-                      </li>
-                      <li>
-                        <p className="text-caption-1">Categories:</p>
-                        <p className="text-caption-1">
-                          <a href="#" className="text-1 link">
-                            Clothes
-                          </a>
-                          ,
-                          <a href="#" className="text-1 link">
-                            women
-                          </a>
-                          ,
-                          <a href="#" className="text-1 link">
-                            T-shirt
-                          </a>
+                        <p className="text-caption-1 text-1">
+                          {product.inStock ? "In stock" : "Out of stock"}
                         </p>
                       </li>
+                      {category && (
+                        <li>
+                          <p className="text-caption-1">Categories:</p>
+                          <p className="text-caption-1">
+                            <Link href="/shop-default-grid" className="text-1 link">
+                              {category}
+                            </Link>
+                          </p>
+                        </li>
+                      )}
                     </ul>
                     <div className="tf-product-info-guranteed">
-                      <div className="text-title">Guranteed safe checkout:</div>
+                      <div className="text-title">Guaranteed safe checkout:</div>
+                      {/* payment logos are pictures, not links (they had href="#", which jumped to the top) */}
                       <div className="tf-payment">
-                        <a href="#">
+                        <a>
                           <Image
                             alt=""
                             src="/images/payment/img-1.png"
@@ -307,7 +319,7 @@ export default function Details1({ product }) {
                             height={64}
                           />
                         </a>
-                        <a href="#">
+                        <a>
                           <Image
                             alt=""
                             src="/images/payment/img-2.png"
@@ -315,7 +327,7 @@ export default function Details1({ product }) {
                             height={64}
                           />
                         </a>
-                        <a href="#">
+                        <a>
                           <Image
                             alt=""
                             src="/images/payment/img-3.png"
@@ -323,7 +335,7 @@ export default function Details1({ product }) {
                             height={64}
                           />
                         </a>
-                        <a href="#">
+                        <a>
                           <Image
                             alt=""
                             src="/images/payment/img-4.png"
@@ -331,7 +343,7 @@ export default function Details1({ product }) {
                             height={64}
                           />
                         </a>
-                        <a href="#">
+                        <a>
                           <Image
                             alt=""
                             src="/images/payment/img-5.png"
@@ -339,7 +351,7 @@ export default function Details1({ product }) {
                             height={64}
                           />
                         </a>
-                        <a href="#">
+                        <a>
                           <Image
                             alt=""
                             src="/images/payment/img-6.png"
@@ -357,7 +369,6 @@ export default function Details1({ product }) {
           </div>
         </div>
       </div>
-      <ProductStikyBottom />
     </section>
   );
 }

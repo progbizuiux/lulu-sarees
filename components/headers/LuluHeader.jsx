@@ -47,7 +47,9 @@ export default function LuluHeader() {
             </a>
           </li>
           <li className="nav-account">
-            <a href="#" className="lulu-header__icon nav-icon-item" aria-label="Account">
+            {/* The account menu still opens on hover (CSS); clicking the icon opens My Account
+                (it used to link to "#"). */}
+            <Link href="/my-account" className="lulu-header__icon nav-icon-item" aria-label="Account">
               <Image src="/images/icons/user.png" alt="" width={20} height={19} />
               <Image
                 className="lulu-header__chevron"
@@ -56,7 +58,7 @@ export default function LuluHeader() {
                 width={11}
                 height={6}
               />
-            </a>
+            </Link>
             <HeaderAccountMenu />
           </li>
           <li>

@@ -4,6 +4,18 @@ import Image from "next/image";
 import Link from "next/link";
 import CountdownTimer from "../common/Countdown";
 import { useContextElement } from "@/context/Context";
+import CartControl from "@/components/common/CartControl";
+import { formatPrice } from "@/lib/format";
+
+// "-21%" badge from the product's own sale data (its salePercentage, or worked out from oldPrice).
+function saleLabel(product) {
+  if (product.isOnSale && product.salePercentage) return product.salePercentage;
+  if (product.oldPrice > product.price) {
+    return `${Math.round((1 - product.price / product.oldPrice) * 100)}%`;
+  }
+  return null;
+}
+
 export default function ProductCard1({
   product,
   gridClass = "",
@@ -12,6 +24,7 @@ export default function ProductCard1({
   radiusClass = "",
 }) {
   const [currentImage, setCurrentImage] = useState(product.imgSrc);
+  const sale = saleLabel(product);
 
   const {
     setQuickAddItem,
@@ -21,7 +34,6 @@ export default function ProductCard1({
     isAddedtoCompareItem,
     setQuickViewItem,
     addProductToCart,
-    isAddedToCartProducts,
   } = useContextElement();
 
   useEffect(() => {
@@ -159,9 +171,10 @@ export default function ProductCard1({
             </div>
           </div>
         )}
-        {product.isOnSale && (
+        {/* one sale badge, from the product's data (there used to be a second, hard-coded "-25%") */}
+        {sale && (
           <div className="on-sale-wrap">
-            <span className="on-sale-item">-{product.salePercentage}</span>
+            <span className="on-sale-item">-{sale}</span>
           </div>
         )}
         {product.sizes && (
@@ -188,13 +201,6 @@ export default function ProductCard1({
             </div>
           </div>
         )}
-        {product.oldPrice ? (
-          <div className="on-sale-wrap">
-            <span className="on-sale-item">-25%</span>
-          </div>
-        ) : (
-          ""
-        )}
         <div className="list-product-btn">
           <a
             data-wished={isAddedtoWishlist(product.id) || undefined}
@@ -204,7 +210,7 @@ export default function ProductCard1({
             <span className="icon icon-heart" />
             <span className="tooltip">
               {isAddedtoWishlist(product.id)
-                ? "Already Wishlished"
+                ? "In wishlist"
                 : "Wishlist"}
             </span>
           </a>
@@ -243,14 +249,14 @@ export default function ProductCard1({
               Quick Add
             </a>
           ) : (
-            <a
-              className="btn-main-product"
-              onClick={() => addProductToCart(product.id)}
-            >
-              {isAddedToCartProducts(product.id)
-                ? "Already Added"
-                : "ADD TO CART"}
-            </a>
+            <CartControl productId={product.id}>
+              <a
+                className="btn-main-product"
+                onClick={() => addProductToCart(product.id)}
+              >
+                {"ADD TO CART"}
+              </a>
+            </CartControl>
           )}
         </div>
       </div>
@@ -259,10 +265,10 @@ export default function ProductCard1({
           {product.title}
         </Link>
         <span className="price">
-          {product.oldPrice && (
-            <span className="old-price">${product.oldPrice.toFixed(2)}</span>
+          {product.oldPrice > product.price && (
+            <span className="old-price">{formatPrice(product.oldPrice)}</span>
           )}{" "}
-          ${product.price?.toFixed(2)}
+          {formatPrice(product.price)}
         </span>
         {product.colors && (
           <ul className="list-color-product">

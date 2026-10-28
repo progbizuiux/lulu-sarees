@@ -125,7 +125,7 @@ export default function Testimonials() {
                         {testimonial.product}
                       </p>
                       <div className="text-button price">
-                        ${testimonial.price.toFixed(2)}
+                        ₹{testimonial.price.toFixed(2)}
                       </div>
                     </div>
                   </div>

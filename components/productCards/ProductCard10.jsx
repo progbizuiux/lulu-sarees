@@ -183,7 +183,7 @@ export default function ProductCard10({ product, gridClass = "" }) {
             <span className="icon icon-heart" />
             <span className="tooltip">
               {isAddedtoWishlist(product.id)
-                ? "Already Wishlished"
+                ? "In wishlist"
                 : "Wishlist"}
             </span>
           </a>
@@ -230,9 +230,9 @@ export default function ProductCard10({ product, gridClass = "" }) {
         </Link>
         <span className="price">
           {product.oldPrice && (
-            <span className="old-price">${product.oldPrice.toFixed(2)}</span>
+            <span className="old-price">₹{product.oldPrice.toFixed(2)}</span>
           )}{" "}
-          ${product.price?.toFixed(2)}
+          ₹{product.price?.toFixed(2)}
         </span>
         {product.colors && (
           <ul className="list-color-product">

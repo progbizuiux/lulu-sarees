@@ -114,6 +114,26 @@ export function useRemoveCartItem() {
   });
 }
 
+/** Empties the cart straight away and brings the items back if the API call fails. */
+export function useClearCart() {
+  const queryClient = useQueryClient();
+  const saveCart = useSaveCart();
+  const undo = useUndoCartChange();
+  return useMutation({
+    ...CART_MUTATION,
+    meta: WITH_ERROR_TOAST,
+    mutationFn: () => cartService.clear(),
+    onMutate: async () => {
+      await queryClient.cancelQueries({ queryKey: queryKeys.cart });
+      const previous = queryClient.getQueryData(queryKeys.cart);
+      if (previous) queryClient.setQueryData(queryKeys.cart, { ...previous, items: [] });
+      return { previous };
+    },
+    onError: undo,
+    onSuccess: saveCart,
+  });
+}
+
 /**
  * The backend checks the code. On failure, show `error.message` (or `error.fieldErrors.code`).
  * @example applyCoupon.mutate("LULU10");

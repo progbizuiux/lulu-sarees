@@ -142,10 +142,10 @@ export default function BannerTab2({ parentClass = "flat-spacing pt-0" }) {
                           </Link>
                           <div className="price">
                             <span className="old-price">
-                              ${item.oldPrice.toFixed(2)}
+                              ₹{item.oldPrice.toFixed(2)}
                             </span>
                             <span className="new-price">
-                              ${item.price.toFixed(2)}
+                              ₹{item.price.toFixed(2)}
                             </span>
                           </div>
                         </div>

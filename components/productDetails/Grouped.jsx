@@ -93,9 +93,9 @@ export default function Grouped() {
                 </select>
               </div>
               <div className="tf-product-info-price type-small">
-                <h5 className="price-on-sale">${product.price}</h5>
+                <h5 className="price-on-sale">₹{product.price}</h5>
                 {product.oldPrice && (
-                  <div className="compare-at-price">${product.oldPrice}</div>
+                  <div className="compare-at-price">₹{product.oldPrice}</div>
                 )}
                 {product.discount && (
                   <div className="badges-on-sale">{product.discount}</div>
@@ -128,8 +128,8 @@ export default function Grouped() {
       <div className="tf-bundle-product-total-submit">
         <h6>Total price:</h6>
         <div className="tf-product-info-price type-1">
-          <h4 className="price-on-sale">${totalPrice.toFixed(2)}</h4>
-          <div className="compare-at-price">${totalPriceOld.toFixed(2)}</div>
+          <h4 className="price-on-sale">₹{totalPrice.toFixed(2)}</h4>
+          <div className="compare-at-price">₹{totalPriceOld.toFixed(2)}</div>
           <div className="badges-on-sale">-20%</div>
         </div>
       </div>

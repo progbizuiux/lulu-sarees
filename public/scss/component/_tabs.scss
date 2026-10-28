@@ -339,8 +339,8 @@
         border: 1px solid var(--line);
         &:hover,
         &.active {
-            color: var(--primary);
-            background-color: #e431311a;
+            color: var(--lulu-accent);
+            background-color: rgba(11, 125, 62, 0.1);
             border-color: var(--Critical);
         }
     }

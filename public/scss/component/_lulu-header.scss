@@ -3,8 +3,10 @@ $lulu-text: #231f21;
 $lulu-icon: #4b5563; // stroke colour of the exported icon PNGs
 
 .lulu-header {
-  // position: sticky, z-index and the scroll "header-bg" shadow come from the global `header` rule
+  // position: sticky and z-index come from the global `header` rule
   background-color: var(--white);
+  // same bottom line as the scrolled "header-bg" state, shown from the start
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 
   &__inner {
     position: relative;

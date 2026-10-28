@@ -5,7 +5,7 @@ import Link from "next/link";
 
 import ToolbarBottom from "../headers/ToolbarBottom";
 import { footerLinks, socialLinks } from "@/data/footerLinks";
-import axios from "axios";
+import { newsletterService } from "@/services/newsletter.service";
 export default function Footer1({
   border = true,
   dark = true, // Black footer on every page.
@@ -13,6 +13,8 @@ export default function Footer1({
 }) {
   const [success, setSuccess] = useState(true);
   const [showMessage, setShowMessage] = useState(false);
+  const [errorText, setErrorText] = useState("Something went wrong");
+  const [agreed, setAgreed] = useState(false); // the "By clicking subscribe, you agree…" box
 
   const handleShowMessage = () => {
     setShowMessage(true);
@@ -21,31 +23,29 @@ export default function Footer1({
     }, 2000);
   };
 
+  // Subscribes through our own API (lib/mocks/newsletter.js in mock mode).
+  // The template used to send the email to its vendor's server.
   const sendEmail = async (e) => {
     e.preventDefault(); // Prevent default form submission behavior
-    const email = e.target.email.value;
+    const form = e.currentTarget;
+    const email = form.email.value;
+
+    if (!agreed) {
+      setErrorText("Please agree to the Terms of Service and Privacy Policy.");
+      setSuccess(false);
+      handleShowMessage();
+      return;
+    }
 
     try {
-      const response = await axios.post(
-        "https://express-brevomail.vercel.app/api/contacts",
-        {
-          email,
-        }
-      );
-
-      if ([200, 201].includes(response.status)) {
-        e.target.reset(); // Reset the form
-        setSuccess(true); // Set success state
-        handleShowMessage();
-      } else {
-        setSuccess(false); // Handle unexpected responses
-        handleShowMessage();
-      }
+      await newsletterService.subscribe(email);
+      form.reset(); // Reset the form
+      setSuccess(true); // Set success state
+      handleShowMessage();
     } catch (error) {
-      console.error("Error:", error.response?.data || "An error occurred");
+      setErrorText("Something went wrong");
       setSuccess(false); // Set error state
       handleShowMessage();
-      e.target.reset(); // Reset the form
     }
   };
   useEffect(() => {
@@ -100,7 +100,12 @@ export default function Footer1({
                           }
                           width={dark ? 179 : 110}
                           height={dark ? 94 : 109}
-                          style={{ width: dark ? 179 : 110, maxWidth: "100%", height: "auto" }}
+                          // scales with the screen: 120px on phones up to full size from ~600px wide
+                          style={{
+                            width: dark ? "clamp(120px, 30vw, 179px)" : "clamp(80px, 22vw, 110px)",
+                            maxWidth: "100%",
+                            height: "auto",
+                          }}
                         />
                       </Link>
                     </div>
@@ -165,7 +170,7 @@ export default function Footer1({
                 <div className="col-lg-4">
                   <div className="footer-col-block">
                     <div className="footer-heading text-button footer-heading-mobile">
-                      Newletter
+                      Newsletter
                     </div>
                     <div className="tf-collapse-content">
                       <div className="footer-newsletter">
@@ -183,7 +188,7 @@ export default function Footer1({
                               You have successfully subscribed.
                             </p>
                           ) : (
-                            <p style={{ color: "red" }}>Something went wrong</p>
+                            <p style={{ color: "red" }}>{errorText}</p>
                           )}
                         </div>
                         <form
@@ -201,6 +206,7 @@ export default function Footer1({
                                 placeholder="Enter your e-mail"
                                 tabIndex={0}
                                 aria-required="true"
+                                required
                               />
                             </fieldset>
                             <div className="button-submit">
@@ -221,6 +227,8 @@ export default function Footer1({
                               type="checkbox"
                               id="footer-Form_agree"
                               name="agree_checkbox"
+                              checked={agreed}
+                              onChange={(e) => setAgreed(e.target.checked)}
                             />
                             <div>
                               <i className="icon-check" />
@@ -230,7 +238,7 @@ export default function Footer1({
                             className="text-caption-1"
                             htmlFor="footer-Form_agree"
                           >
-                            By clicking subcribe, you agree to the{" "}
+                            By clicking subscribe, you agree to the{" "}
                             <Link className="fw-6 link" href={`/term-of-use`}>
                               Terms of Service
                             </Link>{" "}
@@ -270,7 +278,7 @@ export default function Footer1({
                   <div className="footer-bottom-wrap">
                     <div className="left">
                       <p className="text-caption-1">
-                        ©{new Date().getFullYear()} Modave. All Rights Reserved.
+                        ©{new Date().getFullYear()} Lulu Sarees. All Rights Reserved.
                       </p>
                     </div>
                     <div className="tf-payment">

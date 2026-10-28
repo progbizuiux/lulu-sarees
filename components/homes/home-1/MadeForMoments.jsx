@@ -1,6 +1,12 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { luluMenu } from "@/data/luluMenu";
+
+// "Our wedding collections" opens the header menu's Wedding listing (it used to open the template's
+// /shop-collection page, whose categories go nowhere).
+const weddingHref =
+  luluMenu.find((item) => item.label === "Wedding")?.href ?? "/shop-default-grid";
 
 // Left: the bride with the "Moments of mangalya" lettering (part of the image). Right: the groom.
 export default function MadeForMoments() {
@@ -38,7 +44,7 @@ export default function MadeForMoments() {
               sizes="(min-width: 992px) 30vw, 100vw"
             />
           </div>
-          <Link href="/shop-collection" className="mm__link">
+          <Link href={weddingHref} className="mm__link">
             Our wedding collections
           </Link>
         </div>

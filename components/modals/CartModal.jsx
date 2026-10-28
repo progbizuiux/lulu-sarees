@@ -3,19 +3,68 @@ import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useContextElement } from "@/context/Context";
-import { products41 } from "@/data/products";
-import { useApplyCoupon, useCart, useRemoveCartItem, useRemoveCoupon } from "@/hooks/useCart";
+import { exploreProducts, festiveProducts } from "@/data/products";
+import {
+  useApplyCoupon,
+  useCart,
+  useRemoveCartItem,
+  useRemoveCoupon,
+  useUpdateCartItem,
+  useClearCart,
+} from "@/hooks/useCart";
+import { usePincodeCheck } from "@/hooks/useCheckout";
 import { EMPTY_CART } from "@/lib/mappers/cart.mapper";
-import { formatPrice } from "@/lib/format";
+import { formatDate, formatPrice } from "@/lib/format";
+import { confirmAction } from "@/lib/confirm";
+import { notify } from "@/lib/notify";
 import { FieldError, errorProps } from "@/components/auth/FormMessages";
+import CartControl from "@/components/common/CartControl";
+
+// The drawer's order note is kept for this browser tab; checkout pre-fills its "Order note" from it.
+const ORDER_NOTE_KEY = "lulu-order-note";
+const NOTE_MAX_LENGTH = 500; // same limit as the checkout's order note
+
+function readOrderNote() {
+  try {
+    return sessionStorage.getItem(ORDER_NOTE_KEY) ?? "";
+  } catch {
+    return "";
+  }
+}
+
+function saveOrderNote(text) {
+  try {
+    if (text) sessionStorage.setItem(ORDER_NOTE_KEY, text);
+    else sessionStorage.removeItem(ORDER_NOTE_KEY);
+  } catch {
+    // storage blocked (e.g. private mode): the note can still be typed at checkout
+  }
+}
+
 export default function CartModal() {
-  const { addProductToCart, isAddedToCartProducts } = useContextElement();
+  const { addProductToCart } = useContextElement();
   const { data: cart = EMPTY_CART, isPending: isCartLoading } = useCart();
   const removeItem = useRemoveCartItem();
+  const updateItem = useUpdateCartItem();
+  const clearCart = useClearCart();
   const applyCoupon = useApplyCoupon();
   const removeCoupon = useRemoveCoupon();
 
   const [currentOpenPopup, setCurrentOpenPopup] = useState("");
+  const [noteDraft, setNoteDraft] = useState("");
+  const [pincodeInput, setPincodeInput] = useState("");
+  const [pincode, setPincode] = useState(""); // the pincode being checked
+  const [pincodeError, setPincodeError] = useState("");
+  const pincodeCheck = usePincodeCheck(pincode);
+  const pincodeCheckError = pincodeCheck.isError
+    ? pincodeCheck.error?.fieldErrors?.pincode ?? "We couldn't check delivery right now."
+    : "";
+
+  // Suggestions: the same products the home page shows, minus what's already in the cart.
+  const inCart = new Set(cart.items.map((item) => String(item.productId)));
+  const suggestions = [...exploreProducts, ...festiveProducts]
+    .filter((product) => !inCart.has(String(product.id)))
+    .slice(0, 4);
 
   const { summary, freeShipping } = cart;
   const freeShippingProgress = freeShipping?.threshold
@@ -36,9 +85,41 @@ export default function CartModal() {
     });
   };
 
+  // Same limits as the cart page: at least 1 (use "Remove" to take it out), at most maxQuantity.
+  const setQuantity = (item, quantity) => {
+    if (quantity < 1) return;
+    if (item.maxQuantity && quantity > item.maxQuantity) return;
+    updateItem.mutate({ itemId: item.id, quantity });
+  };
+
   const closePopup = () => {
     setCurrentOpenPopup("");
     applyCoupon.reset();
+  };
+
+  // Open the note with what was saved before.
+  const openNote = () => {
+    setNoteDraft(readOrderNote());
+    setCurrentOpenPopup("add-note");
+  };
+
+  const handleSaveNote = (event) => {
+    event.preventDefault();
+    saveOrderNote(noteDraft.trim());
+    setCurrentOpenPopup("");
+  };
+
+  // Indian pincodes are 6 digits and don't start with 0.
+  const handlePincode = (event) => {
+    event.preventDefault();
+    const value = pincodeInput.trim();
+    if (!/^[1-9]\d{5}$/.test(value)) {
+      setPincodeError("Enter a valid 6-digit pincode.");
+      setPincode("");
+      return;
+    }
+    setPincodeError("");
+    setPincode(value);
   };
 
   return (
@@ -49,13 +130,13 @@ export default function CartModal() {
             <h6 className="title">You May Also Like</h6>
             <div className="wrap-recommendations">
               <div className="list-cart">
-                {products41.map((product, index) => (
-                  <div className="list-cart-item" key={index}>
+                {suggestions.map((product) => (
+                  <div className="list-cart-item" key={product.id}>
                     <div className="image">
                       <Image
                         className="lazyload"
                         data-src={product.imgSrc}
-                        alt={product.alt}
+                        alt={product.title}
                         src={product.imgSrc}
                         width={600}
                         height={800}
@@ -72,16 +153,16 @@ export default function CartModal() {
                       </div>
                       <div className="cart-item-bot">
                         <div className="text-button price">
-                          ${product.price.toFixed(2)}
+                          {formatPrice(product.price)}
                         </div>
-                        <a
-                          className="link text-button"
-                          onClick={() => addProductToCart(product.id, 1, false)}
-                        >
-                          {isAddedToCartProducts(product.id)
-                            ? "Already Added"
-                            : "Add to cart"}
-                        </a>
+                        <CartControl productId={product.id}>
+                          <a
+                            className="link text-button"
+                            onClick={() => addProductToCart(product.id, 1, false)}
+                          >
+                            {"Add to cart"}
+                          </a>
+                        </CartControl>
                       </div>
                     </div>
                   </div>
@@ -169,11 +250,46 @@ export default function CartModal() {
                                 </div>
                               </div>
                               <div className="d-flex align-items-center justify-content-between flex-wrap gap-12">
-                                {item.variantName ? (
-                                  <div className="text-secondary-2">{item.variantName}</div>
-                                ) : (
-                                  <span />
-                                )}
+                                <div className="d-flex align-items-center flex-wrap gap-12">
+                                  {item.variantName && (
+                                    <div className="text-secondary-2">{item.variantName}</div>
+                                  )}
+                                  <div className="wg-quantity">
+                                    <span
+                                      className="btn-quantity btn-decrease"
+                                      role="button"
+                                      tabIndex={0}
+                                      aria-label={`Decrease quantity of ${item.title}`}
+                                      aria-disabled={item.quantity <= 1}
+                                      onClick={() => setQuantity(item, item.quantity - 1)}
+                                      onKeyDown={(event) => {
+                                        if (event.key === "Enter") setQuantity(item, item.quantity - 1);
+                                      }}
+                                    >
+                                      -
+                                    </span>
+                                    <input
+                                      type="text"
+                                      className="quantity-product"
+                                      value={item.quantity}
+                                      aria-label={`Quantity of ${item.title}`}
+                                      readOnly
+                                    />
+                                    <span
+                                      className="btn-quantity btn-increase"
+                                      role="button"
+                                      tabIndex={0}
+                                      aria-label={`Increase quantity of ${item.title}`}
+                                      aria-disabled={Boolean(item.maxQuantity) && item.quantity >= item.maxQuantity}
+                                      onClick={() => setQuantity(item, item.quantity + 1)}
+                                      onKeyDown={(event) => {
+                                        if (event.key === "Enter") setQuantity(item, item.quantity + 1);
+                                      }}
+                                    >
+                                      +
+                                    </span>
+                                  </div>
+                                </div>
                                 <div className="text-button">
                                   {item.quantity} X {formatPrice(item.price)}
                                 </div>
@@ -181,6 +297,26 @@ export default function CartModal() {
                             </div>
                           </div>
                         ))}
+                        <div className="tf-mini-cart-clear">
+                          <button
+                            type="button"
+                            className="text-button tf-btn-remove"
+                            onClick={async () => {
+                              const confirmed = await confirmAction({
+                                title: "Clear your cart?",
+                                message: "All items will be removed from your cart.",
+                                confirmLabel: "Clear cart",
+                              });
+                              if (confirmed) {
+                                clearCart.mutate(undefined, {
+                                  onSuccess: () => notify("Your cart is now empty.", { type: "success" }),
+                                });
+                              }
+                            }}
+                          >
+                            Clear cart
+                          </button>
+                        </div>
                       </div>
                     ) : (
                       <div className="p-4">
@@ -197,7 +333,7 @@ export default function CartModal() {
                   <div className="tf-mini-cart-tool">
                     <div
                       className="tf-mini-cart-tool-btn btn-add-note"
-                      onClick={() => setCurrentOpenPopup("add-note")}
+                      onClick={openNote}
                     >
                       <svg
                         width={21}
@@ -329,25 +465,6 @@ export default function CartModal() {
                         {formatPrice(summary.subtotal)}
                       </h5>
                     </div>
-                    <div className="tf-cart-checkbox">
-                      <div className="tf-checkbox-wrapp">
-                        <input
-                          className=""
-                          type="checkbox"
-                          id="CartDrawer-Form_agree"
-                          name="agree_checkbox"
-                        />
-                        <div>
-                          <i className="icon-check" />
-                        </div>
-                      </div>
-                      <label htmlFor="CartDrawer-Form_agree">
-                        I agree with
-                        <Link href={`/term-of-use`} title="Terms of Service">
-                          Terms &amp; Conditions
-                        </Link>
-                      </label>
-                    </div>
                     <div className="tf-mini-cart-view-checkout">
                       <Link
                         href={`/shopping-cart`}
@@ -417,14 +534,16 @@ export default function CartModal() {
                     </label>
                     <form
                       className="form-add-note tf-mini-cart-tool-wrap"
-                      onSubmit={(e) => e.preventDefault()}
+                      onSubmit={handleSaveNote}
                     >
                       <fieldset className="d-flex">
                         <textarea
                           name="note"
                           id="Cart-note"
                           placeholder="Add special instructions for your order..."
-                          defaultValue={""}
+                          value={noteDraft}
+                          maxLength={NOTE_MAX_LENGTH}
+                          onChange={(event) => setNoteDraft(event.target.value)}
                         />
                       </fieldset>
                       <div className="tf-cart-tool-btns">
@@ -480,185 +599,81 @@ export default function CartModal() {
                         </svg>
                       </span>
                       <span className="text-title">
-                        Estimate shipping rates
+                        Check delivery to your pincode
                       </span>
                     </label>
                     <form
                       className="form-estimate-shipping tf-mini-cart-tool-wrap"
-                      onSubmit={(e) => e.preventDefault()}
+                      onSubmit={handlePincode}
+                      noValidate
                     >
-                      <div className="mb_12">
-                        <div className="text-caption-1 text-secondary mb_8">
-                          Country/region
-                        </div>
-                        <div className="tf-select">
-                          <select className="">
-                            <option>United States</option>
-                            <option>China</option>
-                          </select>
-                        </div>
-                      </div>
-                      <div className="mb_12">
-                        <div className="text-caption-1 text-secondary mb_8">
-                          State
-                        </div>
-                        <div className="tf-select">
-                          <select
-                            className="text-title"
-                            name="address[country]"
-                            data-default=""
-                          >
-                            <option
-                              value="Australia"
-                              data-provinces="[['Australian Capital Territory','Australian Capital Territory'],['New South Wales','New South Wales'],['Northern Territory','Northern Territory'],['Queensland','Queensland'],['South Australia','South Australia'],['Tasmania','Tasmania'],['Victoria','Victoria'],['Western Australia','Western Australia']]"
-                            >
-                              Australia
-                            </option>
-                            <option value="Austria" data-provinces="[]">
-                              Austria
-                            </option>
-                            <option value="Belgium" data-provinces="[]">
-                              Belgium
-                            </option>
-                            <option
-                              value="Canada"
-                              data-provinces="[['Alberta','Alberta'],['British Columbia','British Columbia'],['Manitoba','Manitoba'],['New Brunswick','New Brunswick'],['Newfoundland and Labrador','Newfoundland and Labrador'],['Northwest Territories','Northwest Territories'],['Nova Scotia','Nova Scotia'],['Nunavut','Nunavut'],['Ontario','Ontario'],['Prince Edward Island','Prince Edward Island'],['Quebec','Quebec'],['Saskatchewan','Saskatchewan'],['Yukon','Yukon']]"
-                            >
-                              Canada
-                            </option>
-                            <option value="Czech Republic" data-provinces="[]">
-                              Czechia
-                            </option>
-                            <option value="Denmark" data-provinces="[]">
-                              Denmark
-                            </option>
-                            <option value="Finland" data-provinces="[]">
-                              Finland
-                            </option>
-                            <option value="France" data-provinces="[]">
-                              France
-                            </option>
-                            <option value="Germany" data-provinces="[]">
-                              Germany
-                            </option>
-                            <option
-                              value="Hong Kong"
-                              data-provinces="[['Hong Kong Island','Hong Kong Island'],['Kowloon','Kowloon'],['New Territories','New Territories']]"
-                            >
-                              Hong Kong SAR
-                            </option>
-                            <option
-                              value="Ireland"
-                              data-provinces="[['Carlow','Carlow'],['Cavan','Cavan'],['Clare','Clare'],['Cork','Cork'],['Donegal','Donegal'],['Dublin','Dublin'],['Galway','Galway'],['Kerry','Kerry'],['Kildare','Kildare'],['Kilkenny','Kilkenny'],['Laois','Laois'],['Leitrim','Leitrim'],['Limerick','Limerick'],['Longford','Longford'],['Louth','Louth'],['Mayo','Mayo'],['Meath','Meath'],['Monaghan','Monaghan'],['Offaly','Offaly'],['Roscommon','Roscommon'],['Sligo','Sligo'],['Tipperary','Tipperary'],['Waterford','Waterford'],['Westmeath','Westmeath'],['Wexford','Wexford'],['Wicklow','Wicklow']]"
-                            >
-                              Ireland
-                            </option>
-                            <option value="Israel" data-provinces="[]">
-                              Israel
-                            </option>
-                            <option
-                              value="Italy"
-                              data-provinces="[['Agrigento','Agrigento'],['Alessandria','Alessandria'],['Ancona','Ancona'],['Aosta','Aosta Valley'],['Arezzo','Arezzo'],['Ascoli Piceno','Ascoli Piceno'],['Asti','Asti'],['Avellino','Avellino'],['Bari','Bari'],['Barletta-Andria-Trani','Barletta-Andria-Trani'],['Belluno','Belluno'],['Benevento','Benevento'],['Bergamo','Bergamo'],['Biella','Biella'],['Bologna','Bologna'],['Bolzano','South Tyrol'],['Brescia','Brescia'],['Brindisi','Brindisi'],['Cagliari','Cagliari'],['Caltanissetta','Caltanissetta'],['Campobasso','Campobasso'],['Carbonia-Iglesias','Carbonia-Iglesias'],['Caserta','Caserta'],['Catania','Catania'],['Catanzaro','Catanzaro'],['Chieti','Chieti'],['Como','Como'],['Cosenza','Cosenza'],['Cremona','Cremona'],['Crotone','Crotone'],['Cuneo','Cuneo'],['Enna','Enna'],['Fermo','Fermo'],['Ferrara','Ferrara'],['Firenze','Florence'],['Foggia','Foggia'],['Forlì-Cesena','Forlì-Cesena'],['Frosinone','Frosinone'],['Genova','Genoa'],['Gorizia','Gorizia'],['Grosseto','Grosseto'],['Imperia','Imperia'],['Isernia','Isernia'],['L'Aquila','L’Aquila'],['La Spezia','La Spezia'],['Latina','Latina'],['Lecce','Lecce'],['Lecco','Lecco'],['Livorno','Livorno'],['Lodi','Lodi'],['Lucca','Lucca'],['Macerata','Macerata'],['Mantova','Mantua'],['Massa-Carrara','Massa and Carrara'],['Matera','Matera'],['Medio Campidano','Medio Campidano'],['Messina','Messina'],['Milano','Milan'],['Modena','Modena'],['Monza e Brianza','Monza and Brianza'],['Napoli','Naples'],['Novara','Novara'],['Nuoro','Nuoro'],['Ogliastra','Ogliastra'],['Olbia-Tempio','Olbia-Tempio'],['Oristano','Oristano'],['Padova','Padua'],['Palermo','Palermo'],['Parma','Parma'],['Pavia','Pavia'],['Perugia','Perugia'],['Pesaro e Urbino','Pesaro and Urbino'],['Pescara','Pescara'],['Piacenza','Piacenza'],['Pisa','Pisa'],['Pistoia','Pistoia'],['Pordenone','Pordenone'],['Potenza','Potenza'],['Prato','Prato'],['Ragusa','Ragusa'],['Ravenna','Ravenna'],['Reggio Calabria','Reggio Calabria'],['Reggio Emilia','Reggio Emilia'],['Rieti','Rieti'],['Rimini','Rimini'],['Roma','Rome'],['Rovigo','Rovigo'],['Salerno','Salerno'],['Sassari','Sassari'],['Savona','Savona'],['Siena','Siena'],['Siracusa','Syracuse'],['Sondrio','Sondrio'],['Taranto','Taranto'],['Teramo','Teramo'],['Terni','Terni'],['Torino','Turin'],['Trapani','Trapani'],['Trento','Trentino'],['Treviso','Treviso'],['Trieste','Trieste'],['Udine','Udine'],['Varese','Varese'],['Venezia','Venice'],['Verbano-Cusio-Ossola','Verbano-Cusio-Ossola'],['Vercelli','Vercelli'],['Verona','Verona'],['Vibo Valentia','Vibo Valentia'],['Vicenza','Vicenza'],['Viterbo','Viterbo']]"
-                            >
-                              Italy
-                            </option>
-                            <option
-                              value="Japan"
-                              data-provinces="[['Aichi','Aichi'],['Akita','Akita'],['Aomori','Aomori'],['Chiba','Chiba'],['Ehime','Ehime'],['Fukui','Fukui'],['Fukuoka','Fukuoka'],['Fukushima','Fukushima'],['Gifu','Gifu'],['Gunma','Gunma'],['Hiroshima','Hiroshima'],['Hokkaidō','Hokkaido'],['Hyōgo','Hyogo'],['Ibaraki','Ibaraki'],['Ishikawa','Ishikawa'],['Iwate','Iwate'],['Kagawa','Kagawa'],['Kagoshima','Kagoshima'],['Kanagawa','Kanagawa'],['Kumamoto','Kumamoto'],['Kyōto','Kyoto'],['Kōchi','Kochi'],['Mie','Mie'],['Miyagi','Miyagi'],['Miyazaki','Miyazaki'],['Nagano','Nagano'],['Nagasaki','Nagasaki'],['Nara','Nara'],['Niigata','Niigata'],['Okayama','Okayama'],['Okinawa','Okinawa'],['Saga','Saga'],['Saitama','Saitama'],['Shiga','Shiga'],['Shimane','Shimane'],['Shizuoka','Shizuoka'],['Tochigi','Tochigi'],['Tokushima','Tokushima'],['Tottori','Tottori'],['Toyama','Toyama'],['Tōkyō','Tokyo'],['Wakayama','Wakayama'],['Yamagata','Yamagata'],['Yamaguchi','Yamaguchi'],['Yamanashi','Yamanashi'],['Ōita','Oita'],['Ōsaka','Osaka']]"
-                            >
-                              Japan
-                            </option>
-                            <option
-                              value="Malaysia"
-                              data-provinces="[['Johor','Johor'],['Kedah','Kedah'],['Kelantan','Kelantan'],['Kuala Lumpur','Kuala Lumpur'],['Labuan','Labuan'],['Melaka','Malacca'],['Negeri Sembilan','Negeri Sembilan'],['Pahang','Pahang'],['Penang','Penang'],['Perak','Perak'],['Perlis','Perlis'],['Putrajaya','Putrajaya'],['Sabah','Sabah'],['Sarawak','Sarawak'],['Selangor','Selangor'],['Terengganu','Terengganu']]"
-                            >
-                              Malaysia
-                            </option>
-                            <option value="Netherlands" data-provinces="[]">
-                              Netherlands
-                            </option>
-                            <option
-                              value="New Zealand"
-                              data-provinces="[['Auckland','Auckland'],['Bay of Plenty','Bay of Plenty'],['Canterbury','Canterbury'],['Chatham Islands','Chatham Islands'],['Gisborne','Gisborne'],['Hawke's Bay','Hawke’s Bay'],['Manawatu-Wanganui','Manawatū-Whanganui'],['Marlborough','Marlborough'],['Nelson','Nelson'],['Northland','Northland'],['Otago','Otago'],['Southland','Southland'],['Taranaki','Taranaki'],['Tasman','Tasman'],['Waikato','Waikato'],['Wellington','Wellington'],['West Coast','West Coast']]"
-                            >
-                              New Zealand
-                            </option>
-                            <option value="Norway" data-provinces="[]">
-                              Norway
-                            </option>
-                            <option value="Poland" data-provinces="[]">
-                              Poland
-                            </option>
-                            <option
-                              value="Portugal"
-                              data-provinces="[['Aveiro','Aveiro'],['Açores','Azores'],['Beja','Beja'],['Braga','Braga'],['Bragança','Bragança'],['Castelo Branco','Castelo Branco'],['Coimbra','Coimbra'],['Faro','Faro'],['Guarda','Guarda'],['Leiria','Leiria'],['Lisboa','Lisbon'],['Madeira','Madeira'],['Portalegre','Portalegre'],['Porto','Porto'],['Santarém','Santarém'],['Setúbal','Setúbal'],['Viana do Castelo','Viana do Castelo'],['Vila Real','Vila Real'],['Viseu','Viseu'],['Évora','Évora']]"
-                            >
-                              Portugal
-                            </option>
-                            <option value="Singapore" data-provinces="[]">
-                              Singapore
-                            </option>
-                            <option
-                              value="South Korea"
-                              data-provinces="[['Busan','Busan'],['Chungbuk','North Chungcheong'],['Chungnam','South Chungcheong'],['Daegu','Daegu'],['Daejeon','Daejeon'],['Gangwon','Gangwon'],['Gwangju','Gwangju City'],['Gyeongbuk','North Gyeongsang'],['Gyeonggi','Gyeonggi'],['Gyeongnam','South Gyeongsang'],['Incheon','Incheon'],['Jeju','Jeju'],['Jeonbuk','North Jeolla'],['Jeonnam','South Jeolla'],['Sejong','Sejong'],['Seoul','Seoul'],['Ulsan','Ulsan']]"
-                            >
-                              South Korea
-                            </option>
-                            <option
-                              value="Spain"
-                              data-provinces="[['A Coruña','A Coruña'],['Albacete','Albacete'],['Alicante','Alicante'],['Almería','Almería'],['Asturias','Asturias Province'],['Badajoz','Badajoz'],['Balears','Balears Province'],['Barcelona','Barcelona'],['Burgos','Burgos'],['Cantabria','Cantabria Province'],['Castellón','Castellón'],['Ceuta','Ceuta'],['Ciudad Real','Ciudad Real'],['Cuenca','Cuenca'],['Cáceres','Cáceres'],['Cádiz','Cádiz'],['Córdoba','Córdoba'],['Girona','Girona'],['Granada','Granada'],['Guadalajara','Guadalajara'],['Guipúzcoa','Gipuzkoa'],['Huelva','Huelva'],['Huesca','Huesca'],['Jaén','Jaén'],['La Rioja','La Rioja Province'],['Las Palmas','Las Palmas'],['León','León'],['Lleida','Lleida'],['Lugo','Lugo'],['Madrid','Madrid Province'],['Melilla','Melilla'],['Murcia','Murcia'],['Málaga','Málaga'],['Navarra','Navarra'],['Ourense','Ourense'],['Palencia','Palencia'],['Pontevedra','Pontevedra'],['Salamanca','Salamanca'],['Santa Cruz de Tenerife','Santa Cruz de Tenerife'],['Segovia','Segovia'],['Sevilla','Seville'],['Soria','Soria'],['Tarragona','Tarragona'],['Teruel','Teruel'],['Toledo','Toledo'],['Valencia','Valencia'],['Valladolid','Valladolid'],['Vizcaya','Biscay'],['Zamora','Zamora'],['Zaragoza','Zaragoza'],['Álava','Álava'],['Ávila','Ávila']]"
-                            >
-                              Spain
-                            </option>
-                            <option value="Sweden" data-provinces="[]">
-                              Sweden
-                            </option>
-                            <option value="Switzerland" data-provinces="[]">
-                              Switzerland
-                            </option>
-                            <option
-                              value="United Arab Emirates"
-                              data-provinces="[['Abu Dhabi','Abu Dhabi'],['Ajman','Ajman'],['Dubai','Dubai'],['Fujairah','Fujairah'],['Ras al-Khaimah','Ras al-Khaimah'],['Sharjah','Sharjah'],['Umm al-Quwain','Umm al-Quwain']]"
-                            >
-                              United Arab Emirates
-                            </option>
-                            <option
-                              value="United Kingdom"
-                              data-provinces="[['British Forces','British Forces'],['England','England'],['Northern Ireland','Northern Ireland'],['Scotland','Scotland'],['Wales','Wales']]"
-                            >
-                              United Kingdom
-                            </option>
-                            <option
-                              value="United States"
-                              data-provinces="[['Alabama','Alabama'],['Alaska','Alaska'],['American Samoa','American Samoa'],['Arizona','Arizona'],['Arkansas','Arkansas'],['Armed Forces Americas','Armed Forces Americas'],['Armed Forces Europe','Armed Forces Europe'],['Armed Forces Pacific','Armed Forces Pacific'],['California','California'],['Colorado','Colorado'],['Connecticut','Connecticut'],['Delaware','Delaware'],['District of Columbia','Washington DC'],['Federated States of Micronesia','Micronesia'],['Florida','Florida'],['Georgia','Georgia'],['Guam','Guam'],['Hawaii','Hawaii'],['Idaho','Idaho'],['Illinois','Illinois'],['Indiana','Indiana'],['Iowa','Iowa'],['Kansas','Kansas'],['Kentucky','Kentucky'],['Louisiana','Louisiana'],['Maine','Maine'],['Marshall Islands','Marshall Islands'],['Maryland','Maryland'],['Massachusetts','Massachusetts'],['Michigan','Michigan'],['Minnesota','Minnesota'],['Mississippi','Mississippi'],['Missouri','Missouri'],['Montana','Montana'],['Nebraska','Nebraska'],['Nevada','Nevada'],['New Hampshire','New Hampshire'],['New Jersey','New Jersey'],['New Mexico','New Mexico'],['New York','New York'],['North Carolina','North Carolina'],['North Dakota','North Dakota'],['Northern Mariana Islands','Northern Mariana Islands'],['Ohio','Ohio'],['Oklahoma','Oklahoma'],['Oregon','Oregon'],['Palau','Palau'],['Pennsylvania','Pennsylvania'],['Puerto Rico','Puerto Rico'],['Rhode Island','Rhode Island'],['South Carolina','South Carolina'],['South Dakota','South Dakota'],['Tennessee','Tennessee'],['Texas','Texas'],['Utah','Utah'],['Vermont','Vermont'],['Virgin Islands','U.S. Virgin Islands'],['Virginia','Virginia'],['Washington','Washington'],['West Virginia','West Virginia'],['Wisconsin','Wisconsin'],['Wyoming','Wyoming']]"
-                            >
-                              United States
-                            </option>
-                            <option value="Vietnam" data-provinces="[]">
-                              Vietnam
-                            </option>
-                          </select>
-                        </div>
-                      </div>
                       <fieldset className="">
                         <div className="text-caption-1 text-secondary mb_8">
-                          Postal/Zip Code
+                          Pincode
                         </div>
                         <input
                           className=""
                           type="text"
-                          placeholder={100000}
-                          name="text"
+                          inputMode="numeric"
+                          autoComplete="postal-code"
+                          placeholder="6-digit pincode"
+                          name="pincode"
+                          maxLength={6}
                           tabIndex={2}
-                          defaultValue=""
+                          value={pincodeInput}
+                          onChange={(event) => {
+                            // digits only; a new pincode clears the old result
+                            setPincodeInput(event.target.value.replace(/\D/g, ""));
+                            setPincodeError("");
+                            setPincode("");
+                          }}
+                          aria-label="Pincode"
                           aria-required="true"
                           required
+                          {...errorProps("drawer-pincode-error", pincodeError || pincodeCheckError)}
+                        />
+                        <FieldError
+                          id="drawer-pincode-error"
+                          message={pincodeError || pincodeCheckError}
                         />
                       </fieldset>
+                      {/* Same answer the checkout gives: delivery, expected date, Cash on Delivery. */}
+                      {pincode && !pincodeCheck.isError && (
+                        <div className="text-caption-1 mt_12" role="status">
+                          {pincodeCheck.isPending ? (
+                            <p className="mb-0 text-secondary">
+                              Checking delivery to {pincode}…
+                            </p>
+                          ) : pincodeCheck.data.serviceable ? (
+                            <>
+                              <p className="mb-0 text-success">
+                                ✓ We deliver to {pincode}
+                                {pincodeCheck.data.estimatedDelivery && (
+                                  <> · Expected by {formatDate(pincodeCheck.data.estimatedDelivery)}</>
+                                )}
+                              </p>
+                              <p className="mb-0 text-secondary">
+                                {pincodeCheck.data.codAvailable
+                                  ? "Cash on Delivery is available."
+                                  : "Cash on Delivery isn't available for this pincode."}
+                              </p>
+                            </>
+                          ) : (
+                            <p className="mb-0 text-danger">
+                              Sorry, we don&apos;t deliver to pincode {pincode} yet.
+                            </p>
+                          )}
+                        </div>
+                      )}
                       <div className="tf-cart-tool-btns">
-                        <button type="submit" className="btn-style-2 w-100">
+                        <button
+                          type="submit"
+                          className="btn-style-2 w-100"
+                          disabled={pincodeCheck.isFetching}
+                          aria-busy={pincodeCheck.isFetching}
+                        >
                           <span className="text text-btn-uppercase">
-                            Calculator
+                            {pincodeCheck.isFetching ? "Checking…" : "Check"}
                           </span>
                         </button>
                         <div

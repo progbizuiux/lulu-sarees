@@ -39,7 +39,7 @@ export default function CheckoutPage() {
             <li>
               <i className="icon-arrRight" />
             </li>
-            <li>View Cart</li>
+            <li>Checkout</li>
           </ul>
         </div>
       </div>

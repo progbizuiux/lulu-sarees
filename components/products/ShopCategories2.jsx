@@ -28,7 +28,9 @@ export default function ShopCategories2({
           {items.map((slide, index) => (
             <SwiperSlide key={index}>
               <div className="collection-position-2 hover-img">
-                <a className="img-style">
+                {/* The photo opens the category too (it used to be a link to nowhere). Items without
+                    their own href open the full shop: /shop-collection only has template categories. */}
+                <Link href={slide.href || "/shop-default-grid"} className="img-style" tabIndex={-1} aria-hidden="true">
                   <Image
                     className="lazyload"
                     data-src={slide.imgSrc}
@@ -37,9 +39,9 @@ export default function ShopCategories2({
                     width={363}
                     height={483}
                   />
-                </a>
+                </Link>
                 <div className="content">
-                  <Link href={`/shop-collection`} className="cls-btn">
+                  <Link href={slide.href || "/shop-default-grid"} className="cls-btn">
                     <h6 className="text">{slide.text}</h6>
                     <i className="icon icon-arrowUpRight" />
                   </Link>

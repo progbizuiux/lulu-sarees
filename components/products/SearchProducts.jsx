@@ -1,5 +1,6 @@
 "use client";
-import { products } from "@/data/products";
+import { exploreProducts, festiveProducts } from "@/data/products";
+import { luluMenu } from "@/data/luluMenu";
 import React, { Suspense } from "react";
 import { useRouter } from "next/navigation";
 import { Pagination } from "swiper/modules";
@@ -10,6 +11,11 @@ import { useProducts } from "@/hooks/useProducts";
 import { useShopFilters } from "@/hooks/useShopFilters";
 import { DEFAULT_PAGE_SIZE } from "@/lib/shop/filters";
 import ShopPagination from "@/components/shop/ShopPagination";
+
+// "Quick link:" items: the header menu's listings (the template had Fashion/Men/Women, all to one page).
+const quickLinks = luluMenu.filter((item) => ["Sarees", "Men", "Women"].includes(item.label));
+// Shown before a search: the store's own products (the template showed its demo products).
+const recentProducts = [...festiveProducts, ...exploreProducts];
 
 // Needed because the page reads ?q= from the URL.
 export default function SearchProducts() {
@@ -137,18 +143,14 @@ function SearchProductsContent() {
               </form>
               <div className="tf-col-quicklink">
                 <span className="title">Quick link:</span>
-                <Link className="link" href={`/shop-default-grid`}>
-                  Fashion
-                </Link>
-                ,
-                <Link className="link" href={`/shop-default-grid`}>
-                  Men
-                </Link>
-                ,
-                <Link className="link" href={`/shop-default-grid`}>
-                  Women
-                </Link>
-                ,
+                {quickLinks.map((item, i) => (
+                  <React.Fragment key={item.label}>
+                    {i > 0 && ","}
+                    <Link className="link" href={item.href}>
+                      {item.label}
+                    </Link>
+                  </React.Fragment>
+                ))}
               </div>
             </div>
           </div>
@@ -162,7 +164,7 @@ function SearchProductsContent() {
           </div>
         </section>
       ) : (
-      // Shown until the customer searches. Still demo products: needs a "recent/popular" API.
+      // Shown until the customer searches: the home page's products, until there is a "recent/popular" API.
       <section className="flat-spacing pt-0">
         <div className="container">
           <div className="heading-section text-center">
@@ -184,7 +186,7 @@ function SearchProductsContent() {
               el: ".spd4",
             }}
           >
-            {products.slice(0, 4).map((product, i) => (
+            {recentProducts.slice(0, 4).map((product, i) => (
               <SwiperSlide key={i} className="swiper-slide">
                 <ProductCard1 product={product} />
               </SwiperSlide>
