@@ -155,7 +155,7 @@ ul.breadcrumbs {
         letter-spacing: 0.1em;
         margin-bottom: 4px;
         a {
-          color: var(--primary);
+          color: var(--lulu-accent);
           &:hover {
             color: var(--main);
           }
@@ -228,7 +228,7 @@ ul.list-text {
       gap: 8px;
       padding-bottom: 20px;
       .text-button {
-        color: var(--primary);
+        color: var(--lulu-accent);
       }
     }
   }
@@ -627,7 +627,7 @@ ul.list-text {
         transform: scale(0);
         transform-origin: right;
         transition: all 0.2s ease;
-        color: var(--primary);
+        color: var(--lulu-accent);
         width: 0;
         display: inline-block;
         font-size: 20px;
@@ -637,7 +637,7 @@ ul.list-text {
         z-index: 1;
       }
       &:hover {
-        color: var(--primary);
+        color: var(--lulu-accent);
         .icon {
           width: 10px;
           min-width: 10px;

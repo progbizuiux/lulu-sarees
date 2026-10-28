@@ -6,6 +6,7 @@ import { Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "@/components/common/SwiperSSR";
 import Image from "next/image";
 import { useContextElement } from "@/context/Context";
+import CartControl from "@/components/common/CartControl";
 export default function Products() {
   const {
     addToWishlist,
@@ -14,7 +15,6 @@ export default function Products() {
     isAddedtoCompareItem,
     setQuickViewItem,
     addProductToCart,
-    isAddedToCartProducts,
   } = useContextElement();
   return (
     <section className="flat-spacing">
@@ -163,14 +163,14 @@ export default function Products() {
                     </a>
                   </div>
                   <div className="list-btn-main">
-                    <a
-                      onClick={() => addProductToCart(product.id)}
-                      className="btn-main-product"
-                    >
-                      {isAddedToCartProducts(product.id)
-                        ? "Already Added"
-                        : "ADD TO CART"}
-                    </a>
+                    <CartControl productId={product.id}>
+                      <a
+                        onClick={() => addProductToCart(product.id)}
+                        className="btn-main-product"
+                      >
+                        {"ADD TO CART"}
+                      </a>
+                    </CartControl>
                   </div>
                 </div>
                 <div className="card-product-info">
@@ -183,10 +183,10 @@ export default function Products() {
                   <span className="price">
                     {product.oldPrice && (
                       <span className="old-price">
-                        ${product.oldPrice.toFixed(2)}
+                        ₹{product.oldPrice.toFixed(2)}
                       </span>
                     )}{" "}
-                    ${product.price.toFixed(2)}
+                    ₹{product.price.toFixed(2)}
                   </span>
                 </div>
               </div>

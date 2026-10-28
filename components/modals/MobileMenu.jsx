@@ -1,11 +1,26 @@
 "use client";
 import React from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { luluMenu } from "@/data/luluMenu";
 import { useUser } from "@/hooks/useAuth";
 
 export default function MobileMenu() {
   const { data: user } = useUser();
+  const router = useRouter();
+
+  // Searching opens the search page with the results (/search-result?q=...), like the search popup.
+  const handleSearch = async (event) => {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const query = String(new FormData(form).get("text") ?? "").trim();
+    if (!query) return;
+    const { Offcanvas } = await import("bootstrap");
+    Offcanvas.getInstance(document.getElementById("mobileMenu"))?.hide();
+    form.reset();
+    router.push(`/search-result?q=${encodeURIComponent(query)}`);
+  };
+
   return (
     <div className="offcanvas offcanvas-start canvas-mb" id="mobileMenu">
       <span
@@ -16,7 +31,7 @@ export default function MobileMenu() {
       <div className="mb-canvas-content">
         <div className="mb-body">
           <div className="mb-content-top">
-            <form className="form-search" onSubmit={(e) => e.preventDefault()}>
+            <form className="form-search" onSubmit={handleSearch} role="search">
               <fieldset className="text">
                 <input
                   type="text"

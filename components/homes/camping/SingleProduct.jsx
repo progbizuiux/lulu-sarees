@@ -51,14 +51,11 @@ export default function SingleProduct() {
   const [quantity, setQuantity] = useState(1); // Initial quantity is 1
   const {
     quickViewItem,
-    addProductToCart,
-    isAddedToCartProducts,
+    addProductToCart, buyNow,
     addToWishlist,
     isAddedtoWishlist,
     addToCompareItem,
     isAddedtoCompareItem,
-    cartProducts,
-    updateQuantity,
   } = useContextElement();
   return (
     <section className="flat-spacing bg-surface">
@@ -109,10 +106,10 @@ export default function SingleProduct() {
                   </div>
                   <div className="tf-product-info-price">
                     <h4 className="price-on-sale">
-                      ${products44[0].price.toFixed(2)}
+                      ₹{products44[0].price.toFixed(2)}
                     </h4>
                     <div className="old-price old-price-sold">
-                      ${products44[0].oldPrice.toFixed(2)}
+                      ₹{products44[0].oldPrice.toFixed(2)}
                     </div>
                     <div className="badges-on-sale text-btn-uppercase">
                       -25%
@@ -128,20 +125,8 @@ export default function SingleProduct() {
                   <div className="tf-product-info-quantity">
                     <div className="title mb_12">Quantity:</div>
                     <QuantitySelect
-                      quantity={
-                        isAddedToCartProducts(products44[0].id)
-                          ? cartProducts.filter(
-                              (elm) => elm.id == products44[0].id
-                            )[0].quantity
-                          : quantity
-                      }
-                      setQuantity={(qty) => {
-                        if (isAddedToCartProducts(products44[0].id)) {
-                          updateQuantity(products44[0].id, qty);
-                        } else {
-                          setQuantity(qty);
-                        }
-                      }}
+                      quantity={quantity}
+                      setQuantity={setQuantity}
                     />
                   </div>
                   <div>
@@ -155,9 +140,7 @@ export default function SingleProduct() {
                         className="btn-style-2 flex-grow-1 fw-6 btn-add-to-cart"
                       >
                         <span>
-                          {isAddedToCartProducts(products44[0].id)
-                            ? "Already Added"
-                            : "Add to Cart"}
+                          {"Add to Cart"}
                         </span>
                       </a>
                       <a
@@ -188,7 +171,7 @@ export default function SingleProduct() {
                         </span>
                       </a>
                     </div>
-                    <a href="#" className="btn-style-3 text-btn-uppercase">
+                    <a href="#" className="btn-style-3 text-btn-uppercase" onClick={(event) => { event.preventDefault(); buyNow(products44[0].id, quantity); }}>
                       Buy it now
                     </a>
                   </div>

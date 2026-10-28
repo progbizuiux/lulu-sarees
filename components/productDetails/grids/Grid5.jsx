@@ -1,18 +1,19 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 
-import { images } from "@/data/singleProductSliders";
+import { PLACEHOLDER_IMAGE } from "@/lib/mappers/utils";
 import Image from "next/image";
 
 export default function Grid5({
   activeColor = "gray",
   setActiveColor = () => {},
   firstItem,
+  slideItems,
 }) {
-  const finalItems = [...images];
-  images[0].src = firstItem ?? images[0].src;
-
-  // itemsFinal2[0].src = products[0].imgSrc;
+  // The product's own photos (its gallery), or just its main photo; never the template's demo photos.
+  const finalItems = slideItems?.length
+    ? slideItems.map((slide) => ({ src: slide.src, dataScroll: slide.color ?? "gray" }))
+    : [{ src: firstItem ?? PLACEHOLDER_IMAGE, dataScroll: "gray" }];
 
   const observerRef = useRef(null);
 

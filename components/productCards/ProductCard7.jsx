@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import CountdownTimer from "../common/Countdown";
 import { useContextElement } from "@/context/Context";
+import CartControl from "@/components/common/CartControl";
 export default function ProductCard7({ product, gridClass = "" }) {
   const [currentImage, setCurrentImage] = useState(product.imgSrc);
 
@@ -175,13 +176,15 @@ export default function ProductCard7({ product, gridClass = "" }) {
           ""
         )}
         <div className="list-product-btn">
-          <a
-            onClick={() => addProductToCart(product.id)}
-            className="box-icon quickadd"
-          >
-            <span className="icon icon-ShoppingBagOpen" />
-            <span className="tooltip">Add To Cart</span>
-          </a>
+          <CartControl productId={product.id}>
+            <a
+              onClick={() => addProductToCart(product.id)}
+              className="box-icon quickadd"
+            >
+              <span className="icon icon-ShoppingBagOpen" />
+              <span className="tooltip">Add To Cart</span>
+            </a>
+          </CartControl>
           <a
             data-wished={isAddedtoWishlist(product.id) || undefined}
             onClick={() => addToWishlist(product.id)}
@@ -190,7 +193,7 @@ export default function ProductCard7({ product, gridClass = "" }) {
             <span className="icon icon-heart" />
             <span className="tooltip">
               {isAddedtoWishlist(product.id)
-                ? "Already Wishlished"
+                ? "In wishlist"
                 : "Wishlist"}
             </span>
           </a>
@@ -226,9 +229,9 @@ export default function ProductCard7({ product, gridClass = "" }) {
         </Link>
         <span className="price">
           {product.oldPrice && (
-            <span className="old-price">${product.oldPrice.toFixed(2)}</span>
+            <span className="old-price">₹{product.oldPrice.toFixed(2)}</span>
           )}{" "}
-          ${product.price?.toFixed(2)}
+          ₹{product.price?.toFixed(2)}
         </span>
         {product.colors && (
           <ul className="list-color-product">

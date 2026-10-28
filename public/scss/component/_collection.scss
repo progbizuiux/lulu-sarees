@@ -201,10 +201,10 @@
                 transform: scale(0);
                 transform-origin: right;
                 transition: all 0.2s ease;
-                color: var(--primary);
+                color: var(--lulu-accent);
             }
             &:hover {
-                color: var(--primary);
+                color: var(--lulu-accent);
                 .icon {
                     width: 10px;
                     min-width: 10px;
@@ -234,7 +234,7 @@
             z-index: 1;
         }
         &:hover {
-            color: var(--primary);
+            color: var(--lulu-accent);
         }
     }
     &.style-3,
@@ -253,7 +253,7 @@
                 visibility: hidden;
                 transform: translateX(10px);
                 @include mixin.transition3;
-                color: var(--primary);
+                color: var(--lulu-accent);
             }
             .count-item {
                 opacity: 1;
@@ -563,14 +563,14 @@
                 width: 0;
                 display: inline-block;
                 font-size: 16px;
-                color: var(--primary);
+                color: var(--lulu-accent);
                 transform: scale(0);
                 transform-origin: right;
                 @include mixin.transition3;
             }
 
             &:hover {
-                color: var(--primary);
+                color: var(--lulu-accent);
                 .icon {
                     width: 10px;
                     min-width: 10px;

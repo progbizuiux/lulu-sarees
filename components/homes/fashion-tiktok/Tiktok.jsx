@@ -100,7 +100,7 @@ export default function Tiktok() {
                       </Link>
                     </div>
                     <span className="price text-button text-white">
-                      ${slide.price.toFixed(2)}
+                      ₹{slide.price.toFixed(2)}
                     </span>
                   </div>
                 </div>

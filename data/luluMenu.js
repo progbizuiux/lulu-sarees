@@ -41,15 +41,6 @@ export const luluMenu = [
           "Kanchipuram Silk",
         ].map(fullWidth),
       },
-      {
-        heading: "By Occasion",
-        links: [
-          "Bridal Sarees",
-          "Designer & Party Wear",
-          "Festive Sarees",
-          "Daily Wear Sarees",
-        ].map(fullWidth),
-      },
     ],
   },
   {

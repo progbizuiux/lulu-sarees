@@ -749,8 +749,9 @@
 }
 
 // Sticky elements keep clear of the header: it slides away while scrolling and back in when
-// scrolling stops (the page toggles html.header-visible, see app/layout.js). Used by Bootstrap's
-// .sticky-top (product images, FAQ box, Terms sidebar), the cart and checkout sidebars and the zoom panel.
+// scrolling stops (the page toggles html.header-visible, see ClientEffects.jsx), so there is no
+// empty gap above them while scrolling. Used by Bootstrap's .sticky-top (product images, FAQ box,
+// Terms sidebar), the cart and checkout sidebars and the zoom panel.
 :root {
   --sticky-top: 20px; // header hidden
 }
@@ -763,6 +764,17 @@ html.header-visible {
 .tf-zoom-main {
   top: var(--sticky-top);
   transition: top 0.2s ease-out;
+}
+// While a popup is open (cart drawer, quick view, search, mobile menu) Bootstrap stops the page
+// scrolling with `overflow: hidden` on <body>. If <html> has an overflow of its own (the sideways
+// guard `overflow-x: clip` below, or the smooth scroller's `overflow: clip` while it is paused), that
+// turns <body> into its own scroll box and every sticky section switches off: the product photos
+// dropped out of place when the cart drawer opened and jumped back when it closed. So while <body>
+// is locked, <html> has no overflow of its own (the lock already stops any sideways scroll).
+// (The second selector has one class more than the library's rule, which loads after this file.)
+html:has(> body[style*="overflow: hidden"]),
+html.lenis:not(.lenis-autoToggle).lenis-stopped {
+  overflow: visible;
 }
 
 // ---- Tab switch animation (common) -------------------------------------------------------
@@ -788,10 +800,154 @@ html.header-visible {
     }
   }
 }
+// Explore Our Collections: the same entrance, played slower so it reads more gently.
+.explore__swiper.is-switching .swiper-slide {
+  animation-duration: 1s;
+  @for $i from 1 through 12 {
+    &:nth-child(#{$i}) {
+      animation-delay: #{($i - 1) * 120}ms;
+    }
+  }
+}
 @media (prefers-reduced-motion: reduce) {
   .explore__swiper.is-switching .swiper-slide,
   .tabFilter.filtered :is(.tf-grid-layout, .swiper-wrapper) > * {
     animation: none;
+  }
+}
+
+// Cart drawer: a small quantity stepper on each item (the full-size one is 180px wide).
+.tf-mini-cart-item .wg-quantity {
+  width: 96px;
+  height: 32px;
+  border-width: 1px;
+  input {
+    width: 32px;
+    height: 30px;
+    font-size: 14px;
+    pointer-events: none;
+  }
+  .btn-quantity {
+    width: 32px;
+    height: 30px;
+    font-size: 20px;
+    &[aria-disabled="true"] {
+      opacity: 0.35;
+      cursor: default;
+    }
+  }
+}
+
+// Cart drawer: a long product name used to push "Remove" onto its own line. Keep them on one row:
+// the name is cut with "…" (it already has text-line-clamp-1) and "Remove" stays on the right.
+.tf-mini-cart-item .tf-mini-cart-info > div:first-child {
+  flex-wrap: nowrap !important;
+  .text-title {
+    flex: 1;
+    min-width: 0;
+  }
+  .tf-btn-remove {
+    flex-shrink: 0;
+  }
+}
+// Cart page: "Clear cart" under the item table
+.tf-cart-clear {
+  margin: -8px 0 24px;
+  text-align: right;
+  button {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--critical);
+    text-decoration: underline;
+    cursor: pointer;
+  }
+}
+// Cart drawer: "Clear cart" under the item list, styled like the items' "Remove" links
+.tf-mini-cart-clear {
+  margin: 0 24px;
+  padding: 14px 0 4px;
+  text-align: right;
+  button {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--critical);
+    text-decoration: underline;
+    cursor: pointer;
+  }
+}
+
+// "− quantity +" shown in place of an "Add to cart" button once the item is in the cart
+// (components/common/CartControl.jsx). It keeps the button's own classes for size, colour and
+// position; this only lays out the three parts inside it.
+.cart-stepper {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  padding-top: 4px !important;
+  padding-bottom: 4px !important;
+  padding-left: 6px !important;
+  padding-right: 6px !important;
+  cursor: default;
+  &__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: none;
+    font-size: 18px;
+    line-height: 1;
+    color: inherit;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    &:hover {
+      background-color: rgba(127, 127, 127, 0.18);
+    }
+    &:disabled {
+      opacity: 0.35;
+      cursor: default;
+    }
+  }
+  &__qty {
+    min-width: 22px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 14px;
+  }
+}
+// these white add buttons turn dark on hover; the stepper that replaces them stays white
+.xc__cta.cart-stepper:hover,
+.fe-card__add.cart-stepper:hover {
+  background: #fff;
+  color: #231f21;
+}
+.card-product .btn-main-product.cart-stepper:hover {
+  background-color: var(--white);
+  color: var(--main);
+}
+// small icon-sized add buttons grow into a pill to fit the three parts
+.fe-card__add.cart-stepper,
+.sv-card__add.cart-stepper,
+.box-icon.cart-stepper {
+  width: auto !important;
+  border-radius: 999px;
+  gap: 0;
+  padding: 0 2px !important;
+  .cart-stepper__btn {
+    width: 26px;
+    height: 26px;
+    font-size: 16px;
+  }
+  .cart-stepper__qty {
+    min-width: 16px;
+    font-size: 13px;
   }
 }
 
@@ -924,6 +1080,69 @@ button.my-account-nav-item {
   cursor: pointer;
 }
 
+// "Are you sure?" box (components/common/ConfirmDialog.jsx), used instead of the browser's confirm().
+// Above the cart drawer and other popups (z-index 1055), below the toasts (6000).
+.lulu-confirm {
+  position: fixed;
+  inset: 0;
+  z-index: 5000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background-color: rgba(0, 0, 0, 0.5);
+  animation: lulu-confirm-fade 0.18s ease-out;
+}
+.lulu-confirm__box {
+  width: min(400px, 100%);
+  padding: 28px 24px 24px;
+  border-radius: 12px;
+  background-color: var(--white, #fff);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.18);
+  text-align: center;
+  animation: lulu-confirm-pop 0.2s ease-out;
+  &:focus {
+    outline: none; // the box is focused on open only so screen readers read it
+  }
+  .tf-btn:focus-visible {
+    outline: 2px solid var(--main, #181818);
+    outline-offset: 2px;
+  }
+}
+.lulu-confirm__title {
+  margin-bottom: 8px;
+}
+.lulu-confirm__message {
+  margin-bottom: 0;
+  color: var(--secondary, #4d4e4f);
+}
+.lulu-confirm__actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 24px;
+  > .tf-btn {
+    flex: 1;
+    min-width: 0;
+  }
+}
+@keyframes lulu-confirm-fade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes lulu-confirm-pop {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lulu-confirm,
+  .lulu-confirm__box {
+    animation: none;
+  }
+}
+
 // Pretend payment window in mock mode (components/checkout/MockPaymentDialog.jsx).
 .lulu-mock-payment {
   position: fixed;
@@ -964,4 +1183,10 @@ button.my-account-nav-item {
   -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E") center / contain no-repeat;
   mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E") center / contain no-repeat;
   vertical-align: middle;
+}
+
+// Cart drawer fix: the "I agree with Terms" checkbox (never checked by anything) was removed;
+// keep the space it left above the View cart / Check out buttons.
+.modal-shopping-cart .tf-mini-cart-bottom-wrap .tf-mini-cart-view-checkout {
+  margin-top: 24px;
 }

@@ -4,6 +4,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { reelProducts } from "@/data/products";
 import { useContextElement } from "@/context/Context";
+import CartControl from "@/components/common/CartControl";
+// ₹2,200 like the rest of the site (this section used to show "Rs. 2,200.00")
+import { formatPrice } from "@/lib/format";
 
 // One video per product, in the same order as reelProducts.
 const videos = [
@@ -13,21 +16,13 @@ const videos = [
   "/images/home/video4.mp4",
 ];
 
-function formatPrice(value) {
-  return `Rs. ${Number(value).toLocaleString("en-IN", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  })}`;
-}
-
 function VideoCard({ product, src }) {
   const cardRef = useRef(null);
   const videoRef = useRef(null);
   const pausedByUser = useRef(false);
   const [playing, setPlaying] = useState(false);
   const [ready, setReady] = useState(false); // first frame decoded
-  const { addProductToCart, isAddedToCartProducts } = useContextElement();
-  const added = isAddedToCartProducts(product.id);
+  const { addProductToCart } = useContextElement();
 
   // Play (muted, looping) while the card is on screen, pause when it leaves.
   useEffect(() => {
@@ -108,20 +103,18 @@ function VideoCard({ product, src }) {
           </Link>
           <p className="sv-card__price">{formatPrice(product.price)}</p>
         </div>
-        <button
-          type="button"
-          className="sv-card__add"
-          onClick={() => addProductToCart(product.id)}
-          aria-label={added ? `${product.title} is in your cart` : `Add ${product.title} to cart`}
-        >
-          {added ? (
-            <i className="icon icon-check" />
-          ) : (
+        <CartControl productId={product.id}>
+          <button
+            type="button"
+            className="sv-card__add"
+            onClick={() => addProductToCart(product.id)}
+            aria-label={`Add ${product.title} to cart`}
+          >
             <svg viewBox="0 0 12 12" width="12" height="12" aria-hidden="true">
               <path d="M6 1v10M1 6h10" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
             </svg>
-          )}
-        </button>
+          </button>
+        </CartControl>
       </div>
     </article>
   );

@@ -2,15 +2,26 @@
 import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import axios from "axios";
+import { newsletterService } from "@/services/newsletter.service";
+
+// Remembers (for this browser tab session) that the popup was already shown.
+const SHOWN_KEY = "lulu-newsletter-popup-shown";
+
 export default function NewsLetterModal() {
   const pathname = usePathname();
   const modalElement = useRef();
   useEffect(() => {
+    let cancelled = false;
     const showModal = async () => {
       if (pathname === "/") {
+        // Show the popup at most once per browser session, not on every home page visit.
+        try {
+          if (sessionStorage.getItem(SHOWN_KEY)) return;
+        } catch {
+          // storage blocked: just show it
+        }
         const bootstrap = await import("bootstrap"); // dynamically import bootstrap
-        const myModal = new bootstrap.Modal(
+        const myModal = bootstrap.Modal.getOrCreateInstance(
           document.getElementById("newsletterPopup"),
           {
             keyboard: false,
@@ -19,7 +30,14 @@ export default function NewsLetterModal() {
 
         // Show the modal after a delay using a promise
         await new Promise((resolve) => setTimeout(resolve, 2000));
+        // The visitor left the home page during the delay: don't pop up on the next page.
+        if (cancelled || !modalElement.current) return;
         myModal.show();
+        try {
+          sessionStorage.setItem(SHOWN_KEY, "1");
+        } catch {
+          // storage blocked: nothing to remember
+        }
 
         modalElement.current.addEventListener("hidden.bs.modal", () => {
           myModal.hide();
@@ -28,6 +46,9 @@ export default function NewsLetterModal() {
     };
 
     showModal();
+    return () => {
+      cancelled = true;
+    };
   }, [pathname]);
   const [success, setSuccess] = useState(true);
   const [showMessage, setShowMessage] = useState(false);
@@ -37,31 +58,21 @@ export default function NewsLetterModal() {
       setShowMessage(false);
     }, 2000);
   };
+  // Subscribes through our own API (lib/mocks/newsletter.js in mock mode).
+  // The template used to send the email to its vendor's server.
   const sendEmail = async (e) => {
     e.preventDefault(); // Prevent default form submission behavior
-    const email = e.target.email.value;
+    const form = e.currentTarget;
+    const email = form.email.value;
 
     try {
-      const response = await axios.post(
-        "https://express-brevomail.vercel.app/api/contacts",
-        {
-          email,
-        }
-      );
-
-      if ([200, 201].includes(response.status)) {
-        e.target.reset(); // Reset the form
-        setSuccess(true); // Set success state
-        handleShowMessage();
-      } else {
-        setSuccess(false); // Handle unexpected responses
-        handleShowMessage();
-      }
+      await newsletterService.subscribe(email);
+      form.reset(); // Reset the form
+      setSuccess(true); // Set success state
+      handleShowMessage();
     } catch (error) {
-      console.error("Error:", error.response?.data || "An error occurred");
       setSuccess(false); // Set error state
       handleShowMessage();
-      e.target.reset(); // Reset the form
     }
   };
 
@@ -91,7 +102,7 @@ export default function NewsLetterModal() {
           </div>
           <div className="modal-bottom text-center">
             <p className="text-btn-uppercase fw-4 font-2">
-              Subscribe To Our Newletter!
+              Subscribe To Our Newsletter!
             </p>
             <h5>
               Receive 10% OFF your next order, exclusive offers &amp; more!

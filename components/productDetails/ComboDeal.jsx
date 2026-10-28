@@ -5,22 +5,22 @@ const deals = [
   {
     id: "deal-1",
     title: "Buy 2 get 10% off per item",
-    total: "$79.99",
-    comparePrice: "$98.99",
+    total: "₹79.99",
+    comparePrice: "₹98.99",
     discount: "-10%",
   },
   {
     id: "deal-2",
     title: "Buy 5 get 15% off per item",
-    total: "$150.99",
-    comparePrice: "$200.99",
+    total: "₹150.99",
+    comparePrice: "₹200.99",
     discount: "-15%",
   },
   {
     id: "deal-3",
     title: "Buy 10 get 25% off per item",
-    total: "$400.99",
-    comparePrice: "$500.99",
+    total: "₹400.99",
+    comparePrice: "₹500.99",
     discount: "-25%",
   },
 ];

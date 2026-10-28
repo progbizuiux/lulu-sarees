@@ -1,9 +1,20 @@
 "use client";
 
-import { products } from "@/data/products";
+import { exploreProducts, festiveProducts } from "@/data/products";
 import { Swiper, SwiperSlide } from "@/components/common/SwiperSSR";
 import ProductCard1 from "../productCards/ProductCard1";
 import { Pagination } from "swiper/modules";
+
+// The same products the home page shows. The sale badge is worked out from the old price,
+// the same way the shop does it.
+const suggestions = [...exploreProducts, ...festiveProducts].map((product) => {
+  const onSale = product.oldPrice > product.price;
+  return {
+    ...product,
+    isOnSale: onSale,
+    salePercentage: onSale ? `${Math.round((1 - product.price / product.oldPrice) * 100)}%` : undefined,
+  };
+});
 
 export default function RecentProducts() {
   return (
@@ -28,8 +39,8 @@ export default function RecentProducts() {
             el: ".spd79",
           }}
         >
-          {products.slice(4).map((product, i) => (
-            <SwiperSlide key={i} className="swiper-slide">
+          {suggestions.map((product) => (
+            <SwiperSlide key={product.id} className="swiper-slide">
               <ProductCard1 product={product} />
             </SwiperSlide>
           ))}

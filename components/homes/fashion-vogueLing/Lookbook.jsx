@@ -109,7 +109,7 @@ export default function Lookbook() {
               </Swiper>
               <div className="total-lb wow fadeInUp">
                 <Link href={`/shop-default-grid`} className="tf-btn btn-reset">
-                  <span className="text">Buy at a discount - $69.99</span>
+                  <span className="text">Buy at a discount - ₹69.99</span>
                   <i className="icon icon-arrowUpRight" />
                 </Link>
               </div>

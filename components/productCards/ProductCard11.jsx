@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import CountdownTimer from "../common/Countdown";
 import { useContextElement } from "@/context/Context";
+import CartControl from "@/components/common/CartControl";
 export default function ProductCard11({ product, gridClass = "" }) {
   const [currentImage, setCurrentImage] = useState(product.imgSrc);
 
@@ -15,7 +16,6 @@ export default function ProductCard11({ product, gridClass = "" }) {
     isAddedtoCompareItem,
     setQuickViewItem,
     addProductToCart,
-    isAddedToCartProducts,
   } = useContextElement();
 
   useEffect(() => {
@@ -183,7 +183,7 @@ export default function ProductCard11({ product, gridClass = "" }) {
             <span className="icon icon-heart" />
             <span className="tooltip">
               {isAddedtoWishlist(product.id)
-                ? "Already Wishlished"
+                ? "In wishlist"
                 : "Wishlist"}
             </span>
           </a>
@@ -219,9 +219,9 @@ export default function ProductCard11({ product, gridClass = "" }) {
         </Link>
         <span className="price">
           {product.oldPrice && (
-            <span className="old-price">${product.oldPrice.toFixed(2)}</span>
+            <span className="old-price">₹{product.oldPrice.toFixed(2)}</span>
           )}{" "}
-          ${product.price?.toFixed(2)}
+          ₹{product.price?.toFixed(2)}
         </span>
         {product.colors && (
           <ul className="list-color-product">
@@ -245,12 +245,14 @@ export default function ProductCard11({ product, gridClass = "" }) {
             ))}
           </ul>
         )}
-        <a
-          className="btn-main-product"
-          onClick={() => addProductToCart(product.id)}
-        >
-          {isAddedToCartProducts(product.id) ? "Already Added" : "ADD TO CART"}
-        </a>
+        <CartControl productId={product.id}>
+          <a
+            className="btn-main-product"
+            onClick={() => addProductToCart(product.id)}
+          >
+            {"ADD TO CART"}
+          </a>
+        </CartControl>
       </div>
     </div>
   );

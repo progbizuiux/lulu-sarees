@@ -129,15 +129,16 @@ export default function SizeGuide() {
                     ))}
                   </div>
                   <div>
-                    <h6 className="suggests-title">Modave suggests for you:</h6>
+                    <h6 className="suggests-title">Lulu Sarees suggests for you:</h6>
+                    {/* sample suggestions: not links (href="#" jumped to the top of the page) */}
                     <div className="suggests-list">
-                      <a href="#" className="suggests-item link text-button">
+                      <a className="suggests-item link text-button">
                         L - shirt
                       </a>
-                      <a href="#" className="suggests-item link text-button">
+                      <a className="suggests-item link text-button">
                         XL - Pant
                       </a>
-                      <a href="#" className="suggests-item link text-button">
+                      <a className="suggests-item link text-button">
                         31 - Jeans
                       </a>
                     </div>

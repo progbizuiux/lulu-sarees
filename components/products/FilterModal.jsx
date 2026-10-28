@@ -51,7 +51,7 @@ export default function FilterModal({ allProps }) {
                 <div
                   className="price-val"
                   id="price-min-value"
-                  data-currency="$"
+                  data-currency="₹"
                 >
                   {allProps.price[0]}
                 </div>
@@ -61,7 +61,7 @@ export default function FilterModal({ allProps }) {
                 <div
                   className="price-val"
                   id="price-max-value"
-                  data-currency="$"
+                  data-currency="₹"
                 >
                   {allProps.price[1]}
                 </div>

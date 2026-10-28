@@ -114,7 +114,7 @@ export default function Compare() {
                               </Link>
                             </div>
                             <div className="text-button">
-                              ${elm.price.toFixed(2)}
+                              ₹{elm.price.toFixed(2)}
                             </div>
                           </div>
                         </div>

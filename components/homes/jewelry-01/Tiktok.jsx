@@ -100,7 +100,7 @@ export default function Tiktok({ parentClass = "flat-spacing pt-0" }) {
                       </Link>
                     </div>
                     <span className="price text-button text-white">
-                      ${slide.price.toFixed(2)}
+                      ₹{slide.price.toFixed(2)}
                     </span>
                   </div>
                 </div>

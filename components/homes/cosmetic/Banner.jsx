@@ -26,7 +26,7 @@ export default function Banner() {
               </div>
               <div className="wow fadeInUp" data-wow-delay="0.3s">
                 <Link href={`/shop-default-grid`} className="tf-btn btn-fill">
-                  <span className="text">Buy at a discount - $69.99</span>
+                  <span className="text">Buy at a discount - ₹69.99</span>
                   <i className="icon icon-arrowUpRight" />
                 </Link>
               </div>

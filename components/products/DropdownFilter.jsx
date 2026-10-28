@@ -47,13 +47,13 @@ export default function DropdownFilter({ allProps, setIsDDActive }) {
           <div className="box-price-product mt-3">
             <div className="box-price-item">
               <span className="title-price">Min price</span>
-              <div className="price-val" id="price-min-value" data-currency="$">
+              <div className="price-val" id="price-min-value" data-currency="₹">
                 {allProps.price[0]}
               </div>
             </div>
             <div className="box-price-item">
               <span className="title-price">Max price</span>
-              <div className="price-val" id="price-max-value" data-currency="$">
+              <div className="price-val" id="price-max-value" data-currency="₹">
                 {allProps.price[1]}
               </div>
             </div>

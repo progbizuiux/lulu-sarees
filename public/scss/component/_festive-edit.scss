@@ -60,7 +60,7 @@ $fe-radius: 10px;
     text-underline-offset: 3px;
     color: $fe-text;
     &:hover {
-      color: var(--primary);
+      color: var(--lulu-accent);
     }
   }
 
@@ -155,7 +155,7 @@ $fe-radius: 10px;
     line-height: 18px;
     color: $fe-text;
     &:hover {
-      color: var(--primary);
+      color: var(--lulu-accent);
     }
   }
   &__price {

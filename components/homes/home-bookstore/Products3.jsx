@@ -70,10 +70,10 @@ export default function Products3() {
                     <span className="price py-4">
                       {product.oldPrice && (
                         <span className="old-price">
-                          ${product.oldPrice.toFixed(2)}
+                          ₹{product.oldPrice.toFixed(2)}
                         </span>
                       )}{" "}
-                      ${product.price.toFixed(2)}
+                      ₹{product.price.toFixed(2)}
                     </span>
                   </div>
                   <a

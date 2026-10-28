@@ -23,7 +23,7 @@ export default function SpecialDeal() {
             <div className="d-flex align-items-center gap-4 text-button">
               <span>1</span>
               <span>X</span>
-              <span>$9.99</span>
+              <span>₹9.99</span>
             </div>
           </div>
           <div className="text-btn-uppercase tags text-white">Buy 1</div>
@@ -61,7 +61,7 @@ export default function SpecialDeal() {
             <div className="d-flex align-items-center gap-4 text-button">
               <span>1</span>
               <span>X</span>
-              <span>$6.99</span>
+              <span>₹6.99</span>
             </div>
           </div>
           <div className="text-btn-uppercase tags text-white">

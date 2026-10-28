@@ -1,3 +1,5 @@
+import { luluMenu } from "./luluMenu";
+
 export const collections = [
   {
     imgSrc: "/images/collections/collection-circle/cls-circle1.jpg",
@@ -105,7 +107,7 @@ export const collectionItems = [
     lookbook: {
       imgSrc: "/images/gallery/lookbook-1.jpg",
       productTitle: "Rattan bag with handle",
-      price: "$159.99",
+      price: "₹159.99",
       quickViewLink: "#quickView",
     },
   },
@@ -302,7 +304,7 @@ export const collectionItems2 = [
     imgSrc: "/images/collections/banner-collection/banner-cls15.jpg",
     alt: "banner-cls",
     title: "Capsule Collection",
-    desc: "Start From $199",
+    desc: "Start From ₹199",
     btnText: "Shop Now",
   },
   {
@@ -310,7 +312,7 @@ export const collectionItems2 = [
     imgSrc: "/images/collections/banner-collection/banner-cls13.jpg",
     alt: "banner-cls",
     title: "Dresses and jumpsuits",
-    desc: "Start From $199",
+    desc: "Start From ₹199",
     btnText: "Shop Now",
   },
   {
@@ -318,7 +320,7 @@ export const collectionItems2 = [
     imgSrc: "/images/collections/banner-collection/banner-cls16.jpg",
     alt: "banner-cls",
     title: "New Arrivals",
-    desc: "Start From $199",
+    desc: "Start From ₹199",
     btnText: "Shop Now",
   },
 ];
@@ -497,14 +499,14 @@ export const collectionItems3 = [
     imgSrc: "/images/collections/cls-beauty2.jpg",
     alt: "banner-cls",
     title: "Glow Beyond Ordinary",
-    subtitle: "Start From $199",
+    subtitle: "Start From ₹199",
     delay: "0.1s",
   },
   {
     imgSrc: "/images/collections/cls-beauty3.jpg",
     alt: "banner-cls",
     title: "Hydrating skincare",
-    subtitle: "Save up to $50",
+    subtitle: "Save up to ₹50",
     delay: "0.2s",
   },
 ];
@@ -845,21 +847,21 @@ export const collectionItems5 = [
     imgSrc: "/images/collections/cls-organic-1.jpg",
     alt: "banner-cls",
     title: "Pure Organic-Vegan",
-    description: "Fresh Veggie Combos Start from $22",
+    description: "Fresh Veggie Combos Start from ₹22",
     delay: "0s",
   },
   {
     imgSrc: "/images/collections/cls-organic-2.jpg",
     alt: "banner-cls",
     title: "Top-quality nuts and grains.",
-    description: "Nut & Grain Combos Start from $22",
+    description: "Nut & Grain Combos Start from ₹22",
     delay: "0.1s",
   },
   {
     imgSrc: "/images/collections/cls-organic-3.jpg",
     alt: "banner-cls",
     title: "Delicious and nutritious blends.",
-    description: "Smoothie Essentials Bundle Start from $22",
+    description: "Smoothie Essentials Bundle Start from ₹22",
     delay: "0.2s",
   },
 ];
@@ -1404,12 +1406,25 @@ export const collections18 = [
   },
 ];
 
-// Home page category cards (Lulu Sarees)
+// The header menu's link (data/luluMenu.js) with this label: a menu item or one of its dropdown links.
+function menuHref(label) {
+  for (const item of luluMenu) {
+    if (item.label === label) return item.href;
+    for (const column of item.columns) {
+      const link = column.links.find((l) => l.label === label);
+      if (link) return link.href;
+    }
+  }
+  return "/shop-default-grid";
+}
+
+// Home page category cards (Lulu Sarees). Each opens the same listing as the header menu
+// (they all used to open the template's /shop-collection page).
 export const homeCategories = [
-  { imgSrc: "/images/home/collection-img.png", alt: "silk-sarees", text: "Silk Sarees" },
-  { imgSrc: "/images/home/collection-img4.png", alt: "kurtis-and-kurta-sets", text: "Kurtis & Kurta Sets" },
-  { imgSrc: "/images/home/collection-img3.png", alt: "kids-wear", text: "Kids' Wear" },
-  { imgSrc: "/images/home/collection-img2.png", alt: "lehengas", text: "Lehengas" },
-  { imgSrc: "/images/home/collection-img5.png", alt: "western-wear", text: "Western Wear" },
-  { imgSrc: "/images/home/collection-img6.png", alt: "mens-wear", text: "Men's Wear" },
+  { imgSrc: "/images/home/collection-img.png", alt: "silk-sarees", text: "Silk Sarees", href: menuHref("Silk Sarees") },
+  { imgSrc: "/images/home/collection-img4.png", alt: "kurtis-and-kurta-sets", text: "Kurtis & Kurta Sets", href: menuHref("Kurtis & Kurta Sets") },
+  { imgSrc: "/images/home/collection-img3.png", alt: "kids-wear", text: "Kids' Wear", href: menuHref("Kids") },
+  { imgSrc: "/images/home/collection-img2.png", alt: "lehengas", text: "Lehengas", href: menuHref("Lehengas") },
+  { imgSrc: "/images/home/collection-img5.png", alt: "western-wear", text: "Western Wear", href: menuHref("Western Wear") },
+  { imgSrc: "/images/home/collection-img6.png", alt: "mens-wear", text: "Men's Wear", href: menuHref("Men") },
 ];

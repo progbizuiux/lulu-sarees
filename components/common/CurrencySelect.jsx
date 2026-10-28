@@ -5,9 +5,9 @@ import { useEffect, useRef, useState } from "react";
 
 const optionsData = [
   {
-    value: "us",
-    thumbnail: "/images/country/us.svg",
-    text: "USD",
+    value: "in",
+    thumbnail: "/images/country/in.svg",
+    text: "INR",
     selected: true,
   },
   {
@@ -50,7 +50,7 @@ export default function CurrencySelect({ topStart = false, light = false }) {
         type="button"
         tabIndex={-1}
         className={`btn dropdown-toggle btn-light  ${isDDOpen ? "show" : ""} `}
-        title="USD $ | United States"
+        title="INR ₹ | India"
       >
         <div className="filter-option">
           <div className="filter-option-inner">

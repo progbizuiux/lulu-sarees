@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
  * server component with site-wide metadata):
  * - loads Bootstrap's JavaScript (modals, offcanvas, dropdowns)
  * - header background after scrolling, and the header that hides while scrolling
- * - closes any open popup when the page changes
+ * - closes any open popup when the page changes or a link inside it is clicked
  * - the template's scroll animations (WOW.js)
  * Renders nothing.
  */
@@ -81,6 +81,29 @@ export default function ClientEffects() {
       bootstrap.Offcanvas.getInstance(offcanvas)?.hide();
     });
   }, [pathname]);
+
+  // Also close a popup when a link inside it is clicked. Links that only change ?category= or point
+  // to the page already open (e.g. "Continue shopping" on /shop-default-grid) don't change the
+  // pathname, so the effect above left the menu / cart drawer open.
+  // (Not done on every ?query change: the mobile filter panel changes the query and must stay open.)
+  useEffect(() => {
+    const closeOnLinkClick = (event) => {
+      // ctrl/cmd/shift/middle click opens a new tab: leave the popup open
+      if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      const link = event.target.closest?.("a[href]");
+      if (!link || link.target === "_blank") return;
+      // Bootstrap's own toggles (sub-menus, "#quickView"…) are not page links
+      if (link.hasAttribute("data-bs-toggle") || link.hasAttribute("data-bs-dismiss")) return;
+      if (link.getAttribute("href").startsWith("#")) return;
+      const popup = link.closest(".modal.show, .offcanvas.show");
+      if (!popup) return;
+      const bootstrap = require("bootstrap");
+      if (popup.classList.contains("modal")) bootstrap.Modal.getInstance(popup)?.hide();
+      else bootstrap.Offcanvas.getInstance(popup)?.hide();
+    };
+    document.addEventListener("click", closeOnLinkClick);
+    return () => document.removeEventListener("click", closeOnLinkClick);
+  }, []);
 
   useEffect(() => {
     const header = document.querySelector("header");

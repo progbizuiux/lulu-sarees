@@ -5,7 +5,7 @@ export const testimonials2 = [
       "Fantastic shop! Great selection, fair prices, and friendly staff. Highly recommended. The quality of the products is exceptional, and the prices are very reasonable!",
     avatarSrc: "/images/avatar/user-7.jpg",
     productTitle: "Contrasting sheepskin sweatshirt",
-    price: "$60.00",
+    price: "₹60.00",
     rating: 5,
     name: "Lisa K.",
     role: "Stylist",
@@ -16,7 +16,7 @@ export const testimonials2 = [
       "Fantastic shop! Great selection, fair prices, and friendly staff. Highly recommended. The quality of the products is exceptional, and the prices are very reasonable!",
     avatarSrc: "/images/avatar/user-7.jpg",
     productTitle: "Contrasting sheepskin sweatshirt",
-    price: "$60.00",
+    price: "₹60.00",
     rating: 5,
     name: "Lisa K.",
     role: "Stylist",
@@ -32,7 +32,7 @@ export const testimonialData = [
     avatar: "/images/avatar/user-4.jpg",
     product: {
       title: "Contrasting sheepskin sweatshirt",
-      price: "$60.00",
+      price: "₹60.00",
     },
   },
   {
@@ -43,7 +43,7 @@ export const testimonialData = [
     avatar: "/images/avatar/user-5.jpg",
     product: {
       title: "Contrasting sheepskin sweatshirt",
-      price: "$60.00",
+      price: "₹60.00",
     },
   },
   {
@@ -54,7 +54,7 @@ export const testimonialData = [
     avatar: "/images/avatar/user-6.jpg",
     product: {
       title: "Contrasting sheepskin sweatshirt",
-      price: "$60.00",
+      price: "₹60.00",
     },
   },
   {
@@ -65,7 +65,7 @@ export const testimonialData = [
     avatar: "/images/avatar/user-4.jpg",
     product: {
       title: "Contrasting sheepskin sweatshirt",
-      price: "$60.00",
+      price: "₹60.00",
     },
   },
 ];
@@ -78,7 +78,7 @@ export const testimonials3 = [
     author: "Sybil Sharp",
     avatar: "/images/avatar/user-4.jpg",
     priceTitle: "Contrasting sheepskin sweatshirt",
-    price: "$60.00",
+    price: "₹60.00",
   },
   {
     textTitle: "Quality of Clothing!",
@@ -87,7 +87,7 @@ export const testimonials3 = [
     author: "Mark G.",
     avatar: "/images/avatar/user-5.jpg",
     priceTitle: "Contrasting sheepskin sweatshirt",
-    price: "$60.00",
+    price: "₹60.00",
   },
   {
     textTitle: "Customer Service!",
@@ -96,7 +96,7 @@ export const testimonials3 = [
     author: "Emily S.",
     avatar: "/images/avatar/user-6.jpg",
     priceTitle: "Contrasting sheepskin sweatshirt",
-    price: "$60.00",
+    price: "₹60.00",
   },
   {
     textTitle: "Quality of Clothing!",
@@ -105,7 +105,7 @@ export const testimonials3 = [
     author: "Mark G.",
     avatar: "/images/avatar/user-5.jpg",
     priceTitle: "Contrasting sheepskin sweatshirt",
-    price: "$60.00",
+    price: "₹60.00",
   },
 ];
 
@@ -116,7 +116,7 @@ export const testimonials4 = [
     quote:
       '"Fantastic shop! Great selection, fair prices, and friendly staff. Highly recommended. The quality of the products is exceptional, and the prices are very reasonable!"',
     product: "Contrasting sheepskin sweatshirt",
-    price: "$60.00",
+    price: "₹60.00",
   },
   {
     author: "Mark G.",
@@ -124,7 +124,7 @@ export const testimonials4 = [
     quote:
       '"I absolutely love this shop! The products are high-quality and the customer service is excellent. I always leave with exactly what I need and a smile on my face."',
     product: "Contrasting sheepskin sweatshirt",
-    price: "$60.00",
+    price: "₹60.00",
   },
   {
     author: "Emily S.",
@@ -132,7 +132,7 @@ export const testimonials4 = [
     quote:
       '"I love this shop! Top-quality products and incredibly friendly staff. They always go the extra mile to ensure I\'m satisfied with my purchase."',
     product: "Contrasting sheepskin sweatshirt",
-    price: "$60.00",
+    price: "₹60.00",
   },
   {
     author: "Sybil Sharp",
@@ -140,7 +140,7 @@ export const testimonials4 = [
     quote:
       '"Fantastic shop! Great selection, fair prices, and friendly staff. Highly recommended. The quality of the products is exceptional, and the prices are very reasonable!"',
     product: "Contrasting sheepskin sweatshirt",
-    price: "$60.00",
+    price: "₹60.00",
   },
 ];
 
@@ -151,7 +151,7 @@ export const testimonials5 = [
     text: `"Fantastic shop! Great selection, fair prices, and friendly staff. Highly recommended. The quality of the products is exceptional, and the prices are very reasonable!"`,
     avatar: "/images/avatar/user-4.jpg",
     product: "Contrasting sheepskin sweatshirt",
-    price: "$60.00",
+    price: "₹60.00",
   },
   {
     id: 2,
@@ -159,7 +159,7 @@ export const testimonials5 = [
     text: `"I absolutely love this shop! The products are high-quality and the customer service is excellent. I always leave with exactly what I need and a smile on my face."`,
     avatar: "/images/avatar/user-5.jpg",
     product: "Contrasting sheepskin sweatshirt",
-    price: "$60.00",
+    price: "₹60.00",
   },
   {
     id: 3,
@@ -167,7 +167,7 @@ export const testimonials5 = [
     text: `"I love this shop! The products are always top-quality, and the staff is incredibly friendly and helpful. They go out of their way to make sure that I'm satisfied with my purchase.”`,
     avatar: "/images/avatar/user-6.jpg",
     product: "Contrasting sheepskin sweatshirt",
-    price: "$60.00",
+    price: "₹60.00",
   },
   {
     id: 4,
@@ -175,7 +175,7 @@ export const testimonials5 = [
     text: `"Fantastic shop! Great selection, fair prices, and friendly staff. Highly recommended. The quality of the products is exceptional, and the prices are very reasonable!"`,
     avatar: "/images/avatar/user-4.jpg",
     product: "Contrasting sheepskin sweatshirt",
-    price: "$60.00",
+    price: "₹60.00",
   },
 ];
 
@@ -276,7 +276,7 @@ export const testimonials8 = [
     author: "Sybil Sharp",
     avatarSrc: "/images/products/electronic/electronic-26.jpg",
     productName: "Apple MagSafe Charger - 1M",
-    price: "$60.00",
+    price: "₹60.00",
   },
   {
     id: 2,
@@ -286,7 +286,7 @@ export const testimonials8 = [
     author: "Mark G.",
     avatarSrc: "/images/products/electronic/electronic-27.jpg",
     productName: "Nautica Bluetooth Stereo Headphone",
-    price: "$60.00",
+    price: "₹60.00",
   },
   {
     id: 3,
@@ -296,7 +296,7 @@ export const testimonials8 = [
     author: "Emily S.",
     avatarSrc: "/images/products/electronic/electronic-28.jpg",
     productName: "Boost Charge Pro MagSafe 15W",
-    price: "$60.00",
+    price: "₹60.00",
   },
   {
     id: 4,
@@ -306,7 +306,7 @@ export const testimonials8 = [
     author: "Sybil Sharp",
     avatarSrc: "/images/products/electronic/electronic-29.jpg",
     productName: "Contrasting sheepskin sweatshirt",
-    price: "$60.00",
+    price: "₹60.00",
   },
 ];
 

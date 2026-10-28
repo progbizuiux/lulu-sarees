@@ -20,6 +20,9 @@ import PaymentSection from "@/components/checkout/PaymentSection";
 import OrderSummary from "@/components/checkout/OrderSummary";
 import MockPaymentDialog from "@/components/checkout/MockPaymentDialog";
 
+// Same key the cart drawer's "Note" tool saves to (components/modals/CartModal.jsx).
+const ORDER_NOTE_KEY = "lulu-order-note";
+
 const NOTE_MAX_LENGTH = 500;
 
 function Spinner({ label }) {
@@ -63,6 +66,14 @@ export default function Checkout() {
   const [isPaying, setIsPaying] = useState(false);
   const [mockPayment, setMockPayment] = useState(null); // test-mode payment window
   const [isLeaving, setIsLeaving] = useState(false); // order done, going to the success page
+
+  // Start with the note saved in the cart drawer's "Note" tool, if any.
+  useEffect(() => {
+    try {
+      const saved = sessionStorage.getItem(ORDER_NOTE_KEY);
+      if (saved) setNote((current) => current || saved);
+    } catch {}
+  }, []);
 
   // Pre-select the default saved address.
   useEffect(() => {
@@ -114,6 +125,9 @@ export default function Checkout() {
 
   const goToSuccess = (order) => {
     setIsLeaving(true);
+    try {
+      sessionStorage.removeItem(ORDER_NOTE_KEY); // the next order starts without a note
+    } catch {}
     router.replace(`/order-success?id=${encodeURIComponent(order.id)}&order=${encodeURIComponent(order.number)}`);
   };
 

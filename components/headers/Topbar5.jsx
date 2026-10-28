@@ -46,7 +46,7 @@ export default function Topbar5({ parentClass = "tf-topbar style-2" }) {
               <SwiperSlide className="swiper-slide">
                 <p className="top-bar-text text-line-clamp-1 text-btn-uppercase fw-semibold letter-1">
                   Free shipping on all orders over
-                  <span className="text-primary">$20.00</span>
+                  <span className="text-primary">₹20.00</span>
                 </p>
               </SwiperSlide>
               <SwiperSlide className="swiper-slide">

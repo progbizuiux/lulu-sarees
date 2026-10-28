@@ -4,14 +4,17 @@ import Image from "next/image";
 import Link from "next/link";
 import { festiveProducts } from "@/data/products";
 import { useContextElement } from "@/context/Context";
+import CartControl from "@/components/common/CartControl";
+import { formatPrice } from "@/lib/format";
+import { luluMenu } from "@/data/luluMenu";
 
-function formatPrice(value) {
-  return `₹${Number(value).toLocaleString("en-IN")}`;
-}
+// "Explore our collection" opens the header menu's Festive listing (it used to open the template's
+// /shop-collection page, whose categories go nowhere).
+const festiveHref =
+  luluMenu.find((item) => item.label === "Festive")?.href ?? "/shop-default-grid";
 
 function FestiveCard({ product }) {
-  const { addProductToCart, isAddedToCartProducts } = useContextElement();
-  const added = isAddedToCartProducts(product.id);
+  const { addProductToCart } = useContextElement();
 
   return (
     <article className="fe-card">
@@ -30,20 +33,18 @@ function FestiveCard({ product }) {
           />
         </Link>
         {product.isOnSale && <span className="fe-card__badge">Sale</span>}
-        <button
-          type="button"
-          className={`fe-card__add ${added ? "is-added" : ""}`}
-          onClick={() => addProductToCart(product.id)}
-          aria-label={added ? `${product.title} is in your cart` : `Add ${product.title} to cart`}
-        >
-          {added ? (
-            <i className="icon icon-check" />
-          ) : (
+        <CartControl productId={product.id}>
+          <button
+            type="button"
+            className="fe-card__add"
+            onClick={() => addProductToCart(product.id)}
+            aria-label={`Add ${product.title} to cart`}
+          >
             <svg viewBox="0 0 12 12" width="12" height="12" aria-hidden="true">
               <path d="M6 1v10M1 6h10" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
             </svg>
-          )}
-        </button>
+          </button>
+        </CartControl>
       </div>
       <div className="fe-card__info">
         <Link href={`/product-detail/${product.id}`} className="fe-card__title">
@@ -97,7 +98,7 @@ export default function FestiveEdit() {
                   Make every celebration special with styles worth remembering.
                 </p>
               </div>
-              <Link href="/shop-collection" className="fe__link">
+              <Link href={festiveHref} className="fe__link">
                 Explore our collection
               </Link>
             </div>

@@ -6,7 +6,6 @@ import { useContextElement } from "@/context/Context";
 const BoughtTogether = () => {
   const {
     addProductToCart,
-    isAddedToCartProducts,
 
     updateQuantity,
   } = useContextElement();
@@ -79,10 +78,10 @@ const BoughtTogether = () => {
               </select>
             </div>
             <div className="tf-product-info-price type-small">
-              <h5 className="price-on-sale">${product.price.toFixed(2)}</h5>
+              <h5 className="price-on-sale">₹{product.price.toFixed(2)}</h5>
               {product.oldPrice && (
                 <div className="compare-at-price">
-                  ${product.oldPrice.toFixed(2)}
+                  ₹{product.oldPrice.toFixed(2)}
                 </div>
               )}
               {product.discount && (
@@ -95,9 +94,9 @@ const BoughtTogether = () => {
       <div className="tf-bundle-product-total-submit">
         <h6>Total price:</h6>
         <div className="tf-product-info-price type-1">
-          <h4 className="price-on-sale">${totalPrice.toFixed(2)}</h4>
+          <h4 className="price-on-sale">₹{totalPrice.toFixed(2)}</h4>
           {totaloldPrice > 0 && (
-            <div className="compare-at-price">${totaloldPrice.toFixed(2)}</div>
+            <div className="compare-at-price">₹{totaloldPrice.toFixed(2)}</div>
           )}
           {totaloldPrice > totalPrice && (
             <div className="badges-on-sale">
@@ -116,12 +115,7 @@ const BoughtTogether = () => {
             .forEach((el) => addProductToCart(el.id))
         }
       >
-        {products
-          .filter((el) => el.checked)
-          .every((el) => isAddedToCartProducts(el.id)) &&
-        products.filter((el) => el.checked).length
-          ? "Selected already in cart"
-          : "Add selected to cart"}
+        Add selected to cart
       </a>
     </form>
   );

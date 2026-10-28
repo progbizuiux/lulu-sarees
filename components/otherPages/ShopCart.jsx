@@ -2,7 +2,6 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import CountdownTimer from "../common/Countdown";
 import {
   useApplyCoupon,
   useAvailableCoupons,
@@ -10,9 +9,12 @@ import {
   useRemoveCartItem,
   useRemoveCoupon,
   useUpdateCartItem,
+  useClearCart,
 } from "@/hooks/useCart";
 import { EMPTY_CART } from "@/lib/mappers/cart.mapper";
 import { formatPrice } from "@/lib/format";
+import { confirmAction } from "@/lib/confirm";
+import { notify } from "@/lib/notify";
 import { FieldError, errorProps } from "@/components/auth/FormMessages";
 
 // Every number on this page comes from the backend. The page only displays it.
@@ -21,6 +23,7 @@ export default function ShopCart() {
   const { data: coupons = [] } = useAvailableCoupons();
   const updateItem = useUpdateCartItem();
   const removeItem = useRemoveCartItem();
+  const clearCart = useClearCart();
   const applyCoupon = useApplyCoupon();
   const removeCoupon = useRemoveCoupon();
 
@@ -53,43 +56,20 @@ export default function ShopCart() {
           <div className="row">
             <div className="col-xl-8">
               <div className="tf-cart-sold">
-                <div className="notification-sold bg-surface">
-                  <Image
-                    className="icon"
-                    alt="img"
-                    src="/images/logo/icon-fire.png"
-                    width={48}
-                    height={49}
-                  />
-                  <div className="count-text">
-                    Your cart will expire in
-                    <div
-                      className="js-countdown time-count"
-                      data-timer={600}
-                      data-labels=":,:,:,"
-                    >
-                      <CountdownTimer
-                        style={4}
-                        targetDate={new Date(new Date().getTime() - 30 * 60000)}
-                      />
-                    </div>
-                    minutes! Please checkout now before your items sell out!
-                  </div>
-                </div>
                 {freeShipping && cart.items.length > 0 && (
                   <div className="notification-progress">
                     <div className="text">
                       {freeShipping.remaining > 0 ? (
                         <>
-                          Buy{" "}
+                          Add{" "}
                           <span className="fw-semibold text-primary">
                             {formatPrice(freeShipping.remaining)}
                           </span>{" "}
-                          more to get <span className="fw-semibold">Freeship</span>
+                          more to get <span className="fw-semibold">free shipping</span>
                         </>
                       ) : (
                         <>
-                          You've got <span className="fw-semibold">Freeship</span>!
+                          You've got <span className="fw-semibold">free shipping</span>!
                         </>
                       )}
                     </div>
@@ -219,6 +199,25 @@ export default function ShopCart() {
                       ))}
                     </tbody>
                   </table>
+                  <div className="tf-cart-clear">
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        const confirmed = await confirmAction({
+                          title: "Clear your cart?",
+                          message: "All items will be removed from your cart.",
+                          confirmLabel: "Clear cart",
+                        });
+                        if (confirmed) {
+                          clearCart.mutate(undefined, {
+                            onSuccess: () => notify("Your cart is now empty.", { type: "success" }),
+                          });
+                        }
+                      }}
+                    >
+                      Clear cart
+                    </button>
+                  </div>
                   <form className="ip-discount-code" onSubmit={handleCoupon} noValidate>
                     <input
                       type="text"
@@ -321,19 +320,8 @@ export default function ShopCart() {
                     <span className="total">{formatPrice(summary.total)}</span>
                   </h5>
                   <div className="box-progress-checkout">
-                    <fieldset className="check-agree">
-                      <input
-                        type="checkbox"
-                        id="check-agree"
-                        className="tf-check-rounded"
-                      />
-                      <label htmlFor="check-agree">
-                        I agree with the
-                        <Link href={`/term-of-use`}>terms and conditions</Link>
-                      </label>
-                    </fieldset>
                     <Link href={`/checkout`} className="tf-btn btn-reset">
-                      Process To Checkout
+                      Proceed to checkout
                     </Link>
                     <Link href="/shop-default-grid" className="text-button text-center d-block">
                       Or continue shopping

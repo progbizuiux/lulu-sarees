@@ -78,7 +78,7 @@ export default function LookBook() {
                               {slide.title}
                             </Link>
                             <div className="price text-button">
-                              ${slide.price.toFixed(2)}
+                              ₹{slide.price.toFixed(2)}
                             </div>
                           </div>
                           <a

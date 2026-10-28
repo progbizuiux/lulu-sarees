@@ -99,7 +99,7 @@
     display: inline-flex;
     align-items: center;
     gap: 4px;
-    background: linear-gradient(to right, var(--primary) 50%, var(--main) 50%);
+    background: linear-gradient(to right, var(--lulu-accent) 50%, var(--main) 50%);
     background-size: 200% 100%;
     background-position: right;
     -webkit-background-clip: text;
@@ -123,7 +123,7 @@
         width: 0;
         bottom: 0;
         height: 2px;
-        background-color: var(--primary);
+        background-color: var(--lulu-accent);
         transition: width 0.3s linear;
         z-index: 1;
     }
@@ -131,7 +131,7 @@
         color: var(--white);
         background: linear-gradient(
             to right,
-            var(--primary) 50%,
+            var(--lulu-accent) 50%,
             var(--white) 50%
         );
         background-size: 200% 100%;
@@ -168,12 +168,12 @@
         font-size: 20px;
     }
     &:hover {
-        color: var(--primary);
+        color: var(--lulu-accent);
     }
     &.style-white {
         color: var(--white);
         &:hover {
-            color: var(--primary);
+            color: var(--lulu-accent);
         }
     }
 }

@@ -18,7 +18,7 @@ export default function LookbookProduct({ product, styleClass = "style-row" }) {
           >
             {product.title}
           </Link>
-          <div className="price text-button">${product.price.toFixed(2)}</div>
+          <div className="price text-button">₹{product.price.toFixed(2)}</div>
         </div>
         <a
           href="#quickView"

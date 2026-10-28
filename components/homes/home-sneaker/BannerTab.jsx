@@ -146,11 +146,11 @@ export default function BannerTab() {
                           </Link>
                           <div className="price">
                             <span className="old-price">
-                              ${product.price.toFixed(2)}
+                              ₹{product.price.toFixed(2)}
                             </span>
                             <span className="new-price">
                               {" "}
-                              ${product.oldPrice.toFixed(2)}
+                              ₹{product.oldPrice.toFixed(2)}
                             </span>
                           </div>
                         </div>

@@ -225,9 +225,9 @@
       }
     }
     &:hover {
-      color: var(--primary);
+      color: var(--lulu-accent);
       .icon {
-        color: var(--primary);
+        color: var(--lulu-accent);
       }
     }
   }
@@ -271,7 +271,7 @@
       padding: 14px 20px;
       &:hover {
         .icon {
-          color: var(--primary);
+          color: var(--lulu-accent);
         }
       }
     }
@@ -372,7 +372,7 @@
       &.active,
       &:hover {
         .item-link {
-          color: var(--primary);
+          color: var(--lulu-accent);
         }
       }
       &.active {
@@ -407,10 +407,10 @@
       }
       &:hover {
         svg path {
-          stroke: var(--primary);
+          stroke: var(--lulu-accent);
         }
         .icon {
-          color: var(--primary);
+          color: var(--lulu-accent);
         }
       }
       .text {
@@ -702,7 +702,7 @@
       font-weight: 600;
       @include mixin.transition3;
       &:hover {
-        color: var(--primary);
+        color: var(--lulu-accent);
       }
     }
     &:hover {

@@ -1,25 +1,34 @@
 "use client";
-import React, { useState } from "react";
-import Image from "next/image";
+import React, { useEffect, useState } from "react";
+import Link from "next/link";
 import SizeSelect from "../productDetails/SizeSelect";
-import ColorSelect from "../productDetails/ColorSelect";
 import Grid5 from "../productDetails/grids/Grid5";
 import { useContextElement } from "@/context/Context";
 import QuantitySelect from "../productDetails/QuantitySelect";
+import { formatPrice } from "@/lib/format";
+
+// First option that's in stock (colour/size), or null for products without options.
+const firstInStock = (product) => product?.variants?.find((variant) => variant?.inStock)?.id ?? null;
+
 export default function QuickView() {
   const [activeColor, setActiveColor] = useState("gray");
   const [quantity, setQuantity] = useState(1); // Initial quantity is 1
+  const [variantId, setVariantId] = useState(null);
   const {
     quickViewItem,
-    addProductToCart,
-    isAddedToCartProducts,
+    addProductToCart, buyNow,
     addToWishlist,
     isAddedtoWishlist,
     addToCompareItem,
     isAddedtoCompareItem,
-    cartProducts,
-    updateQuantity,
   } = useContextElement();
+
+  // The popup stays on the page, so start fresh for each product (quantity 1, its first option).
+  useEffect(() => {
+    setActiveColor("gray");
+    setQuantity(1);
+    setVariantId(firstInStock(quickViewItem));
+  }, [quickViewItem]);
 
   const openModalSizeChoice = () => {
     const bootstrap = require("bootstrap"); // dynamically import bootstrap
@@ -52,12 +61,24 @@ export default function QuickView() {
     );
   }
 
+  // Product options [{ id, name, price, inStock }]. (Some demo data has plain-text "variants": skipped.)
+  const variants = (quickViewItem.variants ?? []).filter((variant) => variant?.id != null);
+  const variant = variants.find((item) => item.id === variantId);
+  const price = variant?.price ?? quickViewItem.price;
+  const category =
+    typeof quickViewItem.category === "string"
+      ? quickViewItem.category
+      : quickViewItem.category?.name;
+
   return (
     <div className="modal fullRight fade modal-quick-view" id="quickView">
       <div className="modal-dialog">
         <div className="modal-content">
+          {/* key: new photos (and scroll position) for each product */}
           <Grid5
+            key={quickViewItem.id}
             firstItem={quickViewItem.imgSrc}
+            slideItems={quickViewItem.gallery}
             activeColor={activeColor}
             setActiveColor={setActiveColor}
           />
@@ -72,7 +93,9 @@ export default function QuickView() {
             <div className="tf-product-info-list">
               <div className="tf-product-info-heading">
                 <div className="tf-product-info-name">
-                  <div className="text text-btn-uppercase">Clothing</div>
+                  {category && (
+                    <div className="text text-btn-uppercase">{category}</div>
+                  )}
                   <h3 className="name">{quickViewItem.title}</h3>
                   <div className="sub">
                     <div className="tf-product-info-rate">
@@ -96,27 +119,25 @@ export default function QuickView() {
                 <div className="tf-product-info-desc">
                   <div className="tf-product-info-price">
                     <h5 className="price-on-sale font-2">
-                      ${quickViewItem.price.toFixed(2)}
+                      {formatPrice(price)}
                     </h5>
                     {quickViewItem.oldPrice ? (
                       <>
                         <div className="compare-at-price font-2">
                           {" "}
-                          ${quickViewItem.oldPrice.toFixed(2)}
+                          {formatPrice(quickViewItem.oldPrice)}
                         </div>
-                        <div className="badges-on-sale text-btn-uppercase">
-                          -25%
-                        </div>
+                        {quickViewItem.isOnSale && quickViewItem.salePercentage && (
+                          <div className="badges-on-sale text-btn-uppercase">
+                            -{quickViewItem.salePercentage}
+                          </div>
+                        )}
                       </>
                     ) : (
                       ""
                     )}
                   </div>
-                  <p>
-                    The garments labelled as Committed are products that have
-                    been produced using sustainable fibres or processes,
-                    reducing their environmental impact.
-                  </p>
+                  {quickViewItem.description && <p>{quickViewItem.description}</p>}
                   <div className="tf-product-info-liveview">
                     <i className="icon icon-eye" />
                     <p className="text-caption-1">
@@ -127,28 +148,19 @@ export default function QuickView() {
                 </div>
               </div>
               <div className="tf-product-info-choose-option">
-                <ColorSelect
-                  activeColor={activeColor}
-                  setActiveColor={setActiveColor}
-                />
-                <SizeSelect />
+                {/* Colour/size picker: only for products that have options */}
+                {variants.length > 0 && (
+                  <SizeSelect
+                    variants={variants}
+                    selectedId={variantId}
+                    onSelect={setVariantId}
+                  />
+                )}
                 <div className="tf-product-info-quantity">
                   <div className="title mb_12">Quantity:</div>
                   <QuantitySelect
-                    quantity={
-                      isAddedToCartProducts(quickViewItem.id)
-                        ? cartProducts.filter(
-                            (elm) => elm.id == quickViewItem.id
-                          )[0].quantity
-                        : quantity
-                    }
-                    setQuantity={(qty) => {
-                      if (isAddedToCartProducts(quickViewItem.id)) {
-                        updateQuantity(quickViewItem.id, qty);
-                      } else {
-                        setQuantity(qty);
-                      }
-                    }}
+                    quantity={quantity}
+                    setQuantity={setQuantity}
                   />
                 </div>
                 <div>
@@ -156,24 +168,14 @@ export default function QuickView() {
                     <a
                       className="btn-style-2 flex-grow-1 text-btn-uppercase fw-6 show-shopping-cart"
                       onClick={() =>
-                        addProductToCart(quickViewItem.id, quantity)
+                        addProductToCart(quickViewItem.id, quantity, true, variantId)
                       }
                     >
                       <span>
-                        {isAddedToCartProducts(quickViewItem.id)
-                          ? "Already Added"
-                          : "Add to cart -"}
+                        {"Add to cart -"}
                       </span>
                       <span className="tf-qty-price total-price">
-                        $
-                        {isAddedToCartProducts(quickViewItem.id)
-                          ? (
-                              quickViewItem.price *
-                              cartProducts.filter(
-                                (elm) => elm.id == quickViewItem.id
-                              )[0].quantity
-                            ).toFixed(2)
-                          : (quickViewItem.price * quantity).toFixed(2)}
+                        {formatPrice(price * quantity)}
                       </span>
                     </a>
                     <a
@@ -199,14 +201,22 @@ export default function QuickView() {
                       <span className="icon icon-heart" />
                       <span className="tooltip text-caption-2">
                         {isAddedtoWishlist(quickViewItem.id)
-                          ? "Already Wishlished"
+                          ? "In wishlist"
                           : "Wishlist"}
                       </span>
                     </a>
                   </div>
-                  <a href="#" className="btn-style-3 text-btn-uppercase">
+                  <a href="#" className="btn-style-3 text-btn-uppercase" onClick={(event) => { event.preventDefault(); buyNow(quickViewItem.id, quantity, variantId); }}>
                     Buy it now
                   </a>
+                </div>
+                <div>
+                  <Link
+                    href={`/product-detail/${quickViewItem.id}`}
+                    className="text-btn-uppercase link text-decoration-underline"
+                  >
+                    View full details
+                  </Link>
                 </div>
               </div>
             </div>

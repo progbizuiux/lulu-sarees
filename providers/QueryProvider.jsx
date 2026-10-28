@@ -6,6 +6,7 @@ import { onSessionExpired } from "@/lib/api/client";
 import { queryKeys } from "@/lib/query/keys";
 import { notifyError } from "@/lib/notify";
 import Toaster from "@/components/common/Toaster";
+import ConfirmDialog from "@/components/common/ConfirmDialog";
 
 // Retrying a 4xx (bad input, not logged in, not found) won't help. Network and server errors get 2 retries.
 function shouldRetry(failureCount, error) {
@@ -58,6 +59,7 @@ export default function QueryProvider({ children }) {
     <QueryClientProvider client={queryClient}>
       {children}
       <Toaster />
+      <ConfirmDialog />
       {/* Only shows in development; left out of production builds automatically. */}
       <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-left" />
     </QueryClientProvider>

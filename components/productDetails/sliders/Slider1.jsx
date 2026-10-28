@@ -1,5 +1,5 @@
 "use client";
-import { slides } from "@/data/singleProductSliders";
+import { PLACEHOLDER_IMAGE } from "@/lib/mappers/utils";
 import Drift from "drift-zoom";
 import PhotoSwipeLightbox from "photoswipe/lightbox";
 import { useEffect, useRef, useState } from "react";
@@ -10,13 +10,16 @@ export default function Slider1({
   activeColor = "gray",
   setActiveColor = () => {},
   firstItem,
-  slideItems = slides,
+  slideItems,
   thumbSlidePerView = 6,
   thumbSlidePerViewOnMobile = 6,
 }) {
-  // Copy the first slide instead of changing it: the default list is shared by every product page.
-  const items = [...slideItems];
-  items[0] = { ...items[0], src: firstItem ?? items[0].src };
+  // The product's own photos. Without a gallery, just its main photo (never the template's demo photos).
+  // The list is copied, not changed: it can be shared data.
+  const items = slideItems?.length
+    ? [...slideItems]
+    : [{ id: 1, color: "gray", src: firstItem ?? PLACEHOLDER_IMAGE, alt: "", width: 600, height: 800 }];
+  if (firstItem) items[0] = { ...items[0], src: firstItem };
 
   useEffect(() => {
     // Function to initialize Drift

@@ -12,13 +12,10 @@ export default function DetailsExternal({ product }) {
   const [quantity, setQuantity] = useState(1);
   const {
     addProductToCart,
-    isAddedToCartProducts,
     addToCompareItem,
     addToWishlist,
     isAddedtoWishlist,
-    cartProducts,
     isAddedtoCompareItem,
-    updateQuantity,
   } = useContextElement();
   return (
     <section className="flat-spacing">
@@ -70,13 +67,13 @@ export default function DetailsExternal({ product }) {
                       <div className="tf-product-info-price">
                         <h5 className="price-on-sale font-2">
                           {" "}
-                          ${product.price.toFixed(2)}
+                          ₹{product.price.toFixed(2)}
                         </h5>
                         {product.oldPrice ? (
                           <>
                             <div className="compare-at-price font-2">
                               {" "}
-                              ${product.oldPrice.toFixed(2)}
+                              ₹{product.oldPrice.toFixed(2)}
                             </div>
                             <div className="badges-on-sale text-btn-uppercase">
                               -25%
@@ -109,20 +106,8 @@ export default function DetailsExternal({ product }) {
                     <div className="tf-product-info-quantity">
                       <div className="title mb_12">Quantity:</div>
                       <QuantitySelect
-                        quantity={
-                          isAddedToCartProducts(product.id)
-                            ? cartProducts.filter(
-                                (elm) => elm.id == product.id
-                              )[0].quantity
-                            : quantity
-                        }
-                        setQuantity={(qty) => {
-                          if (isAddedToCartProducts(product.id)) {
-                            updateQuantity(product.id, qty);
-                          } else {
-                            setQuantity(qty);
-                          }
-                        }}
+                        quantity={quantity}
+                        setQuantity={setQuantity}
                       />
                     </div>
                     <div>
