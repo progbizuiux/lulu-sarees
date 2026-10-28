@@ -22,10 +22,10 @@ export default function LuluHeader() {
           </a>
           <Link href="/" className="lulu-header__logo" aria-label="Lulu Sarees">
             <Image
-              src="/images/logo/lulu-logo.png"
+              src="/images/logo/lulu-sarees-logo.png"
               alt="Lulu Sarees"
               width={110}
-              height={109}
+              height={113}
               priority
             />
           </Link>
