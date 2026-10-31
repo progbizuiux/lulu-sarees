@@ -119,13 +119,12 @@ export default function Contact2() {
             </div>
             <div className="mb_20">
               <div className="text-title mb_8">Email:</div>
-              <p className="text-secondary">themesflat@gmail.com</p>
+              <p className="text-secondary">kannurlulusarees@gmail.com</p>
             </div>
             <div className="mb_20">
               <div className="text-title mb_8">Address:</div>
               <p className="text-secondary">
-                2163 Phillips Gap Rd, West Jefferson, North Carolina, United
-                States
+                Lulu Sarees Pvt Ltd, Apsara Tower, Thavakkara Road, Kannur 670001
               </p>
             </div>
             <div>

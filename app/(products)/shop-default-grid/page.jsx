@@ -16,6 +16,7 @@ export default async function ShopDefaultGridPage({ searchParams }) {
   const params = await searchParams;
   // Products for this URL, loaded on the server so the HTML already contains them.
   const initialList = await loadShopList(params);
+
   const heading = shopHeading(params, "Shop");
   // Wedding, Festive, Ready to Wear, Men and Kids categories open this page: each gets its section's banner.
   const banner = shopBanner(params, { path: PATH, fallback: "shop" });
@@ -47,6 +48,7 @@ export default async function ShopDefaultGridPage({ searchParams }) {
           </div>
         </div>
       </div>
+      {console.log(initialList,"Dataaa")}
       <Products1 initialList={initialList} />
       <Footer1 />
     </>

@@ -17,7 +17,7 @@ export default function StoreLocations2() {
                     <h6 className="tf-store-title">New York Office</h6>
                     <div className="tf-store-info">
                       <p>Phone: +1 666 234 8888</p>
-                      <p>Email: themesflat@gmail.com</p>
+                      <p>Email: kannurlulusarees@gmail.com</p>
                       <p>Address: 432 Park Avenue, New York, New York</p>
                     </div>
                   </a>
@@ -31,7 +31,7 @@ export default function StoreLocations2() {
                     <h6 className="tf-store-title">Houston Office</h6>
                     <div className="tf-store-info">
                       <p>Phone: +1 666 234 8888</p>
-                      <p>Email: themesflat@gmail.com</p>
+                      <p>Email: kannurlulusarees@gmail.com</p>
                       <p>Address: 432 Park Avenue, New York, New York</p>
                     </div>
                   </a>
@@ -45,7 +45,7 @@ export default function StoreLocations2() {
                     <h6 className="tf-store-title">San Francisco Office</h6>
                     <div className="tf-store-info">
                       <p>Phone: +1 415 987 6543</p>
-                      <p>Email: themesflat@gmail.com</p>
+                      <p>Email: kannurlulusarees@gmail.com</p>
                       <p>
                         Address: 321 Market Street, San Francisco, California
                       </p>
@@ -61,7 +61,7 @@ export default function StoreLocations2() {
                     <h6 className="tf-store-title">Miami Office</h6>
                     <div className="tf-store-info">
                       <p>Phone: +1 305 543 2109</p>
-                      <p>Email: themesflat@gmail.com</p>
+                      <p>Email: kannurlulusarees@gmail.com</p>
                       <p>Address: 654 Ocean Drive, Miami, Florida</p>
                     </div>
                   </a>
@@ -111,7 +111,7 @@ export default function StoreLocations2() {
                           <h6 className="mb_8">Infomation:</h6>
                           <p className="text-secondary">
                             +1 666 234 8888 <br />
-                            themesflat@gmail.com
+                            kannurlulusarees@gmail.com
                           </p>
                         </li>
                         <li>
@@ -177,7 +177,7 @@ export default function StoreLocations2() {
                           <h6 className="mb_8">Infomation:</h6>
                           <p className="text-secondary">
                             +1 713 432 8765 <br />
-                            themesflat@gmail.com
+                            kannurlulusarees@gmail.com
                           </p>
                         </li>
                         <li>
@@ -245,7 +245,7 @@ export default function StoreLocations2() {
                           <h6 className="mb_8">Infomation:</h6>
                           <p className="text-secondary">
                             +1 415 987 6543 <br />
-                            themesflat@gmail.com
+                            kannurlulusarees@gmail.com
                           </p>
                         </li>
                         <li>
@@ -311,7 +311,7 @@ export default function StoreLocations2() {
                           <h6 className="mb_8">Infomation:</h6>
                           <p className="text-secondary">
                             +1 305 543 2109 <br />
-                            themesflat@gmail.com
+                            kannurlulusarees@gmail.com
                           </p>
                         </li>
                         <li>

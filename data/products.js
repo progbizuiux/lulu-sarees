@@ -5074,7 +5074,7 @@ export const festiveProducts = [
     price: 1499,
     oldPrice: 1899,
     isOnSale: true,
-    imgSrc: "/images/home/festive-img6.png",
+    imgSrc: "/images/home/pink-kasavu-saree.png",
     inStock: true,
   },
   {

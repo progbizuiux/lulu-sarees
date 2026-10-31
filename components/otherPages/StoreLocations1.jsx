@@ -16,7 +16,7 @@ export default function StoreLocations1() {
                   </div>
                   <div className="tf-store-info">
                     <p className="text-button">Email:</p>
-                    <p className="text-secondary">themesflat@gmail.com</p>
+                    <p className="text-secondary">kannurlulusarees@gmail.com</p>
                   </div>
                 </div>
                 <div className="tf-store-address tf-store-info">
@@ -35,7 +35,7 @@ export default function StoreLocations1() {
                   </div>
                   <div className="tf-store-info">
                     <p className="text-button">Email:</p>
-                    <p className="text-secondary">themesflat@gmail.com</p>
+                    <p className="text-secondary">kannurlulusarees@gmail.com</p>
                   </div>
                 </div>
                 <div className="tf-store-address tf-store-info">
@@ -54,7 +54,7 @@ export default function StoreLocations1() {
                   </div>
                   <div className="tf-store-info">
                     <p className="text-button">Email:</p>
-                    <p className="text-secondary">themesflat@gmail.com</p>
+                    <p className="text-secondary">kannurlulusarees@gmail.com</p>
                   </div>
                 </div>
                 <div className="tf-store-address tf-store-info">
@@ -73,7 +73,7 @@ export default function StoreLocations1() {
                   </div>
                   <div className="tf-store-info">
                     <p className="text-button">Email:</p>
-                    <p className="text-secondary">themesflat@gmail.com</p>
+                    <p className="text-secondary">kannurlulusarees@gmail.com</p>
                   </div>
                 </div>
                 <div className="tf-store-address tf-store-info">

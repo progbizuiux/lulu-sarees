@@ -196,7 +196,7 @@ export default function MobileMenu() {
             </div>
             <div className="mb-contact">
               <p className="text-caption-1">
-                549 Oak St.Crystal Lake, IL 60014
+                Lulu Sarees Pvt Ltd, Apsara Tower, Thavakkara Road, Kannur 670001
               </p>
               <Link
                 href={`/contact`}
@@ -209,7 +209,7 @@ export default function MobileMenu() {
             <ul className="mb-info">
               <li>
                 <i className="icon icon-mail" />
-                <p>themesflat@gmail.com</p>
+                <p>kannurlulusarees@gmail.com</p>
               </li>
               <li>
                 <i className="icon icon-phone" />
