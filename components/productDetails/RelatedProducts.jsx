@@ -5,6 +5,7 @@ import { Swiper, SwiperSlide } from "@/components/common/SwiperSSR";
 import { Pagination } from "swiper/modules";
 import { exploreProducts, festiveProducts } from "@/data/products";
 import ProductCard1 from "../productCards/ProductCard1";
+import { config } from "@/lib/config";
 
 // The store's own products (the template showed demo T-shirts and sunglasses here),
 // with the same sale fields the shop pages get, so the cards show the right sale badge.
@@ -19,34 +20,54 @@ const storeProducts = [...exploreProducts, ...festiveProducts].map((product) => 
   };
 });
 
-const RECENT_KEY = "lulu-recently-viewed"; // product ids, newest first, kept in this browser only
+// Recently viewed products, newest first, kept in this browser only. A small copy of each product
+// is stored (not just its id), so it works with any product, demo or from the ERP.
+const RECENT_KEY = "lulu-recently-viewed";
 
+const snapshot = (item) => ({
+  id: item.id,
+  slug: item.slug,
+  title: item.title,
+  price: item.price,
+  oldPrice: item.oldPrice,
+  isOnSale: item.isOnSale,
+  salePercentage: item.salePercentage,
+  imgSrc: item.imgSrc,
+  imgHover: item.imgHover,
+  inStock: item.inStock,
+  variantId: item.variantId ?? null,
+});
+
+/** @param {{product?: Object}} props  On the real API, "Related Products" are the ERP's related products. */
 export default function RelatedProducts({ product }) {
   const params = useParams();
   const currentId = String(product?.id ?? params?.id);
-  const related = storeProducts.filter((item) => String(item.id) !== currentId);
+  const related = config.useMocks
+    ? storeProducts.filter((item) => String(item.id) !== currentId)
+    : (product?.related ?? []).filter((item) => String(item.id) !== currentId);
 
   // "Recently Viewed": products this shopper opened before. The tab shows once there are some.
   const [recent, setRecent] = useState([]);
   useEffect(() => {
-    let ids = [];
+    let saved = [];
     try {
-      ids = JSON.parse(localStorage.getItem(RECENT_KEY)) || [];
+      saved = JSON.parse(localStorage.getItem(RECENT_KEY)) || [];
     } catch {
       // storage blocked or unreadable: start empty
     }
-    const others = ids.filter((id) => id !== currentId);
-    setRecent(
-      others
-        .map((id) => storeProducts.find((item) => String(item.id) === id))
-        .filter(Boolean)
-    );
+    // Older versions stored only ids: those are dropped.
+    const others = saved.filter((item) => item && typeof item === "object" && String(item.id) !== currentId);
+    setRecent(others);
+    if (!product) return;
     try {
-      localStorage.setItem(RECENT_KEY, JSON.stringify([currentId, ...others].slice(0, 12)));
+      localStorage.setItem(RECENT_KEY, JSON.stringify([snapshot(product), ...others].slice(0, 12)));
     } catch {
       // storage blocked: nothing is remembered
     }
-  }, [currentId]);
+  }, [currentId, product]);
+
+  const showRelated = related.length > 0;
+  if (!showRelated && !recent.length) return null;
 
   return (
     <section className="flat-spacing">
@@ -56,20 +77,23 @@ export default function RelatedProducts({ product }) {
           data-wow-delay="0s"
           role="tablist"
         >
-          <li className="nav-tab-item" role="presentation">
-            <a href="#ralatedProducts" className="active" data-bs-toggle="tab">
-              Related Products
-            </a>
-          </li>
+          {showRelated && (
+            <li className="nav-tab-item" role="presentation">
+              <a href="#ralatedProducts" className="active" data-bs-toggle="tab">
+                Related Products
+              </a>
+            </li>
+          )}
           {recent.length > 0 && (
             <li className="nav-tab-item" role="presentation">
-              <a href="#recentlyViewed" data-bs-toggle="tab">
+              <a href="#recentlyViewed" className={showRelated ? "" : "active"} data-bs-toggle="tab">
                 Recently Viewed
               </a>
             </li>
           )}
         </ul>
         <div className="tab-content">
+          {showRelated && (
           <div
             className="tab-pane active show"
             id="ralatedProducts"
@@ -100,8 +124,9 @@ export default function RelatedProducts({ product }) {
               <div className="sw-pagination-latest spd4  sw-dots type-circle justify-content-center" />
             </Swiper>
           </div>
+          )}
           {recent.length > 0 && (
-            <div className="tab-pane" id="recentlyViewed" role="tabpanel">
+            <div className={`tab-pane ${showRelated ? "" : "active show"}`} id="recentlyViewed" role="tabpanel">
               <Swiper
                 className="swiper tf-sw-latest"
                 dir="ltr"

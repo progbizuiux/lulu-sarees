@@ -19,5 +19,11 @@ export function middleware(request) {
 
 // Only these paths run the middleware. Add new private pages here too.
 export const config = {
-  matcher: ["/my-account", "/my-account-orders", "/my-account-orders-details", "/my-account-address"],
+  matcher: [
+    "/my-account",
+    "/my-account-orders",
+    "/my-account-orders-details",
+    "/my-account-address",
+    "/order-complete", // the ERP's payment status needs a login
+  ],
 };

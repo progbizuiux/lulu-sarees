@@ -1,63 +1,72 @@
 import { apiClient, unwrap } from "@/lib/api/client";
+import { ApiError } from "@/lib/api/errors";
 import { ENDPOINTS } from "@/lib/api/endpoints";
 import { config } from "@/lib/config";
-import { mapCart, mapCoupons } from "@/lib/mappers/cart.mapper";
+import { mapCart } from "@/lib/mappers/cart.mapper";
+import { productService } from "./product.service";
 
 const mocks = () => import("@/lib/mocks/cart");
 
-// Every cart call returns the full, updated cart (items + totals) calculated by the backend.
-// If a real endpoint returns nothing, the cart is fetched again so the UI is never out of date.
-async function cartFrom(response) {
-  const data = unwrap(response);
-  return data ? mapCart(data) : get();
-}
+// Every ERP cart call returns the full, updated cart (lines + subtotal). Guests get a pb_cart cookie
+// on their first add; at login or sign-up the ERP joins the guest cart into the account's cart.
 
-/** @returns {Promise<import("@/lib/mappers/cart.mapper").Cart>} */
+/** GET get-cart-items @returns {Promise<import("@/lib/mappers/cart.mapper").Cart>} */
 async function get() {
   if (config.useMocks) return (await mocks()).getCart();
   return mapCart(unwrap(await apiClient.get(ENDPOINTS.cart.get)));
 }
 
 /**
- * If the product (same variant) is already in the cart, the backend adds `quantity` to that line
- * instead of creating a second one. The "Add to cart" buttons rely on this to add an item again.
+ * POST add-to-cart { variantID, quantity }. If the variant is already in the cart, the ERP adds
+ * `quantity` to that line. Cards only know the product id, so its default variant is looked up.
  * @param {{productId: string|number, variantId?: string|number|null, quantity?: number}} item
  */
 async function addItem({ productId, variantId = null, quantity = 1 }) {
   if (config.useMocks) return (await mocks()).addItem({ productId, variantId, quantity });
-  return cartFrom(await apiClient.post(ENDPOINTS.cart.items, { productId, variantId, quantity }));
+  const variantID = variantId ?? (await productService.defaultVariantId(productId));
+  return mapCart(unwrap(await apiClient.post(ENDPOINTS.cart.add, { variantID, quantity })));
 }
 
+/** POST update-cart-quantity { cartID, quantity } (0 removes the line). itemId = the line's cartID. */
 async function updateItem(itemId, quantity) {
   if (config.useMocks) return (await mocks()).updateItem(itemId, quantity);
-  return cartFrom(await apiClient.patch(ENDPOINTS.cart.item(itemId), { quantity }));
+  return mapCart(unwrap(await apiClient.post(ENDPOINTS.cart.update, { cartID: itemId, quantity })));
 }
 
+/** POST remove-cart-item { cartID } */
 async function removeItem(itemId) {
   if (config.useMocks) return (await mocks()).removeItem(itemId);
-  return cartFrom(await apiClient.delete(ENDPOINTS.cart.item(itemId)));
+  return mapCart(unwrap(await apiClient.post(ENDPOINTS.cart.remove, { cartID: itemId })));
 }
+
+/** Empties the cart. The ERP has no "clear" call, so each line is removed in turn. */
+async function clear() {
+  if (config.useMocks) return (await mocks()).emptyCart();
+  let cart = await get();
+  for (const item of cart.items) {
+    cart = await removeItem(item.id);
+  }
+  return cart;
+}
+
+// ---- Coupons: not in the ERP yet (handover, "Not available yet"). The coupon boxes are hidden on the
+// real API (config.features.coupons); these answers are only a safety net.
+const NO_COUPONS = "Coupons aren't available yet.";
 
 async function applyCoupon(code) {
   if (config.useMocks) return (await mocks()).applyCoupon(code);
-  return cartFrom(await apiClient.post(ENDPOINTS.cart.coupon, { code: String(code).trim() }));
+  throw new ApiError({ message: NO_COUPONS, status: 400 });
 }
 
 async function removeCoupon() {
   if (config.useMocks) return (await mocks()).removeCoupon();
-  return cartFrom(await apiClient.delete(ENDPOINTS.cart.coupon));
-}
-
-/** Removes every item (and any coupon) from the cart: DELETE /cart. */
-async function clear() {
-  if (config.useMocks) return (await mocks()).emptyCart();
-  return cartFrom(await apiClient.delete(ENDPOINTS.cart.get));
+  return get();
 }
 
 /** @returns {Promise<import("@/lib/mappers/cart.mapper").Coupon[]>} */
 async function getAvailableCoupons() {
   if (config.useMocks) return (await mocks()).getAvailableCoupons();
-  return mapCoupons(unwrap(await apiClient.get(ENDPOINTS.cart.availableCoupons)));
+  return [];
 }
 
 export const cartService = {

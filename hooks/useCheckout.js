@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { config } from "@/lib/config";
 import { queryKeys } from "@/lib/query/keys";
 import { checkoutService } from "@/services/checkout.service";
 
@@ -16,16 +17,39 @@ export function useCheckoutSummary(params = {}, options = {}) {
 }
 
 /**
- * Runs only once a full 6-digit pincode is typed.
+ * Runs only once a full 6-digit pincode is typed, and only with demo data: the ERP has no pincode
+ * check (it checks the address in the checkout summary).
  * @example const { data } = usePincodeCheck(pincode);  data?.serviceable, data?.codAvailable
  */
 export function usePincodeCheck(pincode, options = {}) {
   return useQuery({
     queryKey: queryKeys.checkout.pincode(pincode),
     queryFn: () => checkoutService.checkPincode(pincode),
-    enabled: /^\d{6}$/.test(String(pincode || "")),
+    enabled: config.features.pincodeCheck && /^\d{6}$/.test(String(pincode || "")),
     staleTime: 10 * 60 * 1000,
     ...options,
+  });
+}
+
+/**
+ * After the payment page sends the shopper back: asks the ERP every 4 seconds until the payment is
+ * paid, failed or cancelled (handover: poll every 3–5 s).
+ * @example const { data } = usePaymentStatus(orderId);  data?.paymentStatus
+ */
+export function usePaymentStatus(orderId, options = {}) {
+  return useQuery({
+    queryKey: queryKeys.orders.paymentStatus(orderId),
+    queryFn: () => checkoutService.getPaymentStatus(orderId),
+    enabled: Boolean(orderId),
+    refetchInterval: (query) => (query.state.data?.paymentStatus === "pending" ? 4000 : false),
+    ...options,
+  });
+}
+
+/** "Pay now" for an unpaid online order: a fresh payment link (POST retry-payment/{orderID}). */
+export function useRetryPayment() {
+  return useMutation({
+    mutationFn: (orderId) => checkoutService.retryPayment(orderId),
   });
 }
 

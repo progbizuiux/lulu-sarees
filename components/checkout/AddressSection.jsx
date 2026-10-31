@@ -2,11 +2,15 @@
 import { useState } from "react";
 import { useCreateAddress } from "@/hooks/useAddresses";
 import { formatAddress, formatDate } from "@/lib/format";
+import { config } from "@/lib/config";
 import AddressForm from "@/components/my-account/AddressForm";
 
-/** Delivery availability for the chosen pincode, from the backend's pincode check. */
+/**
+ * Delivery availability for the chosen pincode (demo data only: the ERP checks the address itself
+ * in the checkout summary, see config.features.pincodeCheck).
+ */
 function PincodeStatus({ pincode, check }) {
-  if (!pincode) return null;
+  if (!pincode || !config.features.pincodeCheck) return null;
   if (check.isPending) return <p className="text-caption-1 text-secondary mt_12">Checking delivery to {pincode}…</p>;
   if (check.isError) return <p className="text-caption-1 text-secondary mt_12">We couldn't check delivery right now.</p>;
   if (!check.data.serviceable) {

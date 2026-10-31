@@ -3,7 +3,8 @@ import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useContextElement } from "@/context/Context";
-import { exploreProducts, festiveProducts } from "@/data/products";
+import { useSuggestedProducts } from "@/hooks/useProducts";
+import { config } from "@/lib/config";
 import {
   useApplyCoupon,
   useCart,
@@ -60,11 +61,10 @@ export default function CartModal() {
     ? pincodeCheck.error?.fieldErrors?.pincode ?? "We couldn't check delivery right now."
     : "";
 
-  // Suggestions: the same products the home page shows, minus what's already in the cart.
+  // Suggestions: the latest products (demo products in mock mode), minus what's already in the cart.
+  const { data: suggestedProducts = [] } = useSuggestedProducts(12);
   const inCart = new Set(cart.items.map((item) => String(item.productId)));
-  const suggestions = [...exploreProducts, ...festiveProducts]
-    .filter((product) => !inCart.has(String(product.id)))
-    .slice(0, 4);
+  const suggestions = suggestedProducts.filter((product) => !inCart.has(String(product.id))).slice(0, 4);
 
   const { summary, freeShipping } = cart;
   const freeShippingProgress = freeShipping?.threshold
@@ -254,6 +254,7 @@ export default function CartModal() {
                                   {item.variantName && (
                                     <div className="text-secondary-2">{item.variantName}</div>
                                   )}
+                                  {item.problem && <div className="text-danger small">{item.problem}</div>}
                                   <div className="wg-quantity">
                                     <span
                                       className="btn-quantity btn-decrease"
@@ -330,7 +331,9 @@ export default function CartModal() {
                   </div>
                 </div>
                 <div className="tf-mini-cart-bottom">
+                  {/* Note, Shipping and Coupon: demo data only until the ERP has them (config.features) */}
                   <div className="tf-mini-cart-tool">
+                    {config.features.orderNote && (
                     <div
                       className="tf-mini-cart-tool-btn btn-add-note"
                       onClick={openNote}
@@ -371,6 +374,8 @@ export default function CartModal() {
                       </svg>
                       <div className="text-caption-1">Note</div>
                     </div>
+                    )}
+                    {config.features.pincodeCheck && (
                     <div
                       className="tf-mini-cart-tool-btn btn-estimate-shipping"
                       onClick={() => setCurrentOpenPopup("estimate-shipping")}
@@ -413,6 +418,8 @@ export default function CartModal() {
                       </svg>
                       <div className="text-caption-1">Shipping</div>
                     </div>
+                    )}
+                    {config.features.coupons && (
                     <div
                       className="tf-mini-cart-tool-btn btn-add-coupon"
                       onClick={() => setCurrentOpenPopup("add-coupon")}
@@ -441,6 +448,7 @@ export default function CartModal() {
                       </svg>
                       <div className="text-caption-1">Coupon</div>
                     </div>
+                    )}
                   </div>
                   <div className="tf-mini-cart-bottom-wrap">
                     {cart.coupon && (

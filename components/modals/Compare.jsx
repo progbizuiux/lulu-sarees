@@ -1,16 +1,14 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useContextElement } from "@/context/Context";
-import { allProducts } from "@/data/products";
+import { useCompareProducts } from "@/hooks/useProducts";
 export default function Compare() {
   const { removeFromCompareItem, compareItem, setCompareItem } =
     useContextElement();
-  const [items, setItems] = useState([]);
-  useEffect(() => {
-    setItems([...allProducts.filter((elm) => compareItem.includes(elm.id))]);
-  }, [compareItem]);
+  // The picked products, from the ERP's compare-products (demo data in mock mode).
+  const { data: items = [] } = useCompareProducts(compareItem);
 
   return (
     <div className="offcanvas offcanvas-bottom offcanvas-compare" id="compare">

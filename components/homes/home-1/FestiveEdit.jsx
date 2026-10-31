@@ -75,7 +75,10 @@ function FestiveCard({ product }) {
   );
 }
 
-export default function FestiveEdit() {
+/** @param {{products?: Array}} props  ERP featured products; left out with demo data. Hidden when empty. */
+export default function FestiveEdit({ products = festiveProducts }) {
+  if (!products.length) return null;
+
   return (
     <section className="fe" aria-labelledby="fe-title">
       <div className="fe__inner">
@@ -106,7 +109,7 @@ export default function FestiveEdit() {
         </div>
 
         <div className="fe__grid">
-          {festiveProducts.map((product) => (
+          {products.map((product) => (
             <FestiveCard key={product.id} product={product} />
           ))}
         </div>

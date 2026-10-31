@@ -1,5 +1,4 @@
 "use client";
-import { exploreProducts, festiveProducts } from "@/data/products";
 import { luluMenu } from "@/data/luluMenu";
 import React, { Suspense } from "react";
 import { useRouter } from "next/navigation";
@@ -7,15 +6,13 @@ import { Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "@/components/common/SwiperSSR";
 import ProductCard1 from "../productCards/ProductCard1";
 import Link from "next/link";
-import { useProducts } from "@/hooks/useProducts";
+import { useProducts, useSuggestedProducts } from "@/hooks/useProducts";
 import { useShopFilters } from "@/hooks/useShopFilters";
 import { DEFAULT_PAGE_SIZE } from "@/lib/shop/filters";
 import ShopPagination from "@/components/shop/ShopPagination";
 
 // "Quick link:" items: the header menu's listings (the template had Fashion/Men/Women, all to one page).
 const quickLinks = luluMenu.filter((item) => ["Sarees", "Men", "Women"].includes(item.label));
-// Shown before a search: the store's own products (the template showed its demo products).
-const recentProducts = [...festiveProducts, ...exploreProducts];
 
 // Needed because the page reads ?q= from the URL.
 export default function SearchProducts() {
@@ -84,6 +81,8 @@ function SearchProductsContent() {
   const router = useRouter();
   const { filters, pageHref } = useShopFilters();
   const query = filters.search;
+  // Shown before a search: the store's latest products (demo products in mock mode).
+  const { data: recentProducts = [] } = useSuggestedProducts(4);
 
   const handleSearch = (event) => {
     event.preventDefault();

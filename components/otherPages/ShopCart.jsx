@@ -12,6 +12,7 @@ import {
   useClearCart,
 } from "@/hooks/useCart";
 import { EMPTY_CART } from "@/lib/mappers/cart.mapper";
+import { config } from "@/lib/config";
 import { formatPrice } from "@/lib/format";
 import { confirmAction } from "@/lib/confirm";
 import { notify } from "@/lib/notify";
@@ -128,8 +129,10 @@ export default function ShopCart() {
                               {item.variantName && (
                                 <div className="text-secondary-2">{item.variantName}</div>
                               )}
-                              {!item.inStock && (
-                                <div className="text-danger small">Out of stock</div>
+                              {item.problem ? (
+                                <div className="text-danger small">{item.problem}</div>
+                              ) : (
+                                !item.inStock && <div className="text-danger small">Out of stock</div>
                               )}
                             </div>
                           </td>
@@ -218,6 +221,8 @@ export default function ShopCart() {
                       Clear cart
                     </button>
                   </div>
+                  {/* Coupons: demo data only until the ERP has them (config.features.coupons) */}
+                  {config.features.coupons && (
                   <form className="ip-discount-code" onSubmit={handleCoupon} noValidate>
                     <input
                       type="text"
@@ -231,6 +236,7 @@ export default function ShopCart() {
                       <span className="text">{applyCoupon.isPending ? "Applying…" : "Apply Code"}</span>
                     </button>
                   </form>
+                  )}
                   <FieldError id="cart-coupon-error" message={couponError} />
                   {cart.coupon && (
                     <p className="text-button mt-2">

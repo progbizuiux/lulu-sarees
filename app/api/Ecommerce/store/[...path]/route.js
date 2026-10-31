@@ -47,6 +47,10 @@ async function forward(request, { params }) {
     if (value) headers.set(name, value);
   }
   headers.set("X-Storefront-Key", ERP_STORE_KEY);
+  // The ERP answers 500 to "Accept-Language: *", which fetch() sends when the request has none
+  // (server-side calls, curl). Always send a real language instead.
+  const language = headers.get("accept-language");
+  if (!language || language.trim() === "*") headers.set("accept-language", "en-IN");
 
   let erpResponse;
   try {

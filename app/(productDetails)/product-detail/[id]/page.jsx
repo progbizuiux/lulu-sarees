@@ -16,7 +16,8 @@ const getProduct = cache(async (id) => {
   try {
     return await productService.get(id);
   } catch (error) {
-    if (error?.status === 404) return null;
+    // The ERP answers 400 "Product not found" (not 404) for an unknown product.
+    if (error?.status === 404 || error?.status === 400) return null;
     throw error; // other errors show error.jsx (with a "Try again" button)
   }
 });
@@ -84,8 +85,8 @@ export default async function ProductDetailPage({ params }) {
       <LuluHeader />
       <Breadcumb product={product} />
       <Details1 product={product} />
-      <Descriptions1 />
-      <RelatedProducts />
+      <Descriptions1 product={product} />
+      <RelatedProducts product={product} />
       <Footer1 hasPaddingBottom />
     </>
   );

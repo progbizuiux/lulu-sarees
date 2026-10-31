@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useLogin, useRedirectIfLoggedIn } from "@/hooks/useAuth";
-import { hasErrors, validateLogin } from "@/lib/validation";
+import { hasErrors, normalizeIndianMobile, validateLogin } from "@/lib/validation";
 import { FieldError, FormAlert, errorProps, readFormErrors } from "@/components/auth/FormMessages";
 
 export default function Login() {
@@ -25,7 +25,7 @@ export default function Login() {
 
     const form = new FormData(event.currentTarget);
     const values = {
-      email: String(form.get("email") ?? "").trim(),
+      login: String(form.get("login") ?? "").trim(),
       password: String(form.get("password") ?? ""),
       rememberMe: form.get("rememberMe") === "on",
     };
@@ -34,7 +34,8 @@ export default function Login() {
     setClientErrors(errors);
     if (hasErrors(errors)) return;
 
-    login.mutate(values);
+    // "+91 98765 43210" -> "9876543210"; emails are sent as typed.
+    login.mutate({ ...values, login: normalizeIndianMobile(values.login) || values.login });
   };
 
   const { fieldErrors, general } = readFormErrors(login.error, clientErrors);
@@ -57,18 +58,18 @@ export default function Login() {
                   <fieldset className="">
                     <input
                       className=""
-                      type="email"
-                      placeholder="Email address*"
-                      name="email"
-                      autoComplete="email"
+                      type="text"
+                      placeholder="Email or mobile number*"
+                      name="login"
+                      autoComplete="username"
                       tabIndex={2}
                       defaultValue=""
                       aria-required="true"
                       required
-                      {...errorProps("login-email-error", fieldErrors.email)}
+                      {...errorProps("login-email-error", fieldErrors.login)}
                     />
                   </fieldset>
-                  <FieldError id="login-email-error" message={fieldErrors.email} />
+                  <FieldError id="login-email-error" message={fieldErrors.login} />
                 </div>
                 <div>
                   <fieldset className="position-relative password-item">

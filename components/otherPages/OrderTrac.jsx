@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useTrackOrder } from "@/hooks/useOrders";
 import { useUser } from "@/hooks/useAuth";
-import { hasErrors, validateTrackOrder } from "@/lib/validation";
+import { hasErrors, normalizeIndianMobile, validateTrackOrder } from "@/lib/validation";
 import { formatDate } from "@/lib/format";
 import { orderStatusLabel } from "@/lib/orders/status";
 import { FieldError, FormAlert, errorProps, readFormErrors } from "@/components/auth/FormMessages";
@@ -32,7 +32,8 @@ export default function OrderTrac() {
     setClientErrors(errors);
     if (hasErrors(errors)) return;
 
-    trackOrder.mutate(values);
+    // "+91 98765 43210" -> "9876543210"
+    trackOrder.mutate({ ...values, contact: normalizeIndianMobile(values.contact) });
   };
 
   const { fieldErrors, general } = readFormErrors(trackOrder.error, clientErrors);
@@ -45,8 +46,8 @@ export default function OrderTrac() {
             <div className="heading">
               <h4 className="mb_8">Order Tracking</h4>
               <p>
-                Enter your order number and the email or mobile number you used when ordering. You'll
-                find the order number in your confirmation email.
+                Enter your order number and the mobile number you used when ordering. You'll find the
+                order number in your confirmation email.
               </p>
             </div>
             <form onSubmit={handleSubmit} noValidate className="form-login">
@@ -68,11 +69,12 @@ export default function OrderTrac() {
                 <div>
                   <fieldset>
                     <input
-                      type="text"
+                      type="tel"
                       name="contact"
-                      placeholder="Email or mobile number*"
-                      autoComplete="email"
-                      aria-label="Email or mobile number"
+                      placeholder="Mobile number*"
+                      autoComplete="tel"
+                      inputMode="tel"
+                      aria-label="Mobile number"
                       aria-required="true"
                       {...errorProps("track-contact-error", fieldErrors.contact)}
                     />

@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { queryKeys } from "@/lib/query/keys";
 import { orderService } from "@/services/order.service";
 
@@ -28,5 +28,21 @@ export function useOrder(orderId, options = {}) {
 export function useTrackOrder() {
   return useMutation({
     mutationFn: (payload) => orderService.track(payload),
+  });
+}
+
+/**
+ * Cancels an order (only when the order says canCancel), then reloads it and the list.
+ * @example cancelOrder.mutate({ orderId, reason });
+ */
+export function useCancelOrder() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ orderId, reason }) => orderService.cancel(orderId, reason),
+    meta: { errorToast: true },
+    onSuccess: (_result, { orderId }) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.orders.detail(orderId) });
+      queryClient.invalidateQueries({ queryKey: queryKeys.orders.list });
+    },
   });
 }

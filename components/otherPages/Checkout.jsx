@@ -7,9 +7,17 @@ import { keepPreviousData } from "@tanstack/react-query";
 import { useUser } from "@/hooks/useAuth";
 import { useCart } from "@/hooks/useCart";
 import { useAddresses } from "@/hooks/useAddresses";
-import { useCheckoutSummary, usePincodeCheck, usePlaceOrder, useVerifyPayment } from "@/hooks/useCheckout";
+import {
+  useCheckoutSummary,
+  usePincodeCheck,
+  usePlaceOrder,
+  useRetryPayment,
+  useVerifyPayment,
+} from "@/hooks/useCheckout";
+import { useStoreConfig } from "@/hooks/useStore";
 import { EMPTY_CART } from "@/lib/mappers/cart.mapper";
 import { config } from "@/lib/config";
+import { loginUrl } from "@/lib/auth/redirect";
 import { formatPrice } from "@/lib/format";
 import { validateEmail } from "@/lib/validation";
 import { openRazorpay } from "@/lib/payments/razorpay";
@@ -37,22 +45,35 @@ function Spinner({ label }) {
   );
 }
 
+// The payment page link comes from the ERP; only ever leave the site for an https page
+// (http is allowed for a local test gateway only).
+const isSafePaymentUrl = (url) => {
+  try {
+    const parsed = new URL(url);
+    return parsed.protocol === "https:" || (parsed.protocol === "http:" && parsed.hostname === "localhost");
+  } catch {
+    return false;
+  }
+};
+
 /**
  * Checkout: contact → delivery address → payment → place order.
  *
- * - Every total comes from the backend's checkout summary (refetched when the address, coupon or payment changes).
- * - The order is placed once. For online payment, Razorpay opens next; if it fails or is cancelled the same
- *   order can be paid again ("Retry payment") instead of creating a new one.
- * - Success is only shown after the backend confirms the payment. If the gateway says "paid" but the backend
- *   can't confirm yet, the details lock and the customer is told not to pay again.
+ * - Every total comes from the backend's checkout summary (refetched when the address or payment changes).
+ * - The order is placed once. ERP: for online payment the shopper goes to the payment page (paymentUrl) and
+ *   comes back to /order-complete, which waits for the ERP to confirm the payment. If the payment page
+ *   can't open, the same order can be paid again ("Pay now" = retry-payment) instead of creating a new one.
+ * - Demo data: a test payment window opens here instead, and the backend confirms it (verify-payment).
  */
 export default function Checkout() {
   const router = useRouter();
   const { data: user, isPending: isUserLoading } = useUser();
+  const { data: store, isPending: isStoreLoading } = useStoreConfig();
   const { data: cart = EMPTY_CART, isPending: isCartLoading } = useCart();
   const { data: addresses = [], isPending: isAddressesLoading } = useAddresses({ enabled: Boolean(user) });
   const placeOrder = usePlaceOrder();
   const verifyPayment = useVerifyPayment();
+  const retryPayment = useRetryPayment();
 
   const [email, setEmail] = useState("");
   const [guestAddress, setGuestAddress] = useState(null);
@@ -97,16 +118,22 @@ export default function Checkout() {
   const total = summaryQuery.data?.summary.total;
 
   const pincodeBlocked = pincodeCheck.data?.serviceable === false;
+  const onlineAvailable = summaryQuery.data?.onlineAvailable !== false;
   const codAvailable = summaryQuery.data?.codAvailable !== false && pincodeCheck.data?.codAvailable !== false;
   const codUnavailableReason =
-    pincodeCheck.data?.codAvailable === false
+    summaryQuery.data?.codMessage ??
+    (pincodeCheck.data?.codAvailable === false
       ? `Cash on Delivery isn't available for pincode ${pincode}.`
-      : "Cash on Delivery isn't available for this order.";
+      : "Cash on Delivery isn't available for this order.");
+  const noPaymentMethod = Boolean(summaryQuery.data) && !onlineAvailable && !codAvailable;
+  // e.g. "Sold out": the ERP refuses the order until the cart is fixed.
+  const hasCartProblems = (summaryQuery.data?.problems?.length ?? 0) > 0;
 
-  // If COD stops being available (new address, bigger order), switch to online payment.
+  // If the chosen payment method stops being available (new address, bigger order), switch to the other one.
   useEffect(() => {
-    if (paymentMethod === "cod" && !codAvailable) setPaymentMethod("online");
-  }, [paymentMethod, codAvailable]);
+    if (paymentMethod === "cod" && !codAvailable && onlineAvailable) setPaymentMethod("online");
+    if (paymentMethod === "online" && !onlineAvailable && codAvailable) setPaymentMethod("cod");
+  }, [paymentMethod, codAvailable, onlineAvailable]);
 
   // A started online payment belongs to one exact order. If the cart, coupon, address or payment
   // method changes, the next click places a fresh order.
@@ -120,7 +147,7 @@ export default function Checkout() {
     setPendingPayment(null);
   }, [orderKey]);
 
-  const isBusy = placeOrder.isPending || verifyPayment.isPending || isPaying;
+  const isBusy = placeOrder.isPending || verifyPayment.isPending || retryPayment.isPending || isPaying;
   const isLocked = isBusy || Boolean(paidButUnverified);
 
   const goToSuccess = (order) => {
@@ -129,6 +156,34 @@ export default function Checkout() {
       sessionStorage.removeItem(ORDER_NOTE_KEY); // the next order starts without a note
     } catch {}
     router.replace(`/order-success?id=${encodeURIComponent(order.id)}&order=${encodeURIComponent(order.number)}`);
+  };
+
+  // ERP online payment: leave for the payment page. It sends the shopper back to /order-complete?order=...
+  const goToPaymentPage = (url, order) => {
+    if (!isSafePaymentUrl(url)) {
+      setMessage({
+        type: "danger",
+        text: `Your order #${order.number} is saved, but the payment page link looks wrong. Please contact us.`,
+      });
+      return;
+    }
+    setIsLeaving(true);
+    try {
+      sessionStorage.removeItem(ORDER_NOTE_KEY);
+    } catch {}
+    window.location.assign(url);
+  };
+
+  // "Pay now" again for an order that's saved but not paid: a fresh payment link from the ERP.
+  const retryOnlinePayment = (result) => {
+    retryPayment.mutate(result.order.id, {
+      onSuccess: (status) => {
+        if (status.paymentUrl) goToPaymentPage(status.paymentUrl, result.order);
+        else if (status.paymentStatus === "paid") goToSuccess(result.order);
+        else setMessage({ type: "danger", text: "The payment page couldn't be opened. Please try again in a moment." });
+      },
+      onError: (error) => setMessage({ type: "danger", text: error.message }),
+    });
   };
 
   // Opens the payment window. Resolves with { status: "paid" | "failed" | "cancelled", ... }.
@@ -195,7 +250,7 @@ export default function Checkout() {
     setMessage(null);
 
     if (paidButUnverified) return confirmPayment(paidButUnverified.result, paidButUnverified.outcome);
-    if (pendingPayment) return pay(pendingPayment);
+    if (pendingPayment) return config.useMocks ? pay(pendingPayment) : retryOnlinePayment(pendingPayment);
 
     const errors = {};
     if (!user) {
@@ -210,7 +265,7 @@ export default function Checkout() {
       setMessage({ type: "danger", text: "Please check the details above." });
       return;
     }
-    if (pincodeBlocked) return;
+    if (pincodeBlocked || noPaymentMethod || hasCartProblems) return;
 
     placeOrder.mutate(
       {
@@ -222,9 +277,19 @@ export default function Checkout() {
       },
       {
         onSuccess: (result) => {
+          if (result.payment?.url) return goToPaymentPage(result.payment.url, result.order); // ERP: payment page
+          if (result.paymentError) {
+            // The ERP saved the order but couldn't start the payment.
+            setPendingPayment(result);
+            setMessage({
+              type: "warning",
+              text: `Your order #${result.order.number} is saved, but the payment page couldn't open (${result.paymentError}). Press “Pay now” to try again.`,
+            });
+            return;
+          }
           if (!result.payment) goToSuccess(result.order); // COD: done
           else {
-            setPendingPayment(result);
+            setPendingPayment(result); // demo payment window
             pay(result);
           }
         },
@@ -236,8 +301,29 @@ export default function Checkout() {
     );
   };
 
-  if (isLeaving) return <Spinner label="Opening your order confirmation…" />;
-  if (isCartLoading || isUserLoading) return <Spinner label="Loading checkout…" />;
+  if (isLeaving) return <Spinner label="Opening the next page…" />;
+  if (isCartLoading || isUserLoading || isStoreLoading) return <Spinner label="Loading checkout…" />;
+  // The ERP only takes orders from logged-in customers until guest checkout is turned on (get-store-config).
+  if (!user && store && !store.allowGuestCheckout && hasItems) {
+    return (
+      <section className="flat-spacing">
+        <div className="container text-center py-5">
+          <h4 className="mb_12">Log in to check out</h4>
+          <p className="text-secondary mb_20">
+            Log in or create an account to place your order. Your cart stays as it is.
+          </p>
+          <div className="d-flex gap-12 justify-content-center flex-wrap">
+            <Link href={loginUrl("/checkout")} className="tf-btn btn-fill">
+              <span className="text text-button">Login</span>
+            </Link>
+            <Link href={`/register?redirect=${encodeURIComponent("/checkout")}`} className="tf-btn btn-reset">
+              Create an account
+            </Link>
+          </div>
+        </div>
+      </section>
+    );
+  }
   if (!hasItems) {
     return (
       <section className="flat-spacing">
@@ -256,10 +342,15 @@ export default function Checkout() {
   const withTotal = (text) => (total !== undefined ? `${text} · ${formatPrice(total)}` : text);
   if (placeOrder.isPending) buttonLabel = "Placing your order…";
   else if (isPaying) buttonLabel = "Waiting for payment…";
+  else if (retryPayment.isPending) buttonLabel = "Opening the payment page…";
   else if (verifyPayment.isPending) buttonLabel = "Confirming your payment…";
   else if (paidButUnverified) buttonLabel = "Check payment again";
-  else if (pendingPayment) buttonLabel = withTotal("Retry payment");
+  else if (pendingPayment) buttonLabel = withTotal(config.useMocks ? "Retry payment" : "Pay now");
   else buttonLabel = withTotal(paymentMethod === "cod" ? "Place order" : "Pay now");
+
+  let blockedReason = null;
+  if (hasCartProblems) blockedReason = "Some items in your cart can't be ordered right now. Please update your cart.";
+  else if (noPaymentMethod) blockedReason = "Payment isn't available right now. Please try again later.";
 
   return (
     <section>
@@ -294,6 +385,8 @@ export default function Checkout() {
                 pincodeCheck={pincodeCheck}
                 error={fieldErrors.address}
               />
+              {/* Order note: demo data only, the ERP's order has no note field yet (config.features.orderNote) */}
+              {config.features.orderNote && (
               <div className="wrap">
                 <h5 className="title">Order note (optional)</h5>
                 <div className="info-box">
@@ -306,21 +399,25 @@ export default function Checkout() {
                   />
                 </div>
               </div>
+              )}
               <PaymentSection
                 value={paymentMethod}
                 onChange={setPaymentMethod}
+                onlineAvailable={onlineAvailable}
                 codAvailable={codAvailable}
                 codUnavailableReason={codUnavailableReason}
                 disabled={isLocked}
               />
             </div>
             <div className="pb-5">
-              <FormAlert type={message?.type}>{message?.text}</FormAlert>
+              <FormAlert type={message?.type ?? (blockedReason ? "warning" : undefined)}>
+                {message?.text ?? blockedReason}
+              </FormAlert>
               <button
                 type="button"
                 className="tf-btn btn-reset w-100"
                 onClick={handlePlaceOrder}
-                disabled={isBusy || pincodeBlocked || !summaryQuery.data}
+                disabled={isBusy || pincodeBlocked || !summaryQuery.data || (Boolean(blockedReason) && !pendingPayment)}
                 aria-busy={isBusy}
               >
                 {buttonLabel}

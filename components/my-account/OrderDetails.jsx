@@ -3,10 +3,66 @@ import React, { Suspense, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useOrder } from "@/hooks/useOrders";
+import { useCancelOrder, useOrder } from "@/hooks/useOrders";
+import { useRetryPayment } from "@/hooks/useCheckout";
 import { formatAddress, formatDate, formatPrice } from "@/lib/format";
 import { orderStatusLabel } from "@/lib/orders/status";
+import { confirmAction } from "@/lib/confirm";
+import { notify } from "@/lib/notify";
 import OrderTimeline from "./OrderTimeline";
+
+const isSafePaymentUrl = (url) => {
+  try {
+    const parsed = new URL(url);
+    return parsed.protocol === "https:" || (parsed.protocol === "http:" && parsed.hostname === "localhost");
+  } catch {
+    return false;
+  }
+};
+
+/** "Pay now" (unpaid online order) and "Cancel order": only when the ERP says they're allowed. */
+function OrderActions({ order }) {
+  const cancelOrder = useCancelOrder();
+  const retryPayment = useRetryPayment();
+  if (!order.canPay && !order.canCancel) return null;
+
+  const payNow = () =>
+    retryPayment.mutate(order.id, {
+      onSuccess: (result) => {
+        if (result.paymentUrl && isSafePaymentUrl(result.paymentUrl)) window.location.assign(result.paymentUrl);
+        else notify("The payment page couldn't be opened. Please try again in a moment.", { type: "error" });
+      },
+      onError: (error) => notify(error.message, { type: "error" }),
+    });
+
+  const cancel = async () => {
+    const confirmed = await confirmAction({
+      title: "Cancel this order?",
+      message: `Order #${order.number} will be cancelled.`,
+      confirmLabel: "Cancel order",
+    });
+    if (!confirmed) return;
+    cancelOrder.mutate(
+      { orderId: order.id },
+      { onSuccess: (result) => notify(result?.message || "Your order has been cancelled.", { type: "success" }) }
+    );
+  };
+
+  return (
+    <div className="d-flex gap-12 flex-wrap mb_20">
+      {order.canPay && (
+        <button type="button" className="tf-btn btn-fill radius-4" onClick={payNow} disabled={retryPayment.isPending}>
+          <span className="text">{retryPayment.isPending ? "Opening…" : "Pay now"}</span>
+        </button>
+      )}
+      {order.canCancel && (
+        <button type="button" className="tf-btn btn-outline radius-4" onClick={cancel} disabled={cancelOrder.isPending}>
+          <span className="text">{cancelOrder.isPending ? "Cancelling…" : "Cancel order"}</span>
+        </button>
+      )}
+    </div>
+  );
+}
 
 const paymentLabel = (order) => (order.paymentMethod === "cod" ? "Cash on Delivery" : "Online payment");
 
@@ -89,6 +145,7 @@ function OrderDetailsContent() {
               <h6 className="mt-8 fw-5">Order #{order.number}</h6>
             </div>
           </div>
+          <OrderActions order={order} />
           <div className="tf-grid-layout md-col-2 gap-15">
             <div className="item">
               <div className="text-2 text_black-2">Items</div>

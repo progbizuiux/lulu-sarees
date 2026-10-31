@@ -151,8 +151,14 @@ function ExploreProductCard({ product, isNew }) {
   );
 }
 
-export default function ExploreCollections() {
-  const [activeTab, setActiveTab] = useState(tabs[0].filter);
+/**
+ * @param {{tabProducts?: Record<string, Array>}} props  ERP products per tab ("New Arrivals", "Best Seller",
+ *   "On Sale"). Left out with demo data: the tabs then filter the demo products. Tabs with no products are
+ *   hidden, and the whole section when none have any (the ERP has no "on sale" list yet).
+ */
+export default function ExploreCollections({ tabProducts }) {
+  const visibleTabs = tabProducts ? tabs.filter((tab) => tabProducts[tab.filter]?.length) : tabs;
+  const [activeTab, setActiveTab] = useState(visibleTabs[0]?.filter);
   // play the card entrance animation only after a tab change, not on first load
   const [switched, setSwitched] = useState(false);
   // auto scroll from the start, unless the visitor asked their system for less motion
@@ -162,11 +168,14 @@ export default function ExploreCollections() {
 
   const items = useMemo(
     () =>
-      exploreProducts
-        .filter((p) => p.tabFilterOptions2?.includes(activeTab))
-        .slice(0, MAX_PRODUCTS),
-    [activeTab]
+      (tabProducts
+        ? tabProducts[activeTab] ?? []
+        : exploreProducts.filter((p) => p.tabFilterOptions2?.includes(activeTab))
+      ).slice(0, MAX_PRODUCTS),
+    [activeTab, tabProducts]
   );
+
+  if (!visibleTabs.length) return null;
 
   return (
     <section className="explore" aria-labelledby="explore-title">
@@ -181,7 +190,7 @@ export default function ExploreCollections() {
           </p>
         </div>
         <div className="explore__tabs" role="tablist" aria-label="Collections">
-          {tabs.map((tab) => (
+          {visibleTabs.map((tab) => (
             <button
               key={tab.filter}
               type="button"

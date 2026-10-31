@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useRedirectIfLoggedIn, useRegister } from "@/hooks/useAuth";
-import { hasErrors, validateRegister } from "@/lib/validation";
+import { hasErrors, normalizeIndianMobile, validateRegister } from "@/lib/validation";
 import { FieldError, FormAlert, errorProps, readFormErrors } from "@/components/auth/FormMessages";
 
 export default function Register() {
@@ -36,6 +36,7 @@ export default function Register() {
       firstName: String(form.get("firstName") ?? "").trim(),
       lastName: String(form.get("lastName") ?? "").trim(),
       email: String(form.get("email") ?? "").trim(),
+      phone: String(form.get("phone") ?? "").trim(),
       password: String(form.get("password") ?? ""),
       confirmPassword: String(form.get("confirmPassword") ?? ""),
       agree: form.get("agree") === "on",
@@ -50,6 +51,7 @@ export default function Register() {
       firstName: values.firstName,
       lastName: values.lastName,
       email: values.email,
+      phone: normalizeIndianMobile(values.phone), // "+91 98765 43210" -> "9876543210"
       password: values.password,
     });
   };
@@ -122,6 +124,25 @@ export default function Register() {
                     />
                   </fieldset>
                   <FieldError id="register-email-error" message={fieldErrors.email} />
+                </div>
+                <div>
+                  <fieldset className="">
+                    <input
+                      className=""
+                      type="tel"
+                      placeholder="Mobile number*"
+                      name="phone"
+                      autoComplete="tel"
+                      inputMode="tel"
+                      maxLength={15}
+                      tabIndex={2}
+                      defaultValue=""
+                      aria-required="true"
+                      required
+                      {...errorProps("register-phone-error", fieldErrors.phone)}
+                    />
+                  </fieldset>
+                  <FieldError id="register-phone-error" message={fieldErrors.phone} />
                 </div>
                 <div>
                   <fieldset className="position-relative password-item">

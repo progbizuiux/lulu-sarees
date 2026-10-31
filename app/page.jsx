@@ -12,8 +12,15 @@ import FollowGallery from "@/components/common/FollowGallery";
 import ShopByVideo from "@/components/homes/home-1/ShopByVideo";
 import CustomerStories from "@/components/homes/home-1/CustomerStories";
 import MostSelling from "@/components/homes/home-1/MostSelling";
+import { loadHomeRows } from "@/lib/home/server";
 
-export default function HomePage() {
+// The product rows come from the ERP: rebuild the page at most once a minute.
+export const revalidate = 60;
+
+export default async function HomePage() {
+  // null with demo data (NEXT_PUBLIC_USE_MOCKS=true): each section then shows its own demo products.
+  const rows = await loadHomeRows();
+
   return (
     <div className="home-fullwidth">
       <LuluHeader />
@@ -30,13 +37,15 @@ export default function HomePage() {
           }}
         />
       </div>
-      <ExploreCollections />
+      <ExploreCollections
+        tabProducts={rows && { "New Arrivals": rows.latest, "Best Seller": rows.bestSelling, "On Sale": [] }}
+      />
       <OccasionStyle />
-      <FestiveEdit />
+      <FestiveEdit products={rows?.featured} />
       <MadeForMoments />
-      <ShopByVideo />
+      <ShopByVideo items={rows?.videos} />
       <CustomerStories />
-      <MostSelling />
+      <MostSelling products={rows?.bestSelling} />
       <FollowGallery
         handle="@lulu_sarees"
         items={[

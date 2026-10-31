@@ -1,6 +1,6 @@
 "use client";
 import { useContextElement } from "@/context/Context";
-import { allProducts } from "@/data/products";
+import { useCompareProducts } from "@/hooks/useProducts";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
@@ -12,10 +12,8 @@ export default function ProductCompare() {
 
     addProductToCart,
   } = useContextElement();
-  const [items, setItems] = useState([]);
-  useEffect(() => {
-    setItems([...allProducts.filter((elm) => compareItem.includes(elm.id))]);
-  }, [compareItem]);
+  // The picked products, from the ERP's compare-products (demo data in mock mode).
+  const { data: items = [] } = useCompareProducts(compareItem);
   return (
     <section className="flat-spacing">
       <div className="container">

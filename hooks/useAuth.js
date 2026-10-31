@@ -48,7 +48,7 @@ export function useRedirectIfLoggedIn() {
 
 /**
  * Form errors come back as `error.fieldErrors` (e.g. { email: "..." }); the general message as `error.message`.
- * @example login.mutate({ email, password });
+ * @example login.mutate({ login, password, rememberMe });  // login = email or mobile
  */
 export function useLogin() {
   const refresh = useRefreshUserData();
@@ -78,5 +78,12 @@ export function useLogout() {
 export function useForgotPassword() {
   return useMutation({
     mutationFn: (payload) => authService.forgotPassword(payload),
+  });
+}
+
+/** @example resetPassword.mutate({ token, newPassword }); */
+export function useResetPassword() {
+  return useMutation({
+    mutationFn: (payload) => authService.resetPassword(payload),
   });
 }

@@ -37,8 +37,11 @@ export default function Details1({ product }) {
   const [quantity, setQuantity] = useState(1);
   // The product's options (colour/size). Starts on the first one in stock; none for products without options.
   const variants = product.variants ?? [];
+  // The ERP marks one variant as the default; otherwise the first one in stock.
   const [variantId, setVariantId] = useState(
-    () => variants.find((variant) => variant.inStock)?.id ?? null
+    () =>
+      (variants.find((variant) => variant.isDefault && variant.inStock) ??
+        variants.find((variant) => variant.inStock))?.id ?? null
   );
   const variant = variants.find((item) => item.id === variantId);
   const price = variant?.price ?? product.price;
@@ -134,8 +137,8 @@ export default function Details1({ product }) {
                     </div>
                   </div>
                   <div className="tf-product-info-choose-option">
-                    {/* Colour/size picker: only for products that have options */}
-                    {variants.length > 0 && (
+                    {/* Colour/size picker: only when there's more than one option to choose from */}
+                    {variants.length > 1 && (
                       <SizeSelect
                         variants={variants}
                         selectedId={variantId}

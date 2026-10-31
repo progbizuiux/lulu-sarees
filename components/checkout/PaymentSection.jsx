@@ -5,7 +5,7 @@ const METHODS = [
     value: "online",
     title: "Pay online",
     description:
-      "UPI, cards, net banking or wallets. You'll pay in Razorpay's secure window; we never see your card details.",
+      "UPI, cards, net banking or wallets. You'll pay on our payment partner's secure page; we never see your card details.",
   },
   {
     value: "cod",
@@ -14,8 +14,18 @@ const METHODS = [
   },
 ];
 
-/** Online (Razorpay) or Cash on Delivery (template payment markup). COD is disabled, with a reason, when unavailable. */
-export default function PaymentSection({ value, onChange, codAvailable, codUnavailableReason, disabled }) {
+/**
+ * Online or Cash on Delivery (template payment markup). A method the backend doesn't allow for this
+ * order is disabled, with a reason.
+ */
+export default function PaymentSection({
+  value,
+  onChange,
+  onlineAvailable = true,
+  codAvailable,
+  codUnavailableReason,
+  disabled,
+}) {
   return (
     <div className="wrap">
       <h5 className="title">Payment</h5>
@@ -23,12 +33,14 @@ export default function PaymentSection({ value, onChange, codAvailable, codUnava
         <div className="payment-box" role="radiogroup" aria-label="Payment method">
           {METHODS.map((method) => {
             const id = `payment-${method.value}`;
-            const unavailable = method.value === "cod" && !codAvailable;
+            const unavailable = method.value === "cod" ? !codAvailable : !onlineAvailable;
+            const reason =
+              method.value === "cod" ? codUnavailableReason : "Online payment isn't available right now.";
             const checked = value === method.value;
             return (
               <div
                 key={method.value}
-                className={`payment-item ${checked ? "active" : ""}`}
+                className={`payment-item ${checked && !unavailable ? "active" : ""}`}
                 style={{ opacity: unavailable ? 0.6 : 1 }}
               >
                 <label htmlFor={id} className="payment-header">
@@ -37,16 +49,14 @@ export default function PaymentSection({ value, onChange, codAvailable, codUnava
                     name="payment-method"
                     className="tf-check-rounded"
                     id={id}
-                    checked={checked}
+                    checked={checked && !unavailable}
                     disabled={disabled || unavailable}
                     onChange={() => onChange(method.value)}
                   />
                   <span className="text-title">{method.title}</span>
                 </label>
                 <div className="payment-body">
-                  <p className="text-secondary mb-0">
-                    {unavailable ? codUnavailableReason : method.description}
-                  </p>
+                  <p className="text-secondary mb-0">{unavailable ? reason : method.description}</p>
                 </div>
               </div>
             );

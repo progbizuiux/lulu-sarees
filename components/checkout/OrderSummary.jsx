@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Swiper, SwiperSlide } from "@/components/common/SwiperSSR";
 import { useApplyCoupon, useAvailableCoupons, useRemoveCoupon } from "@/hooks/useCart";
 import { formatPrice } from "@/lib/format";
+import { config } from "@/lib/config";
 import { FieldError, errorProps } from "@/components/auth/FormMessages";
 
 /**
@@ -15,7 +16,8 @@ export default function OrderSummary({ cart, summaryQuery, disabled }) {
   const applyCoupon = useApplyCoupon();
   const removeCoupon = useRemoveCoupon();
 
-  const items = summaryQuery.data?.items ?? cart.items;
+  // The ERP's summary lines have no photos, so the cart's lines are shown (same items and prices).
+  const items = summaryQuery.data?.items?.length ? summaryQuery.data.items : cart.items;
   const totals = summaryQuery.data?.summary;
   const messages = summaryQuery.data?.messages ?? [];
   const isRefreshing = summaryQuery.isFetching;
@@ -56,6 +58,8 @@ export default function OrderSummary({ cart, summaryQuery, disabled }) {
             </div>
           ))}
         </div>
+        {/* Coupons: demo data only until the ERP has them (config.features.coupons) */}
+        {config.features.coupons && (
         <div className="sec-discount">
           {coupons.length > 0 && (
             <Swiper
@@ -125,6 +129,7 @@ export default function OrderSummary({ cart, summaryQuery, disabled }) {
             </p>
           )}
         </div>
+        )}
         <div className="sec-total-price" style={{ opacity: isRefreshing ? 0.6 : 1 }} aria-busy={isRefreshing}>
           {totals ? (
             <>

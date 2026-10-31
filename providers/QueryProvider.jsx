@@ -42,10 +42,13 @@ export default function QueryProvider({ children }) {
   // One client per browser tab, created once.
   const [queryClient] = useState(makeQueryClient);
 
-  // When the session can't be refreshed, drop everything that belongs to the logged-in user.
+  // When the session ends (the API answers 401), drop everything that belongs to the logged-in user.
   useEffect(
     () =>
       onSessionExpired(() => {
+        // Guests get 401 on customer-only calls too; only act when someone was logged in,
+        // otherwise the refetches below could keep answering 401 and loop.
+        if (!queryClient.getQueryData(queryKeys.user)) return;
         queryClient.setQueryData(queryKeys.user, null);
         queryClient.removeQueries({ queryKey: queryKeys.orders.all });
         queryClient.removeQueries({ queryKey: queryKeys.addresses });

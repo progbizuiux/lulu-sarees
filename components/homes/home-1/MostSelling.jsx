@@ -10,7 +10,10 @@ function saleLabel(product) {
   return `-${Math.round((1 - product.price / product.oldPrice) * 100)}%`;
 }
 
-export default function MostSelling() {
+/** @param {{products?: Array}} props  ERP best sellers; left out with demo data. Hidden when empty. */
+export default function MostSelling({ products = mostSellingProducts }) {
+  if (!products.length) return null;
+
   return (
     <section className="ms" aria-labelledby="ms-title">
       <div className="ms__head">
@@ -21,7 +24,7 @@ export default function MostSelling() {
       </div>
 
       <div className="ms__grid">
-        {mostSellingProducts.map((product) => (
+        {products.map((product) => (
           <article className="ms-card" key={product.id}>
             <Link
               href={`/product-detail/${product.id}`}

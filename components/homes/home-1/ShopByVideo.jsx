@@ -120,7 +120,15 @@ function VideoCard({ product, src }) {
   );
 }
 
-export default function ShopByVideo() {
+const demoItems = reelProducts.map((product, i) => ({ product, src: videos[i] }));
+
+/**
+ * @param {{items?: Array<{product: Object, src: string}>}} props  ERP products with a video; left out with
+ *   demo data. Hidden when empty.
+ */
+export default function ShopByVideo({ items = demoItems }) {
+  if (!items.length) return null;
+
   return (
     <section className="sv" aria-labelledby="sv-title">
       <div className="sv__head">
@@ -133,8 +141,8 @@ export default function ShopByVideo() {
         </p>
       </div>
       <div className="sv__grid">
-        {reelProducts.map((product, i) => (
-          <VideoCard key={product.id} product={product} src={videos[i]} />
+        {items.map(({ product, src }) => (
+          <VideoCard key={product.id} product={product} src={src} />
         ))}
       </div>
     </section>

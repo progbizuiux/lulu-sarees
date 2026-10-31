@@ -3,11 +3,9 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
-import { exploreProducts, festiveProducts } from "@/data/products";
+import { useSuggestedProducts } from "@/hooks/useProducts";
 import ProductCard1 from "../productCards/ProductCard1";
 
-// The store's own products (the template showed its demo products here).
-const suggestedProducts = [...festiveProducts, ...exploreProducts];
 // Each keyword runs that search (they used to link to "#").
 const keywords = ["Silk sarees", "Kurta sets", "Lehengas", "Kasavu", "Kids"];
 
@@ -27,16 +25,16 @@ export default function SearchModal() {
     router.push(`/search-result?q=${encodeURIComponent(query)}`);
   };
 
-  const [loadedItems, setLoadedItems] = useState(suggestedProducts.slice(0, 8));
+  // The store's latest products (demo products in mock mode); "Load more" shows 4 more at a time.
+  const { data: suggestedProducts = [] } = useSuggestedProducts(24);
+  const [visibleCount, setVisibleCount] = useState(8);
+  const loadedItems = suggestedProducts.slice(0, visibleCount);
   const handleLoad = () => {
     setLoading(true);
     setTimeout(() => {
-      setLoadedItems((pre) => [
-        ...pre,
-        ...suggestedProducts.slice(pre.length, pre.length + 4),
-      ]);
+      setVisibleCount((count) => count + 4);
       setLoading(false);
-    }, 1000);
+    }, 300);
   };
   return (
     <div className="modal fade modal-search" id="search">

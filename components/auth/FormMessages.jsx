@@ -14,7 +14,12 @@ export function FieldError({ id, message }) {
 export function FormAlert({ type = "danger", children }) {
   if (!children) return null;
   return (
-    <div className={`alert alert-${type} py-2 px-3 mb-3 small`} role={type === "danger" ? "alert" : "status"}>
+    // pre-line: the ERP can send several messages at once, one per line.
+    <div
+      className={`alert alert-${type} py-2 px-3 mb-3 small`}
+      style={{ whiteSpace: "pre-line" }}
+      role={type === "danger" ? "alert" : "status"}
+    >
       {children}
     </div>
   );
