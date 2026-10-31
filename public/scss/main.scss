@@ -3,3 +3,8 @@
 // CSS @import. They are now imported in app/layout.js (before this file) so they're bundled in the
 // right order: a CSS @import only works at the very top of the final stylesheet, which isn't guaranteed.
 @include meta.load-css("app.scss");
+
+// Payment card logos hidden everywhere for now. Delete this rule to show them again.
+.tf-payment {
+  display: none !important;
+}

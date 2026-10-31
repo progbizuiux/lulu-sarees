@@ -110,7 +110,7 @@ export default function Footer1({
                       </Link>
                     </div>
                     <div className="footer-address">
-                      <p>549 Oak St.Crystal Lake, IL 60014</p>
+                      <p>Lulu Sarees Pvt Ltd, Apsara Tower, Thavakkara Road, Kannur 670001</p>
                       <Link
                         href={`/contact`}
                         className={`tf-btn-default fw-6 ${
@@ -124,7 +124,7 @@ export default function Footer1({
                     <ul className="footer-info">
                       <li>
                         <i className="icon-mail" />
-                        <p>themesflat@gmail.com</p>
+                        <p>kannurlulusarees@gmail.com</p>
                       </li>
                       <li>
                         <i className="icon-phone" />
